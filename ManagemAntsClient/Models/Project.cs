@@ -9,14 +9,14 @@ namespace ManagemAntsClient.Models
     {
         public Project()
         {
-            Tasks = new HashSet<Task>();
+            tasks = new HashSet<Task>();
         }
 
-        public long Id { get; set; }
-        public string Name { get; set; }
-        public string Description { get; set; }
-        public long Owner { get; set; }
+        public long id { get; set; }
+        public string name { get; set; }
+        public string description { get; set; }
+        public long owner { get; set; }
 
-        public virtual ICollection<Task> Tasks { get; set; }
+        public virtual ICollection<Task> tasks { get; set; }
     }
 }

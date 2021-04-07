@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
-#nullable disable
-
-namespace ManagemAntsServer.DataAccess
+namespace ManagemAntsServer.Dbo
 {
-    public partial class Project
+    public class Project: IObjectWithId
     {
         public Project()
         {

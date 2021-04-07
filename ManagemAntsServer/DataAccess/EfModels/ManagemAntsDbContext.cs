@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Metadata;
 
 #nullable disable
 
-namespace ManagemAntsServer.DataAccess
+namespace ManagemAntsServer.DataAccess.EfModels
 {
     public partial class ManagemAntsDbContext : DbContext
     {

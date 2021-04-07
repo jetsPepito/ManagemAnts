@@ -5,6 +5,8 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Net.Http;
+using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace ManagemAntsClient.Controllers
@@ -13,15 +15,21 @@ namespace ManagemAntsClient.Controllers
     {
         private readonly ILogger<HomeController> _logger;
         private readonly string test;
+        private string url = "http://localhost:44352/api";
 
+        static HttpClient client = new HttpClient();
         public HomeController(ILogger<HomeController> logger)
         {
             _logger = logger;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            return View();
+            HttpResponseMessage response = await client.GetAsync(url + "/Project");
+            Project projects = null;
+            if (response.IsSuccessStatusCode)
+                projects = await JsonSerializer.DeserializeAsync<Project>(await response.Content.ReadAsStreamAsync());
+            return View(projects);
         }
 
         public IActionResult Privacy()

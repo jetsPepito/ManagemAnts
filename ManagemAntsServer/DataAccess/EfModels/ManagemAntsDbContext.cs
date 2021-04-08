@@ -18,14 +18,16 @@ namespace ManagemAntsServer.DataAccess.EfModels
         }
 
         public virtual DbSet<Project> Projects { get; set; }
+        public virtual DbSet<ProjectsHasUser> ProjectsHasUsers { get; set; }
         public virtual DbSet<Task> Tasks { get; set; }
+        public virtual DbSet<User> Users { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             if (!optionsBuilder.IsConfigured)
             {
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
-                optionsBuilder.UseSqlServer("Data Source=.\\MTI;Initial Catalog=ManagemAntsDb;Trusted_Connection=True");
+                optionsBuilder.UseSqlServer("Data Source=.\\;Initial Catalog=ManagemAntsDb;Trusted_Connection=True");
             }
         }
 
@@ -49,6 +51,37 @@ namespace ManagemAntsServer.DataAccess.EfModels
                     .HasColumnName("name");
 
                 entity.Property(e => e.Owner).HasColumnName("owner");
+
+                entity.HasOne(d => d.OwnerNavigation)
+                    .WithMany(p => p.Projects)
+                    .HasForeignKey(d => d.Owner)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_Projects_Users");
+            });
+
+            modelBuilder.Entity<ProjectsHasUser>(entity =>
+            {
+                entity.HasNoKey();
+
+                entity.ToTable("Projects_has_users");
+
+                entity.Property(e => e.ProjectId).HasColumnName("project_id");
+
+                entity.Property(e => e.Role).HasColumnName("role");
+
+                entity.Property(e => e.UserId).HasColumnName("user_id");
+
+                entity.HasOne(d => d.Project)
+                    .WithMany()
+                    .HasForeignKey(d => d.ProjectId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_Projects_has_users_Projects");
+
+                entity.HasOne(d => d.User)
+                    .WithMany()
+                    .HasForeignKey(d => d.UserId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_Projects_has_users_Users");
             });
 
             modelBuilder.Entity<Task>(entity =>
@@ -82,6 +115,37 @@ namespace ManagemAntsServer.DataAccess.EfModels
                     .HasForeignKey(d => d.ProjectId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_Tasks_Projects");
+            });
+
+            modelBuilder.Entity<User>(entity =>
+            {
+                entity.HasIndex(e => e.Pseudo, "IX_Users")
+                    .IsUnique();
+
+                entity.Property(e => e.Id).HasColumnName("id");
+
+                entity.Property(e => e.Firstname)
+                    .IsRequired()
+                    .HasMaxLength(50)
+                    .IsUnicode(false)
+                    .HasColumnName("firstname");
+
+                entity.Property(e => e.Lastname)
+                    .IsRequired()
+                    .HasMaxLength(50)
+                    .IsUnicode(false)
+                    .HasColumnName("lastname");
+
+                entity.Property(e => e.Password)
+                    .IsRequired()
+                    .HasColumnType("text")
+                    .HasColumnName("password");
+
+                entity.Property(e => e.Pseudo)
+                    .IsRequired()
+                    .HasMaxLength(50)
+                    .IsUnicode(false)
+                    .HasColumnName("pseudo");
             });
 
             OnModelCreatingPartial(modelBuilder);

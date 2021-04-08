@@ -16,6 +16,12 @@ namespace ManagemAntsServer.DataAccess
             CreateMap<Dbo.Task, EfModels.Task>();
             CreateMap<EfModels.Task, Dbo.Task>();
 
+            CreateMap<Dbo.User, EfModels.User>();
+            CreateMap<EfModels.User, Dbo.User>();
+
+            CreateMap<Dbo.ProjectsHasUser, EfModels.ProjectsHasUser>();
+            CreateMap<EfModels.ProjectsHasUser, Dbo.ProjectsHasUser>();
+
         }
     }
 }

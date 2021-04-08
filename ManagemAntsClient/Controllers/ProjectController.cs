@@ -37,7 +37,20 @@ namespace ManagemAntsClient.Controllers
                         if (responce.IsSuccessStatusCode)
                             projects = await JsonSerializer.DeserializeAsync<IEnumerable<Project>>(await responce.Content.ReadAsStreamAsync());
                         return View(new Projects(projects));*/
-            return View(new ProjectPage() { project = new Project() { id = 1, name = "Ouistiti", description = "Un ptit singe tout mimi" }, loggedUser = "Kaijo" }) ;
+
+            var tasks = new List<Models.Task>();
+            tasks.Add(new Models.Task() { Id = 0, Name = "Faire des pates a la bolo", Description = "Une description", State = 0 });
+            tasks.Add(new Models.Task() { Id = 1, Name = "Faire le .NET", Description = "Une description", State = 1 });
+            tasks.Add(new Models.Task() { Id = 2, Name = "Faire vue js", Description = "Une description", State = 2 });
+            tasks.Add(new Models.Task() { Id = 3, Name = "Rendre les fichiers de .NET", Description = "Une description", State = 3 });
+
+
+            return View(
+                new ProjectPage() { 
+                    Project = new Project() { id = 1, name = "Ouistiti", description = "Un ptit singe tout mimi" },
+                    LoggedUser = new User() { Pseudo = "Kaijo", Firstname = "Jeremie", Lastname = "Zeitoun" },
+                    Tasks = tasks
+                });
         }
 
         public IActionResult Privacy()

@@ -51,6 +51,11 @@ button.accept-policy {
   line-height: inherit;
 }
 
+
+.bg-blue {
+    background-color: #284B63;
+}
+
 /* Sticky footer styles
 -------------------------------------------------- */
 html {
@@ -59,13 +64,4 @@ html {
 }
 
 body {
-  /* Margin bottom by footer height */
-  margin-bottom: 60px;
-}
-.footer {
-  position: absolute;
-  bottom: 0;
-  width: 100%;
-  white-space: nowrap;
-  line-height: 60px; /* Vertically center the text there */
 }

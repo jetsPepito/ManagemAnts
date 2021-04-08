@@ -17,6 +17,7 @@ namespace ManagemAntsServer.DataAccess.EfModels
         public string Description { get; set; }
         public long Owner { get; set; }
 
+        public virtual User OwnerNavigation { get; set; }
         public virtual ICollection<Task> Tasks { get; set; }
     }
 }

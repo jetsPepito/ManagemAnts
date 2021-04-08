@@ -35,6 +35,8 @@ namespace ManagemAntsServer
             services.AddRazorPages();
             services.AddControllers();
             services.AddTransient<DataAccess.Interfaces.IProjectRepository, DataAccess.Repositories.ProjectRepository>();
+            services.AddTransient<DataAccess.Interfaces.IUserRepository, DataAccess.Repositories.UserRepository>();
+            services.AddTransient<DataAccess.Interfaces.IProjectsHasUserRepository, DataAccess.Repositories.ProjectsHasUserRepository>();
             services.AddControllers().AddNewtonsoftJson(options =>
     options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
 );

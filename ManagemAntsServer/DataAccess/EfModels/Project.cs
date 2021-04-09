@@ -9,15 +9,15 @@ namespace ManagemAntsServer.DataAccess.EfModels
     {
         public Project()
         {
+            ProjectsHasUsers = new HashSet<ProjectsHasUser>();
             Tasks = new HashSet<Task>();
         }
 
         public long Id { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
-        public long Owner { get; set; }
 
-        public virtual User OwnerNavigation { get; set; }
+        public virtual ICollection<ProjectsHasUser> ProjectsHasUsers { get; set; }
         public virtual ICollection<Task> Tasks { get; set; }
     }
 }

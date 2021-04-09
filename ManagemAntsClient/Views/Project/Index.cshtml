@@ -9,8 +9,8 @@
         <a class="navbar-brand text-white">Accueil</a>
         <span class="navbar-text text-white">@Model.Project.name</span>
         <span class="navbar-text text-white">
-          <button class="btn btn-danger btn-sm mr-2">Deconnexion</button>
-               @Model.LoggedUser.Pseudo
+            <button class="btn btn-danger btn-sm mr-2">Deconnexion</button>
+            @Model.LoggedUser.Pseudo
         </span>
     </nav>
     <div class="row no-gutters">
@@ -32,7 +32,7 @@
                 </div>
                 <div class="col-5 text-center"><h3>Todo List</h3></div>
                 <div class="col-4 text-right align-self-center">
-                    <button class="btn btn-secondary btn-sm text-sm-center ">Ajouter une tache</button>
+                    <button onclick="openTaskAdd()" class="btn btn-secondary btn-sm text-sm-center ">Ajouter une tache</button>
                 </div>
             </div>
             <div class="p-3">
@@ -48,12 +48,11 @@
                             <button class="btn btn-success btn-sm">Suivant</button>
                         </div>
                     </div>
-                    <partial name="_taskInfoModal" model="@task"/>
+                    <partial name="_taskInfoModal" model="@task" />
                 }
                 <div class="row justify-content-center">
-                    <button class="btn btn-secondary btn-sm">+</button>
+                    <button onclick="openTaskAdd()" class="btn btn-secondary btn-sm">+</button>
                 </div>
-
             </div>
         </div>
         <div class="col-4 m-3">
@@ -64,11 +63,17 @@
 
     </div>
 </div>
+<partial name="_taskAddModal"/>
 
 
 
 <script>
     function openTaskInfos(id) {
         $(`#taskInfoModal-${id}`).modal("show");
+    }
+
+
+    function openTaskAdd() {
+        $("#taskAddModal").modal("show");
     }
 </script>

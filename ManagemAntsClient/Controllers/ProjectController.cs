@@ -8,6 +8,7 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Net.Http.Json;
 using System.Text.Json;
 using System.Threading.Tasks;
 
@@ -18,36 +19,24 @@ namespace ManagemAntsClient.Controllers
         private readonly ILogger<ProjectController> _logger;
         private string url = "https://localhost:44352/api/";
 
-        static HttpClient client = new HttpClient();
         public ProjectController(ILogger<ProjectController> logger)
         {
             _logger = logger;
         }
 
-        public void SetUpClient(string endpoint)
+        private HttpClient SetUpClient(string endpoint)
         {
+            var client = new HttpClient();
             client.BaseAddress = new Uri(url + endpoint);
             client.DefaultRequestHeaders.Accept.Add(
             new MediaTypeWithQualityHeaderValue("application/json"));
+            return client;
         }
 
         public async Task<IActionResult> Index()
         {
-/*            
-            HttpResponseMessage responce = client.GetAsync("").Result;
-
-            IEnumerable<Project> projects = null;
-            if (responce.IsSuccessStatusCode)
-                projects = await JsonSerializer.DeserializeAsync<IEnumerable<Project>>(await responce.Content.ReadAsStreamAsync());
-            return View(new Projects(projects));*/
-
-
-     /*       var tasks = new List<Models.Task>();
-            tasks.Add(new Models.Task() { Id = 0, Name = "Faire des pates a la bolo", Description = "Une description 1", State = 0 });
-            tasks.Add(new Models.Task() { Id = 1, Name = "Faire le .NET", Description = "Une description 2", State = 1 });
-            tasks.Add(new Models.Task() { Id = 2, Name = "Faire vue js", Description = "Une description 3", State = 2 });
-            tasks.Add(new Models.Task() { Id = 3, Name = "Rendre les fichiers de .NET", Description = "Une description 4", State = 3 });*/
-            var tasks = await GetTaskByProjectId("2");
+            var tasks = (await GetTaskByProjectId("2"));
+            tasks.Reverse();
 
             return View(
                 new ProjectPage() { 
@@ -59,7 +48,7 @@ namespace ManagemAntsClient.Controllers
 
         public async Task<List<Models.Task>> GetTaskByProjectId(string id)
         {
-            SetUpClient("task/" + id);
+            var client = SetUpClient("task/" + id);
             HttpResponseMessage responce = client.GetAsync("").Result;
             var tasks = new List<Models.Task>();
             if (responce.IsSuccessStatusCode)
@@ -69,15 +58,30 @@ namespace ManagemAntsClient.Controllers
             return tasks;
         }
 
-        public IActionResult Privacy()
+        [HttpPost]
+        public async Task<IActionResult> PostTaskAsync(string name, string desc, int duration, int state)
         {
-            return View();
-        }
+            var client = SetUpClient("task/");
 
-        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult Error()
-        {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+            var task = new Models.Task()
+            {
+                name = name,
+                duration = duration,
+                state = state,
+                description = desc,
+                createdAt = DateTime.Now,
+                projectId = 2
+            };
+
+            var postRequest = new HttpRequestMessage(HttpMethod.Post, client.BaseAddress)
+            {
+                Content = JsonContent.Create(task)
+            };
+
+            var responce =  await client.SendAsync(postRequest);
+
+            responce.EnsureSuccessStatusCode();
+            return RedirectToAction("Index", "Project");
         }
     }
 }

@@ -15,6 +15,8 @@ namespace ManagemAntsClient.Models
         public int state { get; set; }
         public int? timeSpent { get; set; }
 
+        public long? projectId { get; set; }
+
 
         public string getState()
         {

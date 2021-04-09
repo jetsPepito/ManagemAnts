@@ -51,6 +51,30 @@ button.accept-policy {
   line-height: inherit;
 }
 
+.navbar {
+    margin-bottom: 15px;
+}
+
+.bg-blue {
+    background-color: #284B63;
+}
+
+.bg-lightgray {
+    background-color: #f1f1f1;
+}
+.project-page {
+    height: 100%;
+}
+.custom-container {
+    background-color: #D9D9D9;
+}
+
+.no-padding {
+    padding: 0 !important;
+    margin: 0 !important;
+}
+
+
 /* Sticky footer styles
 -------------------------------------------------- */
 html {
@@ -59,13 +83,4 @@ html {
 }
 
 body {
-  /* Margin bottom by footer height */
-  margin-bottom: 60px;
-}
-.footer {
-  position: absolute;
-  bottom: 0;
-  width: 100%;
-  white-space: nowrap;
-  line-height: 60px; /* Vertically center the text there */
 }

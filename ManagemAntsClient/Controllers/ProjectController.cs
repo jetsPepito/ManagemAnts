@@ -16,8 +16,7 @@ namespace ManagemAntsClient.Controllers
     public class ProjectController : Controller
     {
         private readonly ILogger<ProjectController> _logger;
-        private readonly string test;
-        private string url = "https://localhost:44352/api/Project";
+        private string url = "https://localhost:44352/api/";
 
         static HttpClient client = new HttpClient();
         public ProjectController(ILogger<ProjectController> logger)
@@ -25,25 +24,30 @@ namespace ManagemAntsClient.Controllers
             _logger = logger;
         }
 
-        public IActionResult Index()
+        public void SetUpClient(string endpoint)
         {
-            /*            client.BaseAddress = new Uri(url);
-                        client.DefaultRequestHeaders.Accept.Add(
-                        new MediaTypeWithQualityHeaderValue("application/json"));
+            client.BaseAddress = new Uri(url + endpoint);
+            client.DefaultRequestHeaders.Accept.Add(
+            new MediaTypeWithQualityHeaderValue("application/json"));
+        }
 
-                        HttpResponseMessage responce = client.GetAsync("").Result;
+        public async Task<IActionResult> Index()
+        {
+/*            
+            HttpResponseMessage responce = client.GetAsync("").Result;
 
-                        IEnumerable<Project> projects = null;
-                        if (responce.IsSuccessStatusCode)
-                            projects = await JsonSerializer.DeserializeAsync<IEnumerable<Project>>(await responce.Content.ReadAsStreamAsync());
-                        return View(new Projects(projects));*/
+            IEnumerable<Project> projects = null;
+            if (responce.IsSuccessStatusCode)
+                projects = await JsonSerializer.DeserializeAsync<IEnumerable<Project>>(await responce.Content.ReadAsStreamAsync());
+            return View(new Projects(projects));*/
 
-            var tasks = new List<Models.Task>();
+
+     /*       var tasks = new List<Models.Task>();
             tasks.Add(new Models.Task() { Id = 0, Name = "Faire des pates a la bolo", Description = "Une description 1", State = 0 });
             tasks.Add(new Models.Task() { Id = 1, Name = "Faire le .NET", Description = "Une description 2", State = 1 });
             tasks.Add(new Models.Task() { Id = 2, Name = "Faire vue js", Description = "Une description 3", State = 2 });
-            tasks.Add(new Models.Task() { Id = 3, Name = "Rendre les fichiers de .NET", Description = "Une description 4", State = 3 });
-
+            tasks.Add(new Models.Task() { Id = 3, Name = "Rendre les fichiers de .NET", Description = "Une description 4", State = 3 });*/
+            var tasks = await GetTaskByProjectId("2");
 
             return View(
                 new ProjectPage() { 
@@ -51,6 +55,18 @@ namespace ManagemAntsClient.Controllers
                     LoggedUser = new User() { Pseudo = "Kaijo", Firstname = "Jeremie", Lastname = "Zeitoun" },
                     Tasks = tasks
                 });
+        }
+
+        public async Task<List<Models.Task>> GetTaskByProjectId(string id)
+        {
+            SetUpClient("task/" + id);
+            HttpResponseMessage responce = client.GetAsync("").Result;
+            var tasks = new List<Models.Task>();
+            if (responce.IsSuccessStatusCode)
+            {
+                tasks = await JsonSerializer.DeserializeAsync<List<Models.Task>>(await responce.Content.ReadAsStreamAsync());
+            }
+            return tasks;
         }
 
         public IActionResult Privacy()

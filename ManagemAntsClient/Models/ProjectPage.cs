@@ -16,7 +16,7 @@ namespace ManagemAntsClient.Models
         public Task GetTask(string id)
         {
             long Id = long.Parse(id);
-            return Tasks.Where(x => x.Id == Id).FirstOrDefault();
+            return Tasks.Where(x => x.id == Id).FirstOrDefault();
         }
     }
 

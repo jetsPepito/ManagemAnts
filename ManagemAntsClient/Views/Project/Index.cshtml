@@ -38,9 +38,9 @@
             <div class="p-3">
                 @foreach (var task in Model.Tasks)
                 {
-                    <div class="row bg-dark rounded mb-2 p-2" onclick="openTaskInfos(@task.Id)">
+                    <div class="row bg-dark rounded mb-2 p-2" onclick="openTaskInfos(@task.id)">
                         <div class="col-auto mr-auto text-white align-self-center pl-1">
-                            @task.Name
+                            @task.name
                         </div>
                         <div class="col-auto pr-1">
                             <button class="btn btn-danger btn-sm">Retour</button>

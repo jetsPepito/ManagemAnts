@@ -7,5 +7,6 @@ namespace ManagemAntsServer.DataAccess.Interfaces
 {
     public interface ITaskRepository: DataAccess.Repositories.IRepository<EfModels.Task, Dbo.Task>
     {
+
     }
 }

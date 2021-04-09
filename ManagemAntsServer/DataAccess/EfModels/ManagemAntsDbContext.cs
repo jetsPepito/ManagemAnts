@@ -27,7 +27,7 @@ namespace ManagemAntsServer.DataAccess.EfModels
             if (!optionsBuilder.IsConfigured)
             {
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
-                optionsBuilder.UseSqlServer("Data Source=.\\;Initial Catalog=ManagemAntsDb;Trusted_Connection=True");
+                optionsBuilder.UseSqlServer("Data Source=.\\MTI;Initial Catalog=ManagemAntsDb;Trusted_Connection=True");
             }
         }
 
@@ -49,21 +49,13 @@ namespace ManagemAntsServer.DataAccess.EfModels
                     .HasMaxLength(100)
                     .IsUnicode(false)
                     .HasColumnName("name");
-
-                entity.Property(e => e.Owner).HasColumnName("owner");
-
-                entity.HasOne(d => d.OwnerNavigation)
-                    .WithMany(p => p.Projects)
-                    .HasForeignKey(d => d.Owner)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_Projects_Users");
             });
 
             modelBuilder.Entity<ProjectsHasUser>(entity =>
             {
-                entity.HasNoKey();
-
                 entity.ToTable("Projects_has_users");
+
+                entity.Property(e => e.Id).HasColumnName("id");
 
                 entity.Property(e => e.ProjectId).HasColumnName("project_id");
 
@@ -72,13 +64,13 @@ namespace ManagemAntsServer.DataAccess.EfModels
                 entity.Property(e => e.UserId).HasColumnName("user_id");
 
                 entity.HasOne(d => d.Project)
-                    .WithMany()
+                    .WithMany(p => p.ProjectsHasUsers)
                     .HasForeignKey(d => d.ProjectId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_Projects_has_users_Projects");
+                    .HasConstraintName("FK_Projects_has_users_Projects1");
 
                 entity.HasOne(d => d.User)
-                    .WithMany()
+                    .WithMany(p => p.ProjectsHasUsers)
                     .HasForeignKey(d => d.UserId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_Projects_has_users_Users");

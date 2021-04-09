@@ -21,8 +21,26 @@ namespace ManagemAntsServer.Controllers
         [HttpGet("")]
         public async Task<IActionResult> Get()
         {
-            var x = await _userRepository.Get();
+            var x = await _userRepository.GetAll();
             return Ok(x);
+        }
+
+        [HttpGet("/api/[controller]/{id}")]
+        public async Task<IActionResult> GetById(string id)
+        {
+            var result = await _userRepository.GetByPredicate(x => x.Id == long.Parse(id));
+            return Ok(result);
+        }
+
+        [HttpGet("/api/[controller]/research/{filter}")]
+        public async Task<IActionResult> GetByFilter(string filter)
+        {
+            var filterLower = filter.ToLower();
+            var result = await _userRepository.GetByPredicate(
+                    x => x.Firstname.ToLower().Contains(filterLower)
+                    || x.Lastname.ToLower().Contains(filterLower)
+                    || x.Pseudo.ToLower().Contains(filterLower));
+            return Ok(result);
         }
     }
 }

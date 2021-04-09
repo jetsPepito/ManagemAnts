@@ -4,6 +4,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -14,7 +16,7 @@ namespace WebApplication.DataAccess
       where ModelEntity : class, ManagemAntsServer.Dbo.IObjectWithId, new()
 
     {
-        private DbSet<DBEntity> _set;
+        protected DbSet<DBEntity> _set;
         protected ManagemAntsServer.DataAccess.EfModels.ManagemAntsDbContext _context;
         protected ILogger _logger;
         protected readonly IMapper _mapper;
@@ -27,28 +29,29 @@ namespace WebApplication.DataAccess
         }
 
 
-        public virtual async Task<IEnumerable<ModelEntity>> Get(string includeTables = "")
+        public virtual IEnumerable<ModelEntity> GetAll(params Expression<Func<DBEntity, object>>[] includes)
         {
-            try
+            // No includes
+            if (includes.Length == 0)
             {
-                List<DBEntity> query = null;
-                if (String.IsNullOrEmpty(includeTables))
-                {
-                    query = await _set.AsNoTracking().ToListAsync();
-                }
-                else
-                {
-                    query = await _set.Include(includeTables).AsNoTracking().ToListAsync();
-                }
+                return _mapper.Map<ModelEntity[]>(_set.ToList());
+            }
 
-                return _mapper.Map<ModelEntity[]>(query);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError("error on db", ex);
-                return null;
-            }
+            var query = _set.AsQueryable();
+            var agr =  includes.Aggregate(query, (current, includeProperty) => current.Include(includeProperty)).ToList();
+            return _mapper.Map<ModelEntity[]>(agr);
         }
+
+
+
+        public virtual IEnumerable<ModelEntity> GetByPredicate(Func<DBEntity, bool> predicate, params Expression<Func<DBEntity, object>>[] includes)
+        {
+            var query = _set.AsQueryable();
+            var agr =  includes.Aggregate(query, (current, includeProperty) => current.Include(includeProperty)).AsEnumerable()
+                           .Where(predicate);
+            return _mapper.Map<ModelEntity[]>(agr);
+        }
+
 
         public virtual async Task<ModelEntity> Insert(ModelEntity entity)
         {

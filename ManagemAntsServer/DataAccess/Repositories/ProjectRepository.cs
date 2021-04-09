@@ -11,6 +11,7 @@ namespace ManagemAntsServer.DataAccess.Repositories
     public class ProjectRepository: Repository<EfModels.Project, Dbo.Project>, Interfaces.IProjectRepository
     {
         public ProjectRepository(EfModels.ManagemAntsDbContext context, ILogger<ProjectRepository> logger, IMapper mapper): base(context, logger, mapper)
-        { }
+        { 
+        }
     }
 }

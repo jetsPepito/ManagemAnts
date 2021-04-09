@@ -21,16 +21,16 @@ namespace ManagemAntsServer.Controllers
         }
 
         [HttpGet("")]
-        public async Task<IActionResult> Get()
+        public IActionResult Get()
         {
-            var result = await _projectRepository.GetAll();
+            var result =  _projectRepository.GetAll();
             return Ok(result);
         }
 
         [HttpGet("/api/[controller]/{id}")]
-        public async Task<IActionResult> GetById(string id)
+        public IActionResult GetById(string id)
         {
-            var result = await _projectRepository.GetByPredicate(x => x.Id == long.Parse(id));
+            var result = _projectRepository.GetByPredicate(x => x.Id == long.Parse(id));
             return Ok(result);
         }
 

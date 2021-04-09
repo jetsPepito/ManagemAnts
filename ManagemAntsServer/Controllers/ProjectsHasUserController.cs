@@ -19,16 +19,16 @@ namespace ManagemAntsServer.Controllers
         }
 
         [HttpGet("")]
-        public async Task<IActionResult> Get()
+        public IActionResult Get()
         {
-            var x = await _projectsHasUserRepository.GetAll();
+            var x =  _projectsHasUserRepository.GetAll();
             return Ok(x);
         }
 
         [HttpGet("/api/[controller]/user/{userId}")]
-        public async Task<IActionResult> GetProjectByUserId(string userId)
+        public IActionResult GetProjectByUserId(string userId)
         {
-            var x = await _projectsHasUserRepository.GetProjectByUserId(long.Parse(userId));
+            var x = _projectsHasUserRepository.GetProjectByUserId(long.Parse(userId));
             return Ok(x);
         }
 

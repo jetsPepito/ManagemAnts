@@ -40,5 +40,12 @@ namespace ManagemAntsServer.Controllers
             return Ok(res);
         }
 
+        [HttpPut]
+        public IActionResult Put(Dbo.Task task)
+        {
+            var res = _taskrepository.Update(task);
+            return Ok(res);
+        }
+
     }
 }

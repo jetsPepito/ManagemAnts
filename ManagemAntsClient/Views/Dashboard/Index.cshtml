@@ -1,48 +1,67 @@
-﻿@model ManagemAntsClient.Models.DashboardPage
+﻿@{
+    Layout = "~/Views/Shared/_Navbar.cshtml";
+}
+@model ManagemAntsClient.Models.DashboardPage
 
 <div>
     <nav class="navbar py-0 bg-blue shadow">
         <a class="navbar-brand text-white">Accueil</a>
-        <span class="navbar-text text-white">Dashboard/span>
-        <span class="navbar-text text-white">
-            <button class="btn btn-danger btn-sm mr-2">Deconnexion</button>
-            @Model.LoggedUser.Pseudo
-        </span>
+        <span class="navbar-text text-white">Tableau de bord</span>
+            <span class="navbar-text text-white">
+                <button class="btn btn-danger btn-sm mr-2">Deconnexion</button>
+                @Model.LoggedUser.Pseudo
+            </span>
     </nav>
-    <div class="row no-gutters">
-        <div class="col-7 shadow bg-lightgray p-2 m-3">
-            <div class="row mt-2">
-                <div class="col-3 align-self-center">
-                    <div class="dropdown">
-                        <a class="btn btn-secondary dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            Filter...
-                        </a>
+    <div class="container-fluid">
+        <div class="row  no-gutters ">
+            <div class="col-3 shadow bg-lightgray p-2 m-3 column">
+                <div class="text-center">
+                    <h3>Liste des projets</h3>
+                </div>
+                <input type="text" class="form-control mb-3" id="ResearchProject" placeholder="Recherche...">
+                <div class="overflow-auto project-container">
+                    @foreach (var project in Model.Projects.projects)
+                    {
+                        <div class="ml-3 mr-3 mb-3">
+                            <div class="row bg-dark text-white rounded mb-2 p-2">@project.name</div>
+                        </div>
+                    }
+                </div>
+            </div>
+            <div class="col-5 shadow bg-lightgray p-2 m-3 ml-4 mr-4">
+                <div class="text-center">
+                    <h3>Statistiques</h3>
+                </div>
+            </div>
+            <div class="col-3 shadow bg-lightgray p-2 m-3" style="height:100%">
 
-                        <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-                            <a class="dropdown-item" href="#">A faire</a>
-                            <a class="dropdown-item" href="#">En cours</a>
-                            <a class="dropdown-item" href="#">Fait</a>
-                            <a class="dropdown-item" href="#">Rendu</a>
+                @using (Html.BeginForm("AddProject", "Dashboard", new { ownerId = Model.LoggedUser.Id.ToString() }, FormMethod.Post))
+                {
+                    <div class="text-center">
+                        <h3>Creer un projet</h3>
+                    </div>
+                    <div>
+                        <h4>Nom</h4>
+                        <div class="md-form">
+                            <input type="text" name="name" class="form-control" placeholder="Nom du projet">
                         </div>
                     </div>
+                    <div class="mt-4">
+                        <h4>Description</h4>
+                        <textarea class="form-control" name="description" style="height:150px" placeholder="Description..."></textarea>
+                    </div>
+                    <div class="mt-3 text-center">
+                        <button type="button" class="btn btn-lg btn-secondary w-100">
+                            Ajouter des collaborateurs
+                        </button>
+                    </div>
+                    <div class="mt-3 mb-3 text-right">
+                        <button type="submit" class="btn btn-sm btn-success">
+                            Valider
+                        </button>
+                    </div>
+                }
                 </div>
-                <div class="col-5 text-center"><h3>Todo List</h3></div>
-                <div class="col-4 text-right align-self-center">
-                    <button class="btn btn-secondary btn-sm text-sm-center ">Ajouter une tache</button>
-                </div>
-            </div>
-            <div class="p-3">
-                <div class="row justify-content-center">
-                    <button class="btn btn-secondary btn-sm">+</button>
-                </div>
-
-            </div>
         </div>
-        <div class="col-4 m-3">
-            <div class="shadow mb-4"></div>
-            <button class="btn btn-secondary btn-lg">Statistiques</button>
-        </div>
-
-
     </div>
 </div>

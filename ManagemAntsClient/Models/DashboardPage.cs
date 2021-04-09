@@ -9,5 +9,7 @@ namespace ManagemAntsClient.Models
     {
         public User LoggedUser;
         public Projects Projects;
+
+        public List<User> usersAdded = new List<User>();
     }
 }

@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Net.Http.Json;
 using System.Text.Json;
 using System.Threading.Tasks;
 
@@ -13,25 +14,46 @@ namespace ManagemAntsClient.Controllers
 {
     public class DashboardController : Controller
     {
-        private string url = "https://localhost:44352/";
+        private string url = "https://localhost:44352/api/";
 
-        static HttpClient client = new HttpClient();
+        private HttpClient SetupClient(string endpoint)
+        {
+
+            HttpClient client = new HttpClient();
+            client.BaseAddress = new Uri(url + endpoint);
+            client.DefaultRequestHeaders.Accept.Add(
+            new MediaTypeWithQualityHeaderValue("application/json"));
+            return client;
+        }
+
         // GET: DashboardController
         public async Task<ActionResult> Index()
         {
-            client.BaseAddress = new Uri(url + "/api/ProjectsHasUser/user/1");
-            client.DefaultRequestHeaders.Accept.Add(
-            new MediaTypeWithQualityHeaderValue("application/json"));
-
+            HttpClient client = SetupClient("Project/user/1");
             HttpResponseMessage responce = client.GetAsync("").Result;
 
             IEnumerable<Project> projects = null;
             if (responce.IsSuccessStatusCode)
                 projects = await JsonSerializer.DeserializeAsync<IEnumerable<Project>>(await responce.Content.ReadAsStreamAsync());
 
-            var dashboard = new DashboardPage() { Projects = new Projects(projects), LoggedUser = new Models.User() { } }
-            return View();
+            var dashboard = new DashboardPage() { Projects = new Projects(projects), LoggedUser = new User() { Id = 1, Firstname = "Jeremie", Lastname = "Zeitoun", Pseudo = "Kaijo", Password = "toto" } };
+            return View(dashboard);
         }
+
+        [HttpPost]
+        public async Task<ActionResult> AddProject(string name, string description, string ownerId)
+        {
+            HttpClient client = SetupClient("Project?Owner=" + ownerId);
+            var project = new Project() { name=name, description=description };
+            var postRequest = new HttpRequestMessage(HttpMethod.Post, client.BaseAddress)
+            {
+                Content = JsonContent.Create(project)
+            };
+            var response = await client.SendAsync(postRequest);
+            response.EnsureSuccessStatusCode();
+            return RedirectToAction("Index", "Dashboard");
+        }
+
 
         // GET: DashboardController/Details/5
         public ActionResult Details(int id)

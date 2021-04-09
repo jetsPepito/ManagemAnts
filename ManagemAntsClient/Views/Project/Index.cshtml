@@ -38,14 +38,38 @@
             <div class="p-3">
                 @foreach (var task in Model.Tasks)
                 {
-                    <div class="row bg-dark rounded mb-2 p-2" onclick="openTaskInfos(@task.id)">
+                    <div class="row bg-dark rounded mb-2 p-2" >
                         <div class="col-auto mr-auto text-white align-self-center pl-1">
+                            <button class="btn btn-sm btn-secondary mr-1 bg-transparent border-0" >
+                                <img class="white-img " src="~/img/edit-solid.svg" onclick="openTaskInfos(@task.id)"/>
+                            </button>
+                            
                             @task.name
                         </div>
-                        <div class="col-auto pr-1">
-                            <button class="btn btn-danger btn-sm">Retour</button>
+                        <div class="col-auto pr-1 d-flex">
+                            @if (task.state == 0)
+                            {
+                                <button class="btn btn-danger btn-sm" disabled>Retour</button>
+                            }
+                            else
+                            {
+                                @using (Html.BeginForm("BackStateTask", "Project", task, FormMethod.Post))
+                                {
+                                    <button class="btn btn-danger btn-sm">Retour</button>
+                                }
+                            }
                             <button class="btn btn-secondary btn-sm ml-2 mr-2" disabled>@task.getState()</button>
-                            <button class="btn btn-success btn-sm">Suivant</button>
+                            @if (task.state == 3)
+                            {
+                                <button class="btn btn-success btn-sm" disabled>Suivant</button>
+                            }
+                            else
+                            {
+                                @using (Html.BeginForm("NextStateTask", "Project", task, FormMethod.Post))
+                                {
+                                    <button class="btn btn-success btn-sm" name="suivant">Suivant</button>
+                                }
+                            }
                         </div>
                     </div>
                     <partial name="_taskInfoModal" model="@task" />

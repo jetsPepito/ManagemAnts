@@ -83,5 +83,34 @@ namespace ManagemAntsClient.Controllers
             responce.EnsureSuccessStatusCode();
             return RedirectToAction("Index", "Project");
         }
+
+        [HttpPost]
+        public async Task<IActionResult> NextStateTask(Models.Task task)
+        {
+            task.state += 1;
+            return await UpdateTask(task);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> BackStateTask(Models.Task task)
+        {
+            task.state -= 1;
+            return await UpdateTask(task);
+        }
+
+        public async Task<IActionResult> UpdateTask(Models.Task task)
+        {
+            var client = SetUpClient("task/");
+
+            var putRequest = new HttpRequestMessage(HttpMethod.Put, client.BaseAddress)
+            {
+                Content = JsonContent.Create(task)
+            };
+
+            var responce = await client.SendAsync(putRequest);
+
+            responce.EnsureSuccessStatusCode();
+            return RedirectToAction("Index", "Project");
+        }
     }
 }

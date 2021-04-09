@@ -39,10 +39,10 @@ namespace ManagemAntsClient.Controllers
                         return View(new Projects(projects));*/
 
             var tasks = new List<Models.Task>();
-            tasks.Add(new Models.Task() { Id = 0, Name = "Faire des pates a la bolo", Description = "Une description", State = 0 });
-            tasks.Add(new Models.Task() { Id = 1, Name = "Faire le .NET", Description = "Une description", State = 1 });
-            tasks.Add(new Models.Task() { Id = 2, Name = "Faire vue js", Description = "Une description", State = 2 });
-            tasks.Add(new Models.Task() { Id = 3, Name = "Rendre les fichiers de .NET", Description = "Une description", State = 3 });
+            tasks.Add(new Models.Task() { Id = 0, Name = "Faire des pates a la bolo", Description = "Une description 1", State = 0 });
+            tasks.Add(new Models.Task() { Id = 1, Name = "Faire le .NET", Description = "Une description 2", State = 1 });
+            tasks.Add(new Models.Task() { Id = 2, Name = "Faire vue js", Description = "Une description 3", State = 2 });
+            tasks.Add(new Models.Task() { Id = 3, Name = "Rendre les fichiers de .NET", Description = "Une description 4", State = 3 });
 
 
             return View(

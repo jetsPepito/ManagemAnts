@@ -29,7 +29,7 @@ namespace WebApplication.DataAccess
         }
 
 
-        public virtual async Task<IEnumerable<ModelEntity>> GetAll(params Expression<Func<DBEntity, object>>[] includes)
+        public virtual IEnumerable<ModelEntity> GetAll(params Expression<Func<DBEntity, object>>[] includes)
         {
             // No includes
             if (includes.Length == 0)
@@ -44,7 +44,7 @@ namespace WebApplication.DataAccess
 
 
 
-        public virtual async Task<IEnumerable<ModelEntity>> GetByPredicate(Func<DBEntity, bool> predicate, params Expression<Func<DBEntity, object>>[] includes)
+        public virtual IEnumerable<ModelEntity> GetByPredicate(Func<DBEntity, bool> predicate, params Expression<Func<DBEntity, object>>[] includes)
         {
             var query = _set.AsQueryable();
             var agr =  includes.Aggregate(query, (current, includeProperty) => current.Include(includeProperty)).AsEnumerable()

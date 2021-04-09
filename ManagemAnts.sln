@@ -9,7 +9,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ManagemAntsServer", "Manage
 EndProject
 Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "ManagemAntsDatabase", "ManagemAntsDatabase\ManagemAntsDatabase.sqlproj", "{E54B2316-2C62-4369-9E1C-91AA0428790C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ManagemAntsTest", "ManagemAntsTest\ManagemAntsTest.csproj", "{1F0EC2F9-38A1-457B-BD42-E5DEF97D83E0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ManagemAntsTest", "ManagemAntsTest\ManagemAntsTest.csproj", "{1F0EC2F9-38A1-457B-BD42-E5DEF97D83E0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

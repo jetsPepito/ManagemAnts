@@ -7,6 +7,7 @@ namespace ManagemAntsServer.DataAccess.EfModels
 {
     public partial class ProjectsHasUser
     {
+        public long Id { get; set; }
         public long ProjectId { get; set; }
         public long UserId { get; set; }
         public int Role { get; set; }

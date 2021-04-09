@@ -9,7 +9,7 @@ namespace ManagemAntsServer.DataAccess.EfModels
     {
         public User()
         {
-            Projects = new HashSet<Project>();
+            ProjectsHasUsers = new HashSet<ProjectsHasUser>();
         }
 
         public long Id { get; set; }
@@ -18,6 +18,6 @@ namespace ManagemAntsServer.DataAccess.EfModels
         public string Pseudo { get; set; }
         public string Password { get; set; }
 
-        public virtual ICollection<Project> Projects { get; set; }
+        public virtual ICollection<ProjectsHasUser> ProjectsHasUsers { get; set; }
     }
 }

@@ -21,8 +21,46 @@ namespace ManagemAntsServer.Controllers
         [HttpGet("")]
         public async Task<IActionResult> Get()
         {
-            var x = await _projectsHasUserRepository.Get();
+            var x = await _projectsHasUserRepository.GetAll();
             return Ok(x);
+        }
+
+        [HttpGet("/api/[controller]/user/{userId}")]
+        public async Task<IActionResult> GetProjectByUserId(string userId)
+        {
+            var x = await _projectsHasUserRepository.GetProjectByUserId(long.Parse(userId));
+            return Ok(x);
+        }
+
+
+        [HttpPost("")]
+        public async Task<IActionResult> Post(Dbo.ProjectsHasUser projectsHasUser)
+        {
+            var result = await _projectsHasUserRepository.Insert(projectsHasUser);
+
+            return Ok(result);
+        }
+
+
+        [HttpPost("/api/[controller]/project/{projectId}")]
+        public async Task<IActionResult> PostMultipleUsers(string projectId, string[] userIds)
+        {
+            var results = new List<Dbo.ProjectsHasUser>();
+            foreach(var userId in userIds)
+            {
+                var newProjectHasUser = new Dbo.ProjectsHasUser();
+
+                newProjectHasUser.ProjectId = long.Parse(projectId);
+                newProjectHasUser.UserId = long.Parse(userId);
+                // default role (2 -> collaborateur)
+                newProjectHasUser.Role = 2;
+
+                results.Add( await _projectsHasUserRepository.Insert(newProjectHasUser));
+            }
+
+            
+
+            return Ok(results);
         }
     }
 }

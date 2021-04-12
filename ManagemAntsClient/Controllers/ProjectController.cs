@@ -46,7 +46,7 @@ namespace ManagemAntsClient.Controllers
 
 
             return View(
-                new ProjectPage() { 
+                new ProjectPage() {
                     Project = new Project() { id = 1, name = "Ouistiti", description = "Un ptit singe tout mimi" },
                     LoggedUser = new User() { Pseudo = "Kaijo", Firstname = "Jeremie", Lastname = "Zeitoun" },
                     Tasks = tasks

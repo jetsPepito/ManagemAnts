@@ -29,14 +29,14 @@ namespace ManagemAntsClient.Controllers
         // GET: DashboardController
         public async Task<ActionResult> Index()
         {
-            HttpClient client = SetupClient("Project/user/1");
+            HttpClient client = SetupClient("Project/user/5");
             HttpResponseMessage responce = client.GetAsync("").Result;
 
             IEnumerable<Project> projects = null;
             if (responce.IsSuccessStatusCode)
                 projects = await JsonSerializer.DeserializeAsync<IEnumerable<Project>>(await responce.Content.ReadAsStreamAsync());
 
-            var dashboard = new DashboardPage() { Projects = new Projects(projects), LoggedUser = new User() { Id = 1, Firstname = "Jeremie", Lastname = "Zeitoun", Pseudo = "Kaijo", Password = "toto" } };
+            var dashboard = new DashboardPage() { Projects = new Projects(projects), LoggedUser = new User() { Id = 5, Firstname = "Jeremie", Lastname = "Zeitoun", Pseudo = "Kaijo", Password = "toto" } };
             return View(dashboard);
         }
 
@@ -53,7 +53,6 @@ namespace ManagemAntsClient.Controllers
             response.EnsureSuccessStatusCode();
             return RedirectToAction("Index", "Dashboard");
         }
-
 
         // GET: DashboardController/Details/5
         public ActionResult Details(int id)

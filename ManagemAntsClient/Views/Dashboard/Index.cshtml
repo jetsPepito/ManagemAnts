@@ -9,7 +9,7 @@
         <span class="navbar-text text-white">Tableau de bord</span>
         <span class="navbar-text text-white">
             <button class="btn btn-danger btn-sm mr-2">Deconnexion</button>
-            @Model.LoggedUser.Pseudo
+            @Model.LoggedUser.pseudo
         </span>
     </nav>
     <div class="container-fluid">
@@ -37,7 +37,7 @@
             </div>
             <div class="col-3 shadow bg-lightgray p-2 m-3" style="height:100%">
 
-                @using (Html.BeginForm("AddProject", "Dashboard", new { ownerId = Model.LoggedUser.Id.ToString() }, FormMethod.Post))
+                @using (Html.BeginForm("AddProject", "Dashboard", new { ownerId = Model.LoggedUser.id.ToString() }, FormMethod.Post))
                 {
                     <div class="text-center">
                         <h3>Creer un projet</h3>
@@ -45,25 +45,12 @@
                     <div>
                         <h4>Nom</h4>
                         <div class="md-form">
-                            <input type="text" name="name" class="form-control" placeholder="Nom du projet">
+                            <input id="addProjectName" value="@Model.projectName" type="text" name="name" class="form-control" placeholder="Nom du projet">
                         </div>
                     </div>
                     <div class="mt-4">
                         <h4>Description</h4>
-                        <textarea class="form-control" name="description" style="height:150px" placeholder="Description..."></textarea>
-                    </div>
-                    <div class="mt-4">
-                        <h4>Ajouter des collaborateurs</h4>
-                        <div class="row">
-                            <div class="col-9">
-                                <input type="text" class="form-control" placeholder="Pseudonyme">
-                            </div>
-                            <div class="col-3 align-self-center">
-                                <button type="button" class="btn btn-sm btn-secondary w-100" onclick="openCollaboratorModal()">
-                                    Ajouter
-                                </button>
-                            </div>
-                        </div>
+                        <textarea id="addProjectDescription" class="form-control" name="description" style="height:150px" placeholder="Description...">@Model.projectDescription</textarea>
                     </div>
                     <div class="mt-4 mb-3 text-center">
                         <button type="submit" class="btn btn-lg btn-success">

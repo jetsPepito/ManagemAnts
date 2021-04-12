@@ -14,11 +14,11 @@ namespace ManagemAntsClient.Controllers
 {
     public class DashboardController : Controller
     {
+        public static DashboardPage dashboard;
         private string url = "https://localhost:44352/api/";
 
         private HttpClient SetupClient(string endpoint)
         {
-
             HttpClient client = new HttpClient();
             client.BaseAddress = new Uri(url + endpoint);
             client.DefaultRequestHeaders.Accept.Add(
@@ -30,14 +30,57 @@ namespace ManagemAntsClient.Controllers
         public async Task<ActionResult> Index()
         {
             HttpClient client = SetupClient("Project/user/5");
-            HttpResponseMessage responce = client.GetAsync("").Result;
+            HttpResponseMessage response = client.GetAsync("").Result;
 
             IEnumerable<Project> projects = null;
-            if (responce.IsSuccessStatusCode)
-                projects = await JsonSerializer.DeserializeAsync<IEnumerable<Project>>(await responce.Content.ReadAsStreamAsync());
+            if (response.IsSuccessStatusCode)
+                projects = await JsonSerializer.DeserializeAsync<IEnumerable<Project>>(await response.Content.ReadAsStreamAsync());
 
-            var dashboard = new DashboardPage() { Projects = new Projects(projects), LoggedUser = new User() { Id = 5, Firstname = "Jeremie", Lastname = "Zeitoun", Pseudo = "Kaijo", Password = "toto" } };
+            var user = new User() { id = 5, firstname = "Jeremie", lastname = "Zeitoun", pseudo = "Kaijo", password = "toto" };
+            dashboard = new DashboardPage() {
+                Projects = new Projects(projects),
+                LoggedUser = user,
+            };
             return View(dashboard);
+        }
+
+        [HttpGet]
+        public async Task<ActionResult> addCollaborator(string pseudo, string projectName, string projectDescription)
+        {
+            var newDashboard = new DashboardPage() {
+                projectName = projectName != null ? projectName : "",
+                projectDescription = projectDescription != null ? projectDescription : ""
+            };
+
+            if (dashboard.addedCollaborators.Find((user) => user.pseudo == pseudo) == null)
+            {
+                HttpClient client = SetupClient("User/pseudo/" + pseudo);
+                HttpResponseMessage response = client.GetAsync("").Result;
+                IEnumerable<User> user = null;
+                if (response.IsSuccessStatusCode)
+                {
+                    user = await JsonSerializer.DeserializeAsync<IEnumerable<User>>(await response.Content.ReadAsStreamAsync());
+                    if (user.Count() == 0)
+                    {
+                        newDashboard.addedMessage = "L'utilisateur avec le pseudonyme " + pseudo + " est introuvable.";
+                    }
+                    else
+                    {
+                        newDashboard.addedCollaborators.Add(user.First());
+                        newDashboard.addedMessage = pseudo + " a été ajouté avec succes.";
+                    }
+                }
+                else
+                {
+                    newDashboard.addedMessage = "Impossible d'ajouter ce collaborateur.";
+                }
+            }
+            else
+            {
+                newDashboard.addedMessage = "Ce collaborateur a déjà été ajouté.";
+            }
+
+            return RedirectToAction("Index", "Dashboard");
         }
 
         [HttpPost]

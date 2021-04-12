@@ -10,6 +10,11 @@ namespace ManagemAntsClient.Models
         public User LoggedUser;
         public Projects Projects;
 
-        public List<User> usersAdded = new List<User>();
+        public string projectName;
+        public string projectDescription;
+
+        public string addedMessage;
+
+        public List<User> addedCollaborators = new List<User>();
     }
 }

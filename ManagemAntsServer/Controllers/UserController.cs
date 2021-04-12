@@ -42,5 +42,12 @@ namespace ManagemAntsServer.Controllers
                     || x.Pseudo.ToLower().Contains(filterLower));
             return Ok(result);
         }
+
+        [HttpGet("/api/[controller]/pseudo/{pseudo}")]
+        public IActionResult GetByPseudo(string pseudo)
+        {
+            var result = _userRepository.GetByPredicate(x => x.Pseudo.ToLower() == pseudo.ToLower());
+            return Ok(result);
+        }
     }
 }

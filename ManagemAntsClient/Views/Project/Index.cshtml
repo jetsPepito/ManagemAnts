@@ -6,7 +6,7 @@
 
 <div>
     <nav class="navbar py-0 bg-blue shadow">
-        <a href="@Url.Action()" class="navbar-brand text-white">Accueil</a>
+        <a href="@Url.Action("Index", "Dashboard")" class="navbar-brand text-white">Accueil</a>
         <span class="navbar-text text-white">@Model.Project.name</span>
         <span class="navbar-text text-white">
             <button class="btn btn-danger btn-sm mr-2">Deconnexion</button>
@@ -19,7 +19,7 @@
                 <div class="col-3 align-self-center">
                     <div class="dropdown">
                         <a class="btn btn-secondary dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            Filter...
+                            
                         </a>
 
                         <div class="dropdown-menu" id="taskFilters" belaria-laledby="dropdownMenuLink">
@@ -93,7 +93,13 @@
 
 <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
 <script>
-    
+
+    let searchParams = new URLSearchParams(window.location.search)
+    let filter = searchParams.get("filter");
+    if (filter == null)
+        filter = "Filtre...";
+    $("#dropdownMenuLink").text(filter);
+
     function openTaskInfos(id) {
         $(`#taskInfoModal-${id}`).modal("show");
     }
@@ -114,6 +120,9 @@
             }
             )
         });
+
+
+
 
    
 </script>

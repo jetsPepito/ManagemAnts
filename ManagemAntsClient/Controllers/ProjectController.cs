@@ -1,4 +1,5 @@
 ﻿using ManagemAntsClient.Models;
+using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
@@ -11,6 +12,7 @@ using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using System.Text.Json;
 using System.Threading.Tasks;
+using System.Web;
 
 namespace ManagemAntsClient.Controllers
 {
@@ -35,7 +37,11 @@ namespace ManagemAntsClient.Controllers
 
         public async Task<IActionResult> Index()
         {
-            var tasks = (await GetTaskByProjectId("2"));
+
+            var uri = new Uri(HttpContext.Request.GetDisplayUrl());
+            var query = HttpUtility.ParseQueryString(uri.Query);
+            var filter = query.Get("filter");
+            var tasks = (await GetTaskByProjectId("2", filter));
             tasks.Reverse();
 
             return View(
@@ -46,9 +52,28 @@ namespace ManagemAntsClient.Controllers
                 });
         }
 
-        public async Task<List<Models.Task>> GetTaskByProjectId(string id)
+        public async Task<List<Models.Task>> GetTaskByProjectId(string id, string filter)
         {
-            var client = SetUpClient("task/" + id);
+            var filterVal = -1;
+            switch (filter)
+            {
+                case "A faire":
+                    filterVal = 0;
+                    break;
+                case "En cours":
+                    filterVal = 1;
+                    break;
+                case "Fait":
+                    filterVal = 2;
+                    break;
+                case "Rendu":
+                    filterVal = 3;
+                    break;
+                default:
+                    filterVal = -1;
+                    break;
+            }
+            var client = SetUpClient("task/" + id + "?filter=" + filterVal);
             HttpResponseMessage responce = client.GetAsync("").Result;
             var tasks = new List<Models.Task>();
             if (responce.IsSuccessStatusCode)

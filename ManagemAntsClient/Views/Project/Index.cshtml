@@ -6,7 +6,7 @@
 
 <div>
     <nav class="navbar py-0 bg-blue shadow">
-        <a class="navbar-brand text-white">Accueil</a>
+        <a href="@Url.Action()" class="navbar-brand text-white">Accueil</a>
         <span class="navbar-text text-white">@Model.Project.name</span>
         <span class="navbar-text text-white">
             <button class="btn btn-danger btn-sm mr-2">Deconnexion</button>
@@ -22,11 +22,12 @@
                             Filter...
                         </a>
 
-                        <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-                            <a class="dropdown-item" href="#">A faire</a>
-                            <a class="dropdown-item" href="#">En cours</a>
-                            <a class="dropdown-item" href="#">Fait</a>
-                            <a class="dropdown-item" href="#">Rendu</a>
+                        <div class="dropdown-menu" id="taskFilters" belaria-laledby="dropdownMenuLink">
+                            <a class="dropdown-item" >A faire</a>
+                            <a class="dropdown-item" >En cours</a>
+                            <a class="dropdown-item" >Fait</a>
+                            <a class="dropdown-item" >Rendu</a>
+                            <a class="dropdown-item">Pas de filtre</a>
                         </div>
                     </div>
                 </div>
@@ -90,8 +91,9 @@
 <partial name="_taskAddModal"/>
 
 
-
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
 <script>
+    
     function openTaskInfos(id) {
         $(`#taskInfoModal-${id}`).modal("show");
     }
@@ -100,4 +102,18 @@
     function openTaskAdd() {
         $("#taskAddModal").modal("show");
     }
+
+
+    $(document).ready(
+        function () {
+            $('#taskFilters a').on('click', function () {
+                var filterval = $(this).text();
+                var clearurl = document.location.href.split("?")[0];
+                var url = clearurl + "?filter=" + filterval;
+                document.location = url;
+            }
+            )
+        });
+
+   
 </script>

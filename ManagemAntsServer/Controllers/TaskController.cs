@@ -27,9 +27,9 @@ namespace ManagemAntsServer.Controllers
         }
 
         [HttpGet("/api/[controller]/{projectId}")]
-        public IActionResult GetTaskByProjectId(string projectId)
+        public IActionResult GetTaskByProjectId(string projectId, int filter)
         {
-            var res = _taskrepository.GetByPredicate(x => x.ProjectId == long.Parse(projectId));
+            var res = _taskrepository.GetByPredicate(x => x.ProjectId == long.Parse(projectId) && (filter == -1 || x.State == filter)) ;
             return Ok(res);
         }
 

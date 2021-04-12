@@ -114,8 +114,8 @@
         function () {
             $('#taskFilters a').on('click', function () {
                 var filterval = $(this).text();
-                var clearurl = document.location.href.split("?")[0];
-                var url = clearurl + "?filter=" + filterval;
+                var clearurl = document.location.href.split("&")[0];
+                var url = clearurl + "&filter=" + filterval;
                 document.location = url;
             }
             )

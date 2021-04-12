@@ -12,6 +12,7 @@
             <div class="modal-body">
                 @using (Html.BeginForm("PostTask", "Project", FormMethod.Post))
                 {
+                    <input type="hidden" name="projectId" value="@Model.Project.id"/>
                     <div id="TaskModifyName" class="row mb-3">
                         <div class="col-4 font-weight-bold">Nom de la tache :</div>
                         <input type="text" name="name" class="col-8" />

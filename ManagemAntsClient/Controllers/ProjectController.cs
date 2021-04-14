@@ -56,7 +56,7 @@ namespace ManagemAntsClient.Controllers
             return View(
                 new ProjectPage() {
                     Project = project,
-                    LoggedUser = new User() { Pseudo = "Kaijo", Firstname = "Jeremie", Lastname = "Zeitoun" },
+                    LoggedUser = new User() { pseudo = "Kaijo", firstname = "Jeremie", lastname = "Zeitoun" },
                     Tasks = tasks
                 });
         }

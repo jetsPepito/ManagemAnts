@@ -7,18 +7,20 @@ namespace ManagemAntsClient.Models
 {
     public class Task
     {
-        public long Id { get; set; }
-        public string Name { get; set; }
-        public string Description { get; set; }
-        public DateTime CreatedAt { get; set; }
-        public int Duration { get; set; }
-        public int State { get; set; }
-        public int? TimeSpent { get; set; }
+        public long id { get; set; }
+        public string name { get; set; }
+        public string description { get; set; }
+        public DateTime createdAt { get; set; }
+        public int duration { get; set; }
+        public int state { get; set; }
+        public int? timeSpent { get; set; }
+
+        public long? projectId { get; set; }
 
 
         public string getState()
         {
-            switch(State)
+            switch(state)
             {
                 case 0:
                     return "A faire";

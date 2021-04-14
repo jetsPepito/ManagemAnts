@@ -1,5 +1,5 @@
 ﻿@model ManagemAntsClient.Models.Task
-<div id="taskInfoModal-@(Model.Id)" class="modal" tabindex="-1">
+<div id="taskInfoModal-@(Model.id)" class="modal" tabindex="-1">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
@@ -11,15 +11,15 @@
             <div class="modal-body">
                 <div id="TaskName" class="row mb-3">
                     <div class="col-4 font-weight-bold">Nom de la tache :</div>
-                    <div class="col-8">@Model.Name</div>
+                    <div class="col-8">@Model.name</div>
                 </div>
                 <div id="TaskDescritpion" class="mb-3">
                     <div class="mb-2 font-weight-bold">Description de la tache :</div>
-                    <textarea class="form-control" disabled>@Model.Description</textarea>
+                    <textarea class="form-control" disabled>@Model.description</textarea>
                 </div>
                 <div id="TaskTime" class="row mb-3">
                     <div class="col-4 font-weight-bold">Durée (heures) :</div>
-                    <div class="col-8">@Model.TimeSpent</div>
+                    <div class="col-8">@Model.timeSpent</div>
                 </div>
                 <div id="TaskState" class="row mb-3">
                     <div class="col-4 font-weight-bold">Etat de la tache :</div>
@@ -32,7 +32,7 @@
             </div>
             <div class="modal-footer">
                 <div class="m-auto">
-                    <button type="button" class="btn btn-primary" onclick="onModifyClick(@Model.Id)">Modifier</button>
+                    <button type="button" class="btn btn-primary" onclick="onModifyClick(@Model.id)">Modifier</button>
                 </div>
             </div>
         </div>

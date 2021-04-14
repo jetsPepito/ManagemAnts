@@ -84,3 +84,8 @@ html {
 
 body {
 }
+
+.white-img {
+    filter: invert(100%);
+    height: 20px;
+}

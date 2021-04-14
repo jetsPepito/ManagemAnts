@@ -27,9 +27,23 @@ namespace ManagemAntsServer.Controllers
         }
 
         [HttpGet("/api/[controller]/{projectId}")]
-        public IActionResult GetTaskByProjectId(string projectId)
+        public IActionResult GetTaskByProjectId(string projectId, int filter)
         {
-            var res = _taskrepository.GetByPredicate(x => x.ProjectId == long.Parse(projectId));
+            var res = _taskrepository.GetByPredicate(x => x.ProjectId == long.Parse(projectId) && (filter == -1 || x.State == filter)) ;
+            return Ok(res);
+        }
+
+        [HttpPost]
+        public IActionResult Post(Dbo.Task task)
+        {
+            var res = _taskrepository.Insert(task);
+            return Ok(res);
+        }
+
+        [HttpPut]
+        public IActionResult Put(Dbo.Task task)
+        {
+            var res = _taskrepository.Update(task);
             return Ok(res);
         }
 

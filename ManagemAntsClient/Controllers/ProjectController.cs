@@ -135,20 +135,20 @@ namespace ManagemAntsClient.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> NextStateTask(Models.Task task)
+        public async Task<IActionResult> NextStateTask(Models.Task task, string projectId)
         {
             task.state += 1;
-            return await UpdateTask(task);
+            return await UpdateTask(task, projectId);
         }
 
         [HttpPost]
-        public async Task<IActionResult> BackStateTask(Models.Task task)
+        public async Task<IActionResult> BackStateTask(Models.Task task, string projectId)
         {
             task.state -= 1;
-            return await UpdateTask(task);
+            return await UpdateTask(task, projectId);
         }
 
-        public async Task<IActionResult> UpdateTask(Models.Task task)
+        public async Task<IActionResult> UpdateTask(Models.Task task, string projectId)
         {
             var client = SetUpClient("task/");
 
@@ -160,7 +160,7 @@ namespace ManagemAntsClient.Controllers
             var responce = await client.SendAsync(putRequest);
 
             responce.EnsureSuccessStatusCode();
-            return RedirectToAction("Index", "Project");
+            return RedirectToAction("Index", "Project", new { projectId = projectId });
         }
     }
 }

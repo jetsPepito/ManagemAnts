@@ -56,6 +56,7 @@
                             {
                                 @using (Html.BeginForm("BackStateTask", "Project", task, FormMethod.Post))
                                 {
+                                    <input type="hidden" name="projectId" value="@Model.Project.id" />
                                     <button class="btn btn-danger btn-sm">Retour</button>
                                 }
                             }
@@ -68,6 +69,7 @@
                             {
                                 @using (Html.BeginForm("NextStateTask", "Project", task, FormMethod.Post))
                                 {
+                                    <input type="hidden" name="projectId" value="@Model.Project.id" />
                                     <button class="btn btn-success btn-sm" name="suivant">Suivant</button>
                                 }
                             }

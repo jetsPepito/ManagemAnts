@@ -13,8 +13,8 @@
                @Model.LoggedUser.pseudo
         </span>
     </nav>
-    <div class="row no-gutters">
-        <div class="col-7 shadow bg-lightgray p-2 m-3">
+    <div class="row no-gutters justify-content-around">
+        <div class="col-8 shadow bg-lightgray p-2 m-3">
             <div class="row mt-2">
                 <div class="col-3 align-self-center">
                     <div class="dropdown">
@@ -80,18 +80,10 @@
                 </div>
             </div>
         </div>
-        <div class="col-4 ml-5">
+        <div class="col-lg">
             <div class="shadow mb-4 bg-lightgray p-2 m-3">
-                <div class="row m-4 justify-content-between">
+                <div class="m-4">
                     <h3>Collaborateurs</h3>
-                    <div class="row justify-content-center">
-                        <a href="@Url.Action("Index", "AddCollaborator", new {
-                        projectId = Model.Project.id,
-                        projectName = Model.Project.name,
-                        userId = Model.LoggedUser.id }) ">
-                            <button onclick="addCollaborator()" class="btn btn-secondary btn-sm h1">+</button>
-                        </a>
-                    </div>
                 </div>
 
                 @foreach (var collaborator in Model.Collaborators)
@@ -106,7 +98,7 @@
                         projectName = Model.Project.name,
                         userId = Model.LoggedUser.id }) ">
                         <button type="button" class="btn btn-md btn-secondary w-100" onclick="addCollaborator()">
-                            Ajouter un collaborateur
+                            Gérer les collaborateurs
                         </button>
                     </a>
                 </div>

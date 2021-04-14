@@ -29,14 +29,14 @@ namespace ManagemAntsClient.Controllers
         // GET: DashboardController
         public async Task<ActionResult> Index()
         {
-            HttpClient client = SetupClient("Project/user/5");
+            HttpClient client = SetupClient("Project/user/1");
             HttpResponseMessage response = client.GetAsync("").Result;
 
             IEnumerable<Project> projects = null;
             if (response.IsSuccessStatusCode)
                 projects = await JsonSerializer.DeserializeAsync<IEnumerable<Project>>(await response.Content.ReadAsStreamAsync());
 
-            var user = new User() { id = 5, firstname = "Jeremie", lastname = "Zeitoun", pseudo = "Kaijo", password = "toto" };
+            var user = new User() { id = 1, firstname = "Jeremie", lastname = "Zeitoun", pseudo = "Kaijo", password = "toto" };
             dashboard = new DashboardPage() {
                 Projects = new Projects(projects),
                 LoggedUser = user,

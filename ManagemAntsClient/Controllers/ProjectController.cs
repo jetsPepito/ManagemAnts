@@ -43,7 +43,7 @@ namespace ManagemAntsClient.Controllers
             return query.Get("projectId");
         }
 
-        public async Task<IActionResult> Index(string addedMessage = "")
+        public async Task<IActionResult> Index()
         {
 
             var uri = new Uri(HttpContext.Request.GetDisplayUrl());
@@ -58,7 +58,7 @@ namespace ManagemAntsClient.Controllers
 
             _projectPage = new ProjectPage() {
                 Project = project,
-                LoggedUser = new User() { id = 5, pseudo = "Kaijo", firstname = "Jeremie", lastname = "Zeitoun" },
+                LoggedUser = new User() { id = 1, pseudo = "Kaijo", firstname = "Jeremie", lastname = "Zeitoun" },
                     Tasks = tasks,
                     Collaborators = collaborators
                 };

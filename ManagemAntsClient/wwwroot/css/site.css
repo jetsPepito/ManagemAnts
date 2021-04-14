@@ -12,6 +12,15 @@ a {
   color: #0366d6;
 }
 
+a:hover {
+    text-decoration:none;
+}
+.noBorder {
+    background-color:inherit;
+    border: none;
+    outline: none;
+}
+
 .btn-primary {
   color: #fff;
   background-color: #1b6ec2;

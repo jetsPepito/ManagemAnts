@@ -10,6 +10,7 @@ namespace ManagemAntsClient.Models
         public Project Project;
         public User LoggedUser;
         public List<Task> Tasks;
+        public List<User> Collaborators;
 
         public Task OpenedTask = new Task();
 

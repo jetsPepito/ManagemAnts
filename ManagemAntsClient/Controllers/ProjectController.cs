@@ -20,6 +20,7 @@ namespace ManagemAntsClient.Controllers
     {
         private readonly ILogger<ProjectController> _logger;
         private string url = "https://localhost:44352/api/";
+        private static ProjectPage _projectPage;
 
         public ProjectController(ILogger<ProjectController> logger)
         {
@@ -42,7 +43,7 @@ namespace ManagemAntsClient.Controllers
             return query.Get("projectId");
         }
 
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string addedMessage = "")
         {
 
             var uri = new Uri(HttpContext.Request.GetDisplayUrl());
@@ -53,12 +54,29 @@ namespace ManagemAntsClient.Controllers
             var project = (await GetProjectById(projectId)); 
             tasks.Reverse();
 
-            return View(
-                new ProjectPage() {
-                    Project = project,
-                    LoggedUser = new User() { pseudo = "Kaijo", firstname = "Jeremie", lastname = "Zeitoun" },
-                    Tasks = tasks
-                });
+            var collaborators = await GetCollaborators(projectId);
+
+            _projectPage = new ProjectPage() {
+                Project = project,
+                LoggedUser = new User() { id = 5, pseudo = "Kaijo", firstname = "Jeremie", lastname = "Zeitoun" },
+                    Tasks = tasks,
+                    Collaborators = collaborators
+                };
+
+            return View(_projectPage);
+        }
+
+        public async Task<List<Models.User>> GetCollaborators(string projectId)
+        {
+            var client = SetUpClient("project/" + projectId + "/users");
+            HttpResponseMessage response = client.GetAsync("").Result;
+
+            var collaborators = new List<Models.User>();
+            if (response.IsSuccessStatusCode)
+            {
+                collaborators = await JsonSerializer.DeserializeAsync<List<Models.User>>(await response.Content.ReadAsStreamAsync());
+            }
+            return collaborators;
         }
 
         public async Task<List<Models.Task>> GetTaskByProjectId(string id, string filter)
@@ -83,11 +101,11 @@ namespace ManagemAntsClient.Controllers
                     break;
             }
             var client = SetUpClient("task/" + id + "?filter=" + filterVal);
-            HttpResponseMessage responce = client.GetAsync("").Result;
+            HttpResponseMessage response = client.GetAsync("").Result;
             var tasks = new List<Models.Task>();
-            if (responce.IsSuccessStatusCode)
+            if (response.IsSuccessStatusCode)
             {
-                tasks = await JsonSerializer.DeserializeAsync<List<Models.Task>>(await responce.Content.ReadAsStreamAsync());
+                tasks = await JsonSerializer.DeserializeAsync<List<Models.Task>>(await response.Content.ReadAsStreamAsync());
             }
             return tasks;
         }
@@ -135,20 +153,20 @@ namespace ManagemAntsClient.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> NextStateTask(Models.Task task, string projectId)
+        public async Task<IActionResult> NextStateTask(Models.Task task)
         {
             task.state += 1;
-            return await UpdateTask(task, projectId);
+            return await UpdateTask(task);
         }
 
         [HttpPost]
-        public async Task<IActionResult> BackStateTask(Models.Task task, string projectId)
+        public async Task<IActionResult> BackStateTask(Models.Task task)
         {
             task.state -= 1;
-            return await UpdateTask(task, projectId);
+            return await UpdateTask(task);
         }
 
-        public async Task<IActionResult> UpdateTask(Models.Task task, string projectId)
+        public async Task<IActionResult> UpdateTask(Models.Task task)
         {
             var client = SetUpClient("task/");
 
@@ -160,7 +178,7 @@ namespace ManagemAntsClient.Controllers
             var responce = await client.SendAsync(putRequest);
 
             responce.EnsureSuccessStatusCode();
-            return RedirectToAction("Index", "Project", new { projectId = projectId });
+            return RedirectToAction("Index", "Project", new { projectId = _projectPage.Project.id });
         }
     }
 }

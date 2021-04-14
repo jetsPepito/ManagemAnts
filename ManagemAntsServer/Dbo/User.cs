@@ -9,7 +9,7 @@ namespace ManagemAntsServer.Dbo
     {
         public User()
         {
-            ProjectsHasUsers = new HashSet<ProjectsHasUser>();
+            // ProjectsHasUsers = new HashSet<ProjectsHasUser>();
         }
 
         public long Id { get; set; }
@@ -18,6 +18,6 @@ namespace ManagemAntsServer.Dbo
         public string Pseudo { get; set; }
         public string Password { get; set; }
 
-        public virtual ICollection<ProjectsHasUser> ProjectsHasUsers { get; set; }
+        // public virtual ICollection<ProjectsHasUser> ProjectsHasUsers { get; set; }
     }
 }

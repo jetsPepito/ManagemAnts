@@ -34,5 +34,23 @@ namespace ManagemAntsServer.DataAccess.Repositories
             return projects;
 
         }
+
+        public virtual async Task<IEnumerable<Dbo.User>> GetProjectCollaborators(long projectId)
+        {
+            var agr = _set.AsQueryable()
+                            .Include(x => x.User)
+                            .AsEnumerable()
+                            .Where(x => x.ProjectId == projectId);
+
+            var users = new List<Dbo.User>();
+
+            foreach (var el in agr)
+            {
+                users.Add(_mapper.Map<Dbo.User>(el.User));
+            }
+
+            return users;
+
+        }
     }
 }

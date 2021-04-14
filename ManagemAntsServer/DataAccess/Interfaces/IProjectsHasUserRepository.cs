@@ -9,6 +9,6 @@ namespace ManagemAntsServer.DataAccess.Interfaces
     public interface IProjectsHasUserRepository: Repositories.IRepository<EfModels.ProjectsHasUser, Dbo.ProjectsHasUser>
     {
         Task<IEnumerable<Dbo.Project>> GetProjectByUserId(long id);
-       
+        Task<IEnumerable<Dbo.User>> GetProjectCollaborators(long projectId);
     }
 }

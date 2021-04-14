@@ -58,6 +58,13 @@ namespace ManagemAntsServer.Controllers
             return Ok(x);
         }
 
+        [HttpGet("/api/[controller]/{projectId}/users")]
+        public async Task<IActionResult> GetProjectCollaborators(string projectId)
+        {
+            var x = await _projectsHasUserRepository.GetProjectCollaborators(long.Parse(projectId));
+            return Ok(x);
+        }
+
 
         [HttpPost("/api/[controller]/user")]
         public async Task<IActionResult> Post(Dbo.ProjectsHasUser projectsHasUser)

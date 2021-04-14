@@ -1,0 +1,19 @@
+﻿@{
+    Layout = "~/Views/Shared/_Navbar.cshtml";
+}
+@model ManagemAntsClient.Models.AddCollaboratorPage
+
+
+<div>
+    <nav class="navbar py-0 bg-blue shadow">
+        <a href="@Url.Action("Index", "Dashboard")" class="navbar-brand text-white">Accueil</a>
+        <span class="navbar-text text-white">@Model.ProjectName</span>
+        <span class="navbar-text text-white">
+            <button class="btn btn-danger btn-sm mr-2">Deconnexion</button>
+            @Model.LoggedUser.pseudo
+        </span>
+    </nav>
+</div>
+
+<script>
+</script>

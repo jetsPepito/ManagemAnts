@@ -1,76 +1,59 @@
-﻿using ManagemAntsClient.Models;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
-using System.Net.Http.Json;
 using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace ManagemAntsClient.Controllers
 {
-    public class DashboardController : Controller
+    public class AddCollaboratorController : Controller
     {
-        public static DashboardPage dashboard;
         private string url = "https://localhost:44352/api/";
 
-        private HttpClient SetupClient(string endpoint)
+        private HttpClient SetUpClient(string endpoint)
         {
-            HttpClient client = new HttpClient();
+            var client = new HttpClient();
             client.BaseAddress = new Uri(url + endpoint);
             client.DefaultRequestHeaders.Accept.Add(
             new MediaTypeWithQualityHeaderValue("application/json"));
             return client;
         }
 
-        // GET: DashboardController
-        public async Task<ActionResult> Index()
+        // GET: AddCollaboratorController
+        public async Task<ActionResult> Index(string projectId, string projectName, string userId)
         {
-            HttpClient client = SetupClient("Project/user/5");
+            var client = SetUpClient("User/" + userId);
             HttpResponseMessage response = client.GetAsync("").Result;
 
-            IEnumerable<Project> projects = null;
-            if (response.IsSuccessStatusCode)
-                projects = await JsonSerializer.DeserializeAsync<IEnumerable<Project>>(await response.Content.ReadAsStreamAsync());
+            var user = new Models.User();
 
-            var user = new User() { id = 5, firstname = "Jeremie", lastname = "Zeitoun", pseudo = "Kaijo", password = "toto" };
-            dashboard = new DashboardPage() {
-                Projects = new Projects(projects),
-                LoggedUser = user,
-            };
-            return View(dashboard);
-        }
-
-        [HttpPost]
-        public async Task<ActionResult> AddProject(string name, string description, string ownerId)
-        {
-            HttpClient client = SetupClient("Project?Owner=" + ownerId);
-            var project = new Project() { name=name, description=description };
-            var postRequest = new HttpRequestMessage(HttpMethod.Post, client.BaseAddress)
+            Models.AddCollaboratorPage addCollaboratorPage = new Models.AddCollaboratorPage()
             {
-                Content = JsonContent.Create(project)
+                ProjectId = projectId,
+                ProjectName = projectName,
+                LoggedUser = user
             };
-            var response = await client.SendAsync(postRequest);
-            response.EnsureSuccessStatusCode();
-            return RedirectToAction("Index", "Dashboard");
+
+            return View(addCollaboratorPage);
         }
 
-        // GET: DashboardController/Details/5
+        // GET: AddCollaboratorController/Details/5
         public ActionResult Details(int id)
         {
             return View();
         }
 
-        // GET: DashboardController/Create
+        // GET: AddCollaboratorController/Create
         public ActionResult Create()
         {
             return View();
         }
 
-        // POST: DashboardController/Create
+        // POST: AddCollaboratorController/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Create(IFormCollection collection)
@@ -85,13 +68,13 @@ namespace ManagemAntsClient.Controllers
             }
         }
 
-        // GET: DashboardController/Edit/5
+        // GET: AddCollaboratorController/Edit/5
         public ActionResult Edit(int id)
         {
             return View();
         }
 
-        // POST: DashboardController/Edit/5
+        // POST: AddCollaboratorController/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Edit(int id, IFormCollection collection)
@@ -106,13 +89,13 @@ namespace ManagemAntsClient.Controllers
             }
         }
 
-        // GET: DashboardController/Delete/5
+        // GET: AddCollaboratorController/Delete/5
         public ActionResult Delete(int id)
         {
             return View();
         }
 
-        // POST: DashboardController/Delete/5
+        // POST: AddCollaboratorController/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Delete(int id, IFormCollection collection)

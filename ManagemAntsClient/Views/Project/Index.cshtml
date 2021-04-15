@@ -17,17 +17,32 @@
         <div class="col-8 shadow bg-lightgray p-2 m-3">
             <div class="row mt-2">
                 <div class="col-3 align-self-center">
-                    <div class="dropdown">
-                        <a class="btn btn-secondary dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            
-                        </a>
+                    <div class="row">
+                        <div class="dropdown col-auto">
+                            <a class="btn btn-secondary dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 
-                        <div class="dropdown-menu" id="taskFilters" belaria-laledby="dropdownMenuLink">
-                            <a class="dropdown-item" >A faire</a>
-                            <a class="dropdown-item" >En cours</a>
-                            <a class="dropdown-item" >Fait</a>
-                            <a class="dropdown-item" >Rendu</a>
-                            <a class="dropdown-item">Pas de filtre</a>
+                            </a>
+
+                            <div class="dropdown-menu" id="taskFilters" belaria-laledby="dropdownMenuLink">
+                                <a class="dropdown-item">A faire</a>
+                                <a class="dropdown-item">En cours</a>
+                                <a class="dropdown-item">Fait</a>
+                                <a class="dropdown-item">Rendu</a>
+                                <a class="dropdown-item">Pas de filtre</a>
+                            </div>
+                        </div>
+                        <div class="form-check align-self-center ml-2">
+                            @if (!Model.isMyTasks)
+                            {
+                                <input class="form-check-input" type="checkbox" value="false" id="myTasks" />
+                            }
+                            else
+                            {
+                                <input class="form-check-input" type="checkbox" value="true" id="myTasks" checked/>
+                            }
+                            <label class="form-check-label" for="flexCheckDefault">
+                                Mes Taches
+                            </label>
                         </div>
                     </div>
                 </div>
@@ -39,12 +54,12 @@
             <div class="p-3">
                 @foreach (var task in Model.Tasks)
                 {
-                    <div class="row bg-dark rounded mb-2 p-2" >
+                    <div class="row bg-dark rounded mb-2 p-2">
                         <div class="col-auto mr-auto text-white align-self-center pl-1">
-                            <button class="btn btn-sm btn-secondary mr-1 bg-transparent border-0" >
-                                <img class="white-img " src="~/img/edit-solid.svg" onclick="openTaskInfos(@task.id)"/>
+                            <button class="btn btn-sm btn-secondary mr-1 bg-transparent noBorder border-0">
+                                <img class="white-img " src="~/img/edit-solid.svg" onclick="openTaskInfos(@task.id)" />
                             </button>
-                            
+
                             @task.name
                         </div>
                         <div class="col-auto pr-1 d-flex">
@@ -73,7 +88,9 @@
                             }
                         </div>
                     </div>
-                    <partial name="_taskInfoModal" model="@task" />
+                    <partial name="_taskModifyModal" model="@task" />
+                    <partial name="_taskInfoModal" model="@new ManagemAntsClient.Models.InfosTask() { Task = task, LoggedUser = Model.LoggedUser }" />
+
                 }
                 <div class="row justify-content-center">
                     <button onclick="openTaskAdd()" class="btn btn-secondary btn-sm">+</button>
@@ -93,7 +110,7 @@
                     </div>
                 }
                 <div class="text-center m-4">
-                    <a href="@Url.Action("Index", "AddCollaborator", new { 
+                    <a href="@Url.Action("Index", "AddCollaborator", new {
                         projectId = Model.Project.id,
                         projectName = Model.Project.name,
                         userId = Model.LoggedUser.id }) ">
@@ -114,7 +131,11 @@
 
 <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
 <script>
-
+    window.onload = function () {
+        if (@Model.OpenedTask != "-1")
+            openTaskInfos(@Model.OpenedTask)
+    }
+ 
     let searchParams = new URLSearchParams(window.location.search)
     let filter = searchParams.get("filter");
     if (filter == null)
@@ -125,7 +146,6 @@
         $(`#taskInfoModal-${id}`).modal("show");
     }
 
-
     function openTaskAdd() {
         $("#taskAddModal").modal("show");
     }
@@ -134,11 +154,21 @@
     $(document).ready(
         function () {
             $('#taskFilters a').on('click', function () {
+                var value = $('#myTasks').val();
                 var filterval = $(this).text();
+                var boolValue = (value == 'true');
                 var clearurl = document.location.href.split("&")[0];
-                var url = clearurl + "&filter=" + filterval;
+                var url = clearurl + "&filter=" + filterval + "&myTasks=" + boolValue;
                 document.location = url;
             }
             )
+            $('#myTasks').on('click', function () {
+                var filter = $('#dropdownMenuLink').text();
+                var value = $('#myTasks').val();
+                var boolValue = !(value == 'true');
+                var clearurl = document.location.href.split("&")[0];
+                var url = clearurl + "&filter=" + filter + "&myTasks=" + boolValue;
+                document.location = url;
+            })
         });
 </script>

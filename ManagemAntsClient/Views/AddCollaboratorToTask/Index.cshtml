@@ -1,0 +1,99 @@
+﻿@{
+    Layout = "~/Views/Shared/_Navbar.cshtml";
+}
+@model ManagemAntsClient.Models.AddCollaboratorToTaskPage
+
+
+<div>
+    <nav class="navbar py-0 bg-blue shadow">
+        <a href="@Url.Action("Index", "Project", new { projectId = Model.ProjectId, taskId = Model.TaskId })" class="navbar-brand text-white">Retour au projet</a>
+        <span class="navbar-text text-white">@Model.TaskName</span>
+        <span class="navbar-text text-white">
+            <button class="btn btn-danger btn-sm mr-2">Deconnexion</button>
+            @Model.LoggedUser.pseudo
+        </span>
+    </nav>
+    <div class="row m-3 justify-content-around">
+        <div class="col-5 p-3 shadow bg-lightgray">
+            <h3>Ajout de collaborateurs</h3>
+            @using (Html.BeginForm("Research", "AddCollaboratorToTask", FormMethod.Post))
+            {
+                <div class="row pt-2">
+                    <div class="col-lg">
+                        <input name="search" class="w-100" placeholder="Pseudo/Nom/Prenom" value="@Model.search" />
+                    </div>
+                    <div class="col-auto">
+                        <button class="btn btn-sm btn-secondary">Rechercher</button>
+                    </div>
+                </div>
+            }
+            @if (Model.noResult)
+            {
+                <div class="mt-2"> <h6> Pas de resultat </h6></div>
+            }
+            <div class="overflow-auto project-container">
+
+                @foreach (var collaborator in Model.SearchCollaborators)
+                {
+                    <div class="row justify-content-between mt-3 ml-1 mr-1 p-2 shadow-sm bg-collaborator">
+
+                        <div>
+                            @collaborator.pseudo (@collaborator.firstname @collaborator.lastname)
+                        </div>
+                        <button type="submit" class="noBorder" onclick="addCollaborator(@collaborator.id.ToString())">
+                            <img src="~/img/plus.png" style="height:15px; width:15px" />
+                        </button>
+                    </div>
+                }
+
+            </div>
+        </div>
+        <div class="col-6 p-2 shadow bg-lightgray">
+            <h3>Gestion des collaborateurs</h3>
+            <div class="overflow-auto project-container">
+
+                @foreach (var collaborator in Model.Collaborators)
+                {
+                    <div class="row justify-content-between mt-3 ml-1 mr-1 p-2 shadow-sm bg-collaborator">
+                        <div>
+                            @collaborator.pseudo (@collaborator.firstname @collaborator.lastname)
+                        </div>
+                        <button type="submit" class="noBorder" onclick="removeCollaborator(@collaborator.id.ToString())">
+                            <img src="~/img/clear.png" style="height:15px; width:15px" />
+                        </button>
+                    </div>
+                }
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function addCollaborator(id) {
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("AddNew", "AddCollaboratorToTask")',
+            data: {
+                collaboratorId: id
+            },
+            success: function () {
+                location.reload(true)
+            }
+        })
+    }
+
+    function removeCollaborator(id) {
+        $.ajax({
+            type: "DELETE",
+            url: '@Url.Action("RemoveCollaborator", "AddCollaboratorToTask")',
+            data: {
+                collaboratorId: id
+            },
+            success: function () {
+                location.reload(true)
+            }
+        })
+    }
+
+</script>

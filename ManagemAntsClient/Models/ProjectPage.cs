@@ -12,7 +12,8 @@ namespace ManagemAntsClient.Models
         public List<Task> Tasks;
         public List<User> Collaborators;
 
-        public Task OpenedTask = new Task();
+        public long OpenedTask;
+        public bool isMyTasks;
 
         public Task GetTask(string id)
         {

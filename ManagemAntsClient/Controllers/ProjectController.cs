@@ -43,14 +43,27 @@ namespace ManagemAntsClient.Controllers
             return query.Get("projectId");
         }
 
+        private string GetTaskOpened()
+        {
+            var uri = new Uri(HttpContext.Request.GetDisplayUrl());
+            var query = HttpUtility.ParseQueryString(uri.Query);
+            return query.Get("taskId");
+        }
+
         public async Task<IActionResult> Index()
         {
 
             var uri = new Uri(HttpContext.Request.GetDisplayUrl());
             var query = HttpUtility.ParseQueryString(uri.Query);
             var filter = query.Get("filter");
+            var myTask = query.Get("myTasks") == null ? "false" : query.Get("myTasks");
             var projectId = GetProjectId();
+            var taskOpened = GetTaskOpened();
+            if (taskOpened == null)
+                taskOpened = "-1";
+            var loggedUser = new User() { id = 1, pseudo = "Kaijo", firstname = "Jeremie", lastname = "Zeitoun" };
             var tasks = (await GetTaskByProjectId(projectId, filter));
+            tasks = tasks.Where(x => !bool.Parse(myTask) || x.collaborators.Any(y => y.id == loggedUser.id)).ToList();
             var project = (await GetProjectById(projectId)); 
             tasks.Reverse();
 
@@ -58,9 +71,11 @@ namespace ManagemAntsClient.Controllers
 
             _projectPage = new ProjectPage() {
                 Project = project,
-                LoggedUser = new User() { id = 1, pseudo = "Kaijo", firstname = "Jeremie", lastname = "Zeitoun" },
+                LoggedUser = loggedUser,
                     Tasks = tasks,
-                    Collaborators = collaborators
+                    Collaborators = collaborators,
+                    OpenedTask = long.Parse(taskOpened),
+                    isMyTasks = bool.Parse(myTask)
                 };
 
             return View(_projectPage);
@@ -150,6 +165,25 @@ namespace ManagemAntsClient.Controllers
 
             responce.EnsureSuccessStatusCode();
             return RedirectToAction("Index", "Project", new { projectId = projectId });
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> PutTaskAsync(Models.Task task)
+        {
+
+            var client = SetUpClient("task/");
+
+
+
+            var postRequest = new HttpRequestMessage(HttpMethod.Put, client.BaseAddress)
+            {
+                Content = JsonContent.Create(task)
+            };
+
+            var responce = await client.SendAsync(postRequest);
+
+            responce.EnsureSuccessStatusCode();
+            return RedirectToAction("Index", "Project", new { projectId = task.projectId });
         }
 
         [HttpPost]

@@ -16,10 +16,12 @@ a:hover {
     text-decoration:none;
 }
 .noBorder {
-    background-color:inherit;
-    border: none;
-    outline: none;
+    background-color: inherit;
+    border: 0px;
+    box-shadow: none !important;
+    outline: 0px !important;
 }
+
 
 .btn-primary {
   color: #fff;

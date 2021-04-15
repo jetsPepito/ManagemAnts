@@ -52,10 +52,29 @@ namespace ManagemAntsServer.DataAccess.Repositories
             return users;
         }
 
+        public virtual IEnumerable<Dbo.User> GetProjectCollaboratorsByFilter(long projectId, string filter)
+        {
+            var filterLower = filter.ToLower();
+            var projectsHasUsers = _set.AsQueryable()
+                            .Include(x => x.User)
+                            .AsEnumerable()
+                            .Where(x => x.ProjectId == projectId
+                                    && (x.User.Firstname.ToLower().Contains(filterLower)
+                                    || x.User.Lastname.ToLower().Contains(filterLower)
+                                    || x.User.Pseudo.ToLower().Contains(filterLower)));
+
+            var users = new List<Dbo.User>();
+
+            foreach (var el in projectsHasUsers)
+            {
+                users.Add(_mapper.Map<Dbo.User>(el.User));
+            }
+            return users;
+        }
+
         public virtual async Task<bool> removeUserFromProject(long projectId, long userId)
         {
             IEnumerable<EfModels.ProjectsHasUser> dbEntity = _set.Where(x => x.ProjectId == projectId && x.UserId == userId);
-
 
             if (dbEntity.Count() == 0)
             {

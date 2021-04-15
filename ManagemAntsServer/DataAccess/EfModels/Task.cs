@@ -7,6 +7,11 @@ namespace ManagemAntsServer.DataAccess.EfModels
 {
     public partial class Task
     {
+        public Task()
+        {
+            UsersHasTasks = new HashSet<UsersHasTask>();
+        }
+
         public long Id { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
@@ -17,5 +22,6 @@ namespace ManagemAntsServer.DataAccess.EfModels
         public long ProjectId { get; set; }
 
         public virtual Project Project { get; set; }
+        public virtual ICollection<UsersHasTask> UsersHasTasks { get; set; }
     }
 }

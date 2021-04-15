@@ -1,40 +1,52 @@
 ﻿@model ManagemAntsClient.Models.Task
-<div id="taskModifyModal" class="modal" tabindex="-1">
+<div id="taskModifyModal-@(Model.id)" class="modal" tabindex="-1">
+    <input type="hidden" name="userId" value="" />
     <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Modifier une tache</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
+        @using (Html.BeginForm("PutTask", "Project", FormMethod.Get, new { task = Model }))
+        {
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Modifier une tache</h5>
+                    <button type="button" class="close noBorder" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" name="projectId" value="@Model.projectId" />
+                    <input type="hidden" name="id" value="@Model.id" />
+                    <input type="hidden" name="createdAt" value="@Model.createdAt.ToString()" />
+                    <input type="hidden" name="timeSpent" value="@Model.timeSpent" />
+                    <div id="TaskModifyName" class="row mb-3">
+                        <div class="col-auto align-self-center font-weight-bold">Nom :</div>
+                        <input autocomplete="off" type="text" name="name" class="form-control col-lg align-self-center mr-3" value="@Model.name" />
+                    </div>
+                    <div id="TaskModifyDescritpion" class="mb-3">
+                        <div class="mb-2 font-weight-bold">Description :</div>
+                        <textarea type="text" name="description" class="form-control">@Model.description</textarea>
+                    </div>
+                    <div id="TaskModifyTime" class="row mb-3">
+                        <div class="col-4 font-weight-bold">Durée (heures) :</div>
+                        <input autocomplete="off" type="number" name="duration" class="form-control mr-3 ml-3" value="@Model.duration" />
+                    </div>
+                    <div id="TaskModifyState" class="row mb-3">
+                        <div class="col-4 font-weight-bold">Etat de la tache :</div>
+                        <input autocomplete="off" type="number" name="state" class="form-control mr-3 ml-3" value="@Model.state" />
+                    </div>
+                </div>
+                <div class="modal-footer justify-content-around">
+                    <button type="button" class="btn btn-danger" onclick="goBack(@Model.id)">Annuler</button>
+                    <button type="submit" class="btn btn-success">Valider</button>
+                </div>
             </div>
-            <div class="modal-body">
-                <div id="TaskModifyName" class="row mb-3">
-                    <div class="col-4 font-weight-bold">Nom de la tache :</div>
-                    <div class="col-8">@Model.name</div>
-                </div>
-                <div id="TaskModifyDescritpion" class="mb-3">
-                    <div class="mb-2 font-weight-bold">Description de la tache :</div>
-                    <textarea class="form-control" disabled>@Model.description</textarea>
-                </div>
-                <div id="TaskModifyTime" class="row mb-3">
-                    <div class="col-4 font-weight-bold">Durée (heures) :</div>
-                    <div class="col-8">@Model.timeSpent</div>
-                </div>
-                <div id="TaskModifyState" class="row mb-3">
-                    <div class="col-4 font-weight-bold">Etat de la tache :</div>
-                    <div class="col-8">@Model.getState()</div>
-                </div>
-                <div id="TaskModifyCollaborators" class="mb-3">
-                    <div class="font-weight-bold mb-2">Collaborators :</div>
-                    Collabs
-                </div>
-            </div>
-            <div class="modal-footer">
-                <div class="m-auto">
-                    <button type="button" class="btn btn-primary" onclick="onModifyClick()">Modifier</button>
-                </div>
-            </div>
-        </div>
+        }
     </div>
 </div>
+
+<script>
+
+    function goBack(id) {
+        $(`#taskModifyModal-${id}`).modal("hide");
+        $(`#taskInfoModal-${id}`).modal("show");
+    }
+
+</script>

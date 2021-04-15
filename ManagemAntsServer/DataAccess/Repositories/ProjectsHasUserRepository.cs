@@ -50,7 +50,28 @@ namespace ManagemAntsServer.DataAccess.Repositories
             }
 
             return users;
+        }
 
+        public virtual async Task<bool> removeUserFromProject(long projectId, long userId)
+        {
+            IEnumerable<EfModels.ProjectsHasUser> dbEntity = _set.Where(x => x.ProjectId == projectId && x.UserId == userId);
+
+
+            if (dbEntity.Count() == 0)
+            {
+                return false;
+            }
+            _set.Remove(dbEntity.FirstOrDefault());
+            try
+            {
+                await _context.SaveChangesAsync();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("error on db", ex);
+                return false;
+            }
         }
     }
 }

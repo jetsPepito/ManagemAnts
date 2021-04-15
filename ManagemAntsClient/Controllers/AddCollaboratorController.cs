@@ -121,6 +121,22 @@ namespace ManagemAntsClient.Controllers
             });
         }
 
+        [HttpDelete]
+        public async Task<ActionResult> RemoveCollaborator(long collaboratorId)
+        {
+            HttpClient client = SetUpClient("Project/" + _page.ProjectId + "/User/" + collaboratorId);
+            var deleteRequest = new HttpRequestMessage(HttpMethod.Delete, client.BaseAddress);
+            var response = await client.SendAsync(deleteRequest);
+            response.EnsureSuccessStatusCode();
+            return RedirectToAction("Index", "AddCollaborator", new
+            {
+                projectId = _page.ProjectId,
+                projectName = _page.ProjectName,
+                userId = _page.LoggedUser.id.ToString(),
+                search = _page.search
+            });
+        }
+
         // GET: AddCollaboratorController/Details/5
         public ActionResult Details(int id)
         {

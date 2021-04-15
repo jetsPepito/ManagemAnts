@@ -58,9 +58,12 @@
                         <div>
                             @collaborator.pseudo (@collaborator.firstname @collaborator.lastname)
                         </div>
-                        <button type="submit" class="noBorder" onclick="removeCollaborator(@collaborator.id.ToString())">
-                            <img src="~/img/clear.png" style="height:15px; width:15px" />
-                        </button>
+                        @if (collaborator.id != Model.LoggedUser.id)
+                        {
+                            <button type="submit" class="noBorder" onclick="removeCollaborator(@collaborator.id.ToString())">
+                                <img src="~/img/clear.png" style="height:15px; width:15px" />
+                            </button>
+                        }
                     </div>
                 }
 
@@ -85,7 +88,7 @@
 
     function removeCollaborator(id) {
         $.ajax({
-            type: "POST",
+            type: "DELETE",
             url: '@Url.Action("RemoveCollaborator", "AddCollaborator")',
             data: {
                 collaboratorId: id

@@ -10,5 +10,7 @@ namespace ManagemAntsServer.DataAccess.Interfaces
     {
         Task<IEnumerable<Dbo.Project>> GetProjectByUserId(long id);
         Task<IEnumerable<Dbo.User>> GetProjectCollaborators(long projectId);
+
+        Task<bool> removeUserFromProject(long projectId, long userId);
     }
 }

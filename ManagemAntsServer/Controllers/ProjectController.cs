@@ -75,6 +75,15 @@ namespace ManagemAntsServer.Controllers
         }
 
 
+        [HttpDelete("/api/[controller]/{projectId}/user/{userId}")]
+        public async Task<IActionResult> RemoveUserFromProject(string projectId, string userId)
+        {
+            var result = await _projectsHasUserRepository.removeUserFromProject(long.Parse(projectId), long.Parse(userId));
+
+            return Ok(result);
+        }
+
+
         [HttpPost("/api/[controller]/project/{projectId}")]
         public async Task<IActionResult> PostMultipleUsers(string projectId, string[] userIds)
         {

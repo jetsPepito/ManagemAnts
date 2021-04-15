@@ -1,4 +1,6 @@
 ﻿using System;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 
@@ -6,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Metadata;
 
 namespace ManagemAntsServer.DataAccess.EfModels
 {
-    public partial class ManagemAntsDbContext : DbContext
+    public partial class ManagemAntsDbContext : IdentityDbContext<IdentityUser, IdentityRole, string >
     {
         public ManagemAntsDbContext()
         {
@@ -33,6 +35,8 @@ namespace ManagemAntsServer.DataAccess.EfModels
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+
+            base.OnModelCreating(modelBuilder);
             modelBuilder.HasAnnotation("Relational:Collation", "French_CI_AS");
 
             modelBuilder.Entity<Project>(entity =>

@@ -11,6 +11,8 @@ namespace ManagemAntsClient.Models
         public User LoggedUser;
         public List<Task> Tasks;
         public List<User> Collaborators;
+        public List<User> Creators;
+        public List<User> Mangers;
 
         public long OpenedTask;
         public bool isMyTasks;

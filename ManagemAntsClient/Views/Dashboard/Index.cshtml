@@ -18,7 +18,7 @@
                 <div class="text-center">
                     <h3>Liste des projets</h3>
                 </div>
-                <input type="text" class="form-control mb-3" id="ResearchProject" placeholder="Recherche...">
+                <input type="text" class="form-control mb-3" id="ResearchProject" placeholder="Recherche..." autocomplete="off">
                 <div class="overflow-auto project-container">
                     @foreach (var project in Model.Projects.projects)
                     {
@@ -45,7 +45,7 @@
                     <div>
                         <h4>Nom</h4>
                         <div class="md-form">
-                            <input id="addProjectName" value="@Model.projectName" type="text" name="name" class="form-control" placeholder="Nom du projet">
+                            <input id="addProjectName" value="@Model.projectName" type="text" name="name" class="form-control" placeholder="Nom du projet" autocomplete="off">
                         </div>
                     </div>
                     <div class="mt-4">

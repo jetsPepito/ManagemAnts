@@ -14,7 +14,7 @@ namespace ManagemAntsClient.Controllers
 {
     public class DashboardController : Controller
     {
-        public static DashboardPage dashboard;
+        public static DashboardPage _page;
         private string url = "https://localhost:44352/api/";
 
         private HttpClient SetupClient(string endpoint)
@@ -29,19 +29,43 @@ namespace ManagemAntsClient.Controllers
         // GET: DashboardController
         public async Task<ActionResult> Index()
         {
-            HttpClient client = SetupClient("Project/user/1");
+            var user = await getLoggedUser("5");
+
+            HttpClient client = SetupClient("Project/user/" + user.id);
             HttpResponseMessage response = client.GetAsync("").Result;
 
             IEnumerable<Project> projects = null;
             if (response.IsSuccessStatusCode)
                 projects = await JsonSerializer.DeserializeAsync<IEnumerable<Project>>(await response.Content.ReadAsStreamAsync());
 
-            var user = new User() { id = 1, firstname = "Jeremie", lastname = "Zeitoun", pseudo = "Kaijo", password = "toto" };
-            dashboard = new DashboardPage() {
+            _page = new DashboardPage() {
                 Projects = new Projects(projects),
                 LoggedUser = user,
             };
-            return View(dashboard);
+            return View(_page);
+        }
+
+        [HttpGet]
+        public async Task<Models.User> getLoggedUser(string userId)
+        {
+            var client = SetupClient("User/" + userId);
+            HttpResponseMessage response = client.GetAsync("").Result;
+            var user = new Models.User();
+            var responseUser = new List<Models.User>();
+
+            if (response.IsSuccessStatusCode)
+            {
+                responseUser = await JsonSerializer.DeserializeAsync<List<Models.User>>(await response.Content.ReadAsStreamAsync());
+                if (responseUser.Count == 0)
+                {
+                    //FIXME
+                    throw new NotImplementedException();
+                }
+                else
+                    user = responseUser[0];
+            }
+
+            return user;
         }
 
         [HttpPost]

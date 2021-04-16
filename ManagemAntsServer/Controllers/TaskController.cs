@@ -74,5 +74,22 @@ namespace ManagemAntsServer.Controllers
             var res = await _usersHasTaskRepository.removeUserFromTask(long.Parse(taskId), long.Parse(userId));
             return Ok(res);
         }
+
+
+        [HttpDelete("/api/[controller]/{taskId}")]
+        public async Task<IActionResult> RemoveUserFromProject(string taskId)
+        {
+            var usersHasTasks = _usersHasTaskRepository.GetByPredicate(x => x.TaskId == long.Parse(taskId)).ToList();
+
+            bool result = true;
+            foreach (var userHasTask in usersHasTasks)
+            {
+                result = result && await _usersHasTaskRepository.Delete(userHasTask.Id);
+            }
+
+            result = result && await _taskrepository.Delete(long.Parse(taskId));
+
+            return Ok(result);
+        }
     }
 }

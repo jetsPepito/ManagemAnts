@@ -27,6 +27,39 @@ namespace ManagemAntsClient.Controllers
         // GET: AddCollaboratorController
         public async Task<ActionResult> Index(string projectId, string projectName, string userId, string searchFilter = "")
         {
+            var user = await getLoggedUser(userId);
+
+            var searchUsers = new List<Models.User>();
+            if (!string.IsNullOrEmpty(searchFilter))
+            {
+                var client = SetUpClient("User/research/" + searchFilter);
+                var response = client.GetAsync("").Result;
+                if (response.IsSuccessStatusCode)
+                    searchUsers = await JsonSerializer.DeserializeAsync<List<Models.User>>(await response.Content.ReadAsStreamAsync());
+            }
+
+            var collaborators = await GetCollaborators(projectId);
+
+            user.role = collaborators.Where(x => x.id == user.id).FirstOrDefault().role;
+
+            searchUsers = searchUsers.Where(el => !collaborators.Any(collab => collab.pseudo == el.pseudo)).ToList();
+            _page = new Models.AddCollaboratorPage()
+            {
+                ProjectId = projectId,
+                ProjectName = projectName,
+                LoggedUser = user,
+                SearchCollaborators = searchUsers,
+                Collaborators = collaborators,
+                search = searchFilter,
+                noResult = searchUsers.Count == 0 && searchFilter != ""
+            };
+
+            return View(_page);
+        }
+
+        [HttpGet]
+        public async Task<Models.User> getLoggedUser(string userId)
+        {
             var client = SetUpClient("User/" + userId);
             HttpResponseMessage response = client.GetAsync("").Result;
             var user = new Models.User();
@@ -44,34 +77,28 @@ namespace ManagemAntsClient.Controllers
                     user = responseUser[0];
             }
 
-
-
-            var searchUsers = new List<Models.User>();
-            if (!string.IsNullOrEmpty(searchFilter))
-            {
-                client = SetUpClient("User/research/" + searchFilter);
-                response = client.GetAsync("").Result;
-                if (response.IsSuccessStatusCode)
-                    searchUsers = await JsonSerializer.DeserializeAsync<List<Models.User>>(await response.Content.ReadAsStreamAsync());
-            }
-
-            var collaborators = await GetCollaborators(projectId);
-
-            searchUsers = searchUsers.Where(el => !collaborators.Any(collab => collab.pseudo == el.pseudo)).ToList();
-            _page = new Models.AddCollaboratorPage()
-            {
-                ProjectId = projectId,
-                ProjectName = projectName,
-                LoggedUser = user,
-                SearchCollaborators = searchUsers,
-                Collaborators = collaborators,
-                search = searchFilter,
-                noResult = searchUsers.Count == 0 && searchFilter != ""
-            };
-
-            return View(_page);
+            return user;
         }
 
+        public async Task<ActionResult> ModifyRole(string userId, string roleValue)
+        {
+            var client = SetUpClient("project/" + _page.ProjectId + "/user/" + userId + "/role/" + roleValue);
+
+            var putRequest = new HttpRequestMessage(HttpMethod.Put, client.BaseAddress);
+
+            var response = await client.SendAsync(putRequest);
+
+            response.EnsureSuccessStatusCode();
+            return RedirectToAction("Index", "AddCollaborator", new
+            {
+                projectId = _page.ProjectId,
+                projectName = _page.ProjectName,
+                userId = _page.LoggedUser.id.ToString(),
+                searchFilter = _page.search
+            });
+        }
+
+        [HttpGet]
         public async Task<List<Models.User>> GetCollaborators(string projectId)
         {
             var client = SetUpClient("project/" + projectId + "/users");

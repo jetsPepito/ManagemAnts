@@ -35,12 +35,38 @@ namespace ManagemAntsServer.DataAccess.Repositories
 
         }
 
-        public virtual async Task<IEnumerable<Dbo.User>> GetProjectCollaborators(long projectId)
+        public virtual async Task<IEnumerable<Dbo.UserWithRole>> GetProjectCollaborators(long projectId)
         {
             var agr = _set.AsQueryable()
                             .Include(x => x.User)
                             .AsEnumerable()
                             .Where(x => x.ProjectId == projectId);
+
+            var users = new List<Dbo.UserWithRole>();
+
+            foreach (var el in agr)
+            {
+                var userWithRole = new Dbo.UserWithRole()
+                {
+                    Id = el.User.Id,
+                    Firstname = el.User.Firstname,
+                    Lastname = el.User.Lastname,
+                    Pseudo = el.User.Pseudo,
+                    Role = el.Role
+                };
+
+                users.Add(userWithRole);
+            }
+
+            return users;
+        }
+
+        public virtual async Task<IEnumerable<Dbo.User>> GetProjectCollaboratorsByRole(long projectId, int roleValue)
+        {
+            var agr = _set.AsQueryable()
+                            .Include(x => x.User)
+                            .AsEnumerable()
+                            .Where(x => x.ProjectId == projectId && x.Role == roleValue);
 
             var users = new List<Dbo.User>();
 

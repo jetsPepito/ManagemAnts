@@ -20,7 +20,7 @@
             {
                 <div class="row pt-2">
                     <div class="col-lg">
-                        <input name="search" class="w-100" placeholder="Pseudo/Nom/Prenom" value="@Model.search" />
+                        <input name="search" class="w-100" placeholder="Pseudo/Nom/Prenom" value="@Model.search" autocomplete="off" />
                     </div>
                     <div class="col-auto">
                         <button class="btn btn-sm btn-secondary">Rechercher</button>
@@ -54,17 +54,38 @@
 
                 @foreach (var collaborator in Model.Collaborators)
                 {
-                    <div class="row justify-content-between mt-3 ml-1 mr-1 p-2 shadow-sm bg-collaborator">
-                        <div>
-                            @collaborator.pseudo (@collaborator.firstname @collaborator.lastname)
-                        </div>
-                        @if (collaborator.id != Model.LoggedUser.id)
+                <div class="row justify-content-between mt-3 ml-1 mr-1 p-2 shadow-sm bg-collaborator">
+                    <div>
+                        @collaborator.pseudo (@collaborator.firstname @collaborator.lastname)
+                    </div>
+
+                    <div class="row pl-2 pr-2 mr-1">
+                        @if (collaborator.id != Model.LoggedUser.id && Model.LoggedUser.role == 0)
+                        {
+                            <div class="dropdown col-auto mr-2">
+                                <a class="btn btn-secondary dropdown-toggle" href="#" role="button" id="dropdownRoleLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    @(collaborator.role == 1 ? "Manageur" : "Collaborateur" )
+                                </a>
+
+                                <div class="dropdown-menu" id="roleItems" belaria-laledby="dropdownMenuLink">
+                                    <a onclick="modifyRole(@collaborator.id, 1)" class="dropdown-item btn">Manageur</a>
+                                    <a onclick="modifyRole(@collaborator.id, 2)" class="dropdown-item btn">Collaborateur</a>
+                                </div>
+                            </div>
+                        }
+                        else
+                        {
+                            <label class="col-auto mr-2">@(collaborator.role == 1 ? "Manageur" : (collaborator.role == 2 ? "Collaborateur" : "Créateur") )</label>
+                        }
+
+                        @if (collaborator.id != Model.LoggedUser.id && collaborator.role > Model.LoggedUser.role)
                         {
                             <button type="submit" class="noBorder" onclick="removeCollaborator(@collaborator.id.ToString())">
                                 <img src="~/img/clear.png" style="height:15px; width:15px" />
                             </button>
                         }
                     </div>
+                </div>
                 }
 
             </div>
@@ -92,6 +113,20 @@
             url: '@Url.Action("RemoveCollaborator", "AddCollaborator")',
             data: {
                 collaboratorId: id
+            },
+            success: function () {
+                location.reload(true)
+            }
+        })
+    }
+
+    function modifyRole(userId, roleValue) {
+        $.ajax({
+            type: "GET",
+            url: '@Url.Action("ModifyRole", "AddCollaborator")',
+            data: {
+                userId: userId,
+                roleValue: roleValue
             },
             success: function () {
                 location.reload(true)

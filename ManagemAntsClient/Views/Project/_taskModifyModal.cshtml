@@ -16,6 +16,7 @@
                     <input type="hidden" name="id" value="@Model.id" />
                     <input type="hidden" name="createdAt" value="@Model.createdAt.ToString()" />
                     <input type="hidden" name="timeSpent" value="@Model.timeSpent" />
+                    <input type="hidden" name="state" value="@Model.state" />
                     <div id="TaskModifyName" class="row mb-3">
                         <div class="col-auto align-self-center font-weight-bold">Nom :</div>
                         <input autocomplete="off" type="text" name="name" class="form-control col-lg align-self-center mr-3" value="@Model.name" />
@@ -28,13 +29,9 @@
                         <div class="col-4 font-weight-bold">Durée (heures) :</div>
                         <input autocomplete="off" type="number" name="duration" class="form-control mr-3 ml-3" value="@Model.duration" />
                     </div>
-                    <div id="TaskModifyState" class="row mb-3">
-                        <div class="col-4 font-weight-bold">Etat de la tache :</div>
-                        <input autocomplete="off" type="number" name="state" class="form-control mr-3 ml-3" value="@Model.state" />
-                    </div>
                 </div>
                 <div class="modal-footer justify-content-around">
-                    <button type="button" class="btn btn-danger" onclick="goBack(@Model.id)">Annuler</button>
+                    <button type="button" class="btn btn-secondary" onclick="goBack(@Model.id)">Annuler</button>
                     <button type="submit" class="btn btn-success">Valider</button>
                 </div>
             </div>

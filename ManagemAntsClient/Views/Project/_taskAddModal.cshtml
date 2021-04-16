@@ -11,22 +11,18 @@
             <div class="modal-body">
                 @using (Html.BeginForm("PostTask", "Project", FormMethod.Post))
                 {
-                    <input type="hidden" name="projectId" value="@Model.Project.id"/>
+                    <input type="hidden" name="projectId" value="@Model.Project.id" />
                     <div id="TaskModifyName" class="row mb-3">
                         <div class="col-auto font-weight-bold">Nom :</div>
                         <input autocomplete="off" type="text" name="name" class="form-control col-lg mr-3" />
                     </div>
                     <div id="TaskModifyDescritpion" class="mb-3">
                         <div class="mb-2 font-weight-bold">Description :</div>
-                        <input type="text" name="desc" class="form-control" />
+                        <input autocomplete="off" type="text" name="desc" class="form-control" />
                     </div>
                     <div id="TaskModifyTime" class="row mb-3">
                         <div class="col-4 font-weight-bold">Durée (heures) :</div>
                         <input autocomplete="off" type="number" name="duration" class="form-control mr-3 ml-3" />
-                    </div>
-                    <div id="TaskModifyState" class="row mb-3">
-                        <div class="col-4 font-weight-bold">Etat de la tache :</div>
-                        <input autocomplete="off" type="number" name="state" class="form-control mr-3 ml-3" />
                     </div>
                     <button type="submit" class="btn btn-primary">Ajouter</button>
                 }

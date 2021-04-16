@@ -27,27 +27,11 @@ namespace ManagemAntsClient.Controllers
         // GET: AddCollaboratorToTaskController
         public async Task<ActionResult> Index(string projectId, string taskId, string taskName, string userId, string searchFilter = "")
         {
-            var client = SetUpClient("User/" + userId);
-            HttpResponseMessage response = client.GetAsync("").Result;
-            var user = new Models.User();
-            var responseUser = new List<Models.User>();
-
-            if (response.IsSuccessStatusCode)
-            {
-                responseUser = await JsonSerializer.DeserializeAsync<List<Models.User>>(await response.Content.ReadAsStreamAsync());
-                if (responseUser.Count == 0)
-                {
-                    //FIXME
-                    throw new NotImplementedException();
-                }
-                else
-                    user = responseUser[0];
-            }
-
+            var user = await getLoggedUser(userId);
 
             var searchUsers = new List<Models.User>();
-            client = SetUpClient("Project/" + projectId + "/users/research/" + searchFilter);
-            response = client.GetAsync("").Result;
+            var client = SetUpClient("Project/" + projectId + "/users/research/" + searchFilter);
+            var response = client.GetAsync("").Result;
             if (response.IsSuccessStatusCode)
                 searchUsers = await JsonSerializer.DeserializeAsync<List<Models.User>>(await response.Content.ReadAsStreamAsync());
             var collaborators = await GetCollaborators(taskId);
@@ -68,6 +52,30 @@ namespace ManagemAntsClient.Controllers
             return View(_page);
         }
 
+        [HttpGet]
+        public async Task<Models.User> getLoggedUser(string userId)
+        {
+            var client = SetUpClient("User/" + userId);
+            HttpResponseMessage response = client.GetAsync("").Result;
+            var user = new Models.User();
+            var responseUser = new List<Models.User>();
+
+            if (response.IsSuccessStatusCode)
+            {
+                responseUser = await JsonSerializer.DeserializeAsync<List<Models.User>>(await response.Content.ReadAsStreamAsync());
+                if (responseUser.Count == 0)
+                {
+                    //FIXME
+                    throw new NotImplementedException();
+                }
+                else
+                    user = responseUser[0];
+            }
+
+            return user;
+        }
+
+        [HttpGet]
         public async Task<List<Models.User>> GetCollaborators(string taskId)
         {
             var client = SetUpClient("Task/" + taskId + "/Users");

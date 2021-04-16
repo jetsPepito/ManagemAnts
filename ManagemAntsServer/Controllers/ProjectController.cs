@@ -69,11 +69,27 @@ namespace ManagemAntsServer.Controllers
             return Ok(x);
         }
 
+        [HttpGet("/api/[controller]/{projectId}/users/role/{roleValue}")]
+        public async Task<IActionResult> GetProjectCollaboratorsByRole(string projectId, string roleValue)
+        {
+            var x = await _projectsHasUserRepository.GetProjectCollaboratorsByRole(long.Parse(projectId), int.Parse(roleValue));
+            return Ok(x);
+        }
+
+        [HttpPut("/api/[controller]/{projectId}/user/{userId}/role/{roleValue}")]
+        public async Task<IActionResult> updateProjectHasUser(string projectId, string userId, string roleValue)
+        {
+            Dbo.ProjectsHasUser projectHasUser = _projectsHasUserRepository.GetByPredicate(
+                x => x.ProjectId == long.Parse(projectId) && x.UserId == long.Parse(userId)).FirstOrDefault();
+            projectHasUser.Role = int.Parse(roleValue);
+            var res = await _projectsHasUserRepository.Update(projectHasUser);
+            return Ok(res);
+        }
 
         [HttpPost("/api/[controller]/user")]
-        public async Task<IActionResult> Post(Dbo.ProjectsHasUser projectsHasUser)
+        public IActionResult Post(Dbo.ProjectsHasUser projectsHasUser)
         {
-            var result = await _projectsHasUserRepository.Insert(projectsHasUser);
+            var result = _projectsHasUserRepository.Insert(projectsHasUser);
 
             return Ok(result);
         }

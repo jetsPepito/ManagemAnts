@@ -12,6 +12,17 @@ a {
   color: #0366d6;
 }
 
+a:hover {
+    text-decoration:none;
+}
+.noBorder {
+    background-color: inherit;
+    border: 0px;
+    box-shadow: none !important;
+    outline: 0px !important;
+}
+
+
 .btn-primary {
   color: #fff;
   background-color: #1b6ec2;

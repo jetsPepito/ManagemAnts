@@ -38,6 +38,7 @@ namespace ManagemAntsServer
             services.AddTransient<DataAccess.Interfaces.IUserRepository, DataAccess.Repositories.UserRepository>();
             services.AddTransient<DataAccess.Interfaces.IProjectsHasUserRepository, DataAccess.Repositories.ProjectsHasUserRepository>();
             services.AddTransient<DataAccess.Interfaces.ITaskRepository, DataAccess.Repositories.TaskRepository>();
+            services.AddTransient<DataAccess.Interfaces.IUsersHasTaskRepository, DataAccess.Repositories.UsersHasTaskRepository>();
 
             services.AddControllers().AddNewtonsoftJson(options =>
     options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore

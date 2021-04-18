@@ -13,11 +13,15 @@ namespace ManagemAntsServer.Controllers
     {
         private readonly IProjectRepository _projectRepository;
         private readonly IProjectsHasUserRepository _projectsHasUserRepository;
-        
-        public ProjectController(IProjectRepository projectRepository, IProjectsHasUserRepository projectsHasUserRepository)
+        private readonly ITaskRepository _taskrepository;
+        private readonly IUsersHasTaskRepository _usersHasTaskRepository;
+
+        public ProjectController(IProjectRepository projectRepository, IProjectsHasUserRepository projectsHasUserRepository, ITaskRepository taskrepository, IUsersHasTaskRepository usersHasTaskRepository)
         {
             _projectRepository = projectRepository;
             _projectsHasUserRepository = projectsHasUserRepository;
+            _taskrepository = taskrepository;
+            _usersHasTaskRepository = usersHasTaskRepository;
         }
 
         [HttpGet("")]
@@ -58,11 +62,47 @@ namespace ManagemAntsServer.Controllers
             return Ok(x);
         }
 
+        [HttpGet("/api/[controller]/{projectId}/users")]
+        public async Task<IActionResult> GetProjectCollaborators(string projectId)
+        {
+            var x = await _projectsHasUserRepository.GetProjectCollaborators(long.Parse(projectId));
+            return Ok(x);
+        }
+
+        [HttpGet("/api/[controller]/{projectId}/users/role/{roleValue}")]
+        public async Task<IActionResult> GetProjectCollaboratorsByRole(string projectId, string roleValue)
+        {
+            var x = await _projectsHasUserRepository.GetProjectCollaboratorsByRole(long.Parse(projectId), int.Parse(roleValue));
+            return Ok(x);
+        }
+
+        [HttpPut("/api/[controller]/{projectId}/user/{userId}/role/{roleValue}")]
+        public async Task<IActionResult> updateProjectHasUser(string projectId, string userId, string roleValue)
+        {
+            Dbo.ProjectsHasUser projectHasUser = _projectsHasUserRepository.GetByPredicate(
+                x => x.ProjectId == long.Parse(projectId) && x.UserId == long.Parse(userId)).FirstOrDefault();
+            projectHasUser.Role = int.Parse(roleValue);
+            var res = await _projectsHasUserRepository.Update(projectHasUser);
+            return Ok(res);
+        }
 
         [HttpPost("/api/[controller]/user")]
-        public async Task<IActionResult> Post(Dbo.ProjectsHasUser projectsHasUser)
+        public IActionResult Post(Dbo.ProjectsHasUser projectsHasUser)
         {
-            var result = await _projectsHasUserRepository.Insert(projectsHasUser);
+            var result = _projectsHasUserRepository.Insert(projectsHasUser);
+
+            return Ok(result);
+        }
+
+
+        [HttpDelete("/api/[controller]/{projectId}/user/{userId}")]
+        public async Task<IActionResult> RemoveUserFromProject(string projectId, string userId)
+        {
+            var result = await _projectsHasUserRepository.removeUserFromProject(long.Parse(projectId), long.Parse(userId));
+
+            var res = _taskrepository.GetByPredicate(x => x.ProjectId == long.Parse(projectId)).Select(x => x.Id).ToList();
+
+            result = result && await _usersHasTaskRepository.removeUserFromTasks(res, long.Parse(userId));
 
             return Ok(result);
         }
@@ -84,9 +124,16 @@ namespace ManagemAntsServer.Controllers
                 results.Add(await _projectsHasUserRepository.Insert(newProjectHasUser));
             }
 
-
-
             return Ok(results);
+        }
+
+        [HttpGet("/api/[controller]/{projectId}/users/research/{filter=_nofilter_}")]
+        public IActionResult GetByFilter(string projectId, string filter)
+        {
+            if (filter == "_nofilter_")
+                filter = "";
+            var result = _projectsHasUserRepository.GetProjectCollaboratorsByFilter(long.Parse(projectId), filter);
+            return Ok(result);
         }
     }
 }

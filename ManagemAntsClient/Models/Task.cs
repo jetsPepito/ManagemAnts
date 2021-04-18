@@ -17,6 +17,8 @@ namespace ManagemAntsClient.Models
 
         public long? projectId { get; set; }
 
+        public List<User> collaborators { get; set; }
+
 
         public string getState()
         {

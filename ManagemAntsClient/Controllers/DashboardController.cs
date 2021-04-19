@@ -27,11 +27,12 @@ namespace ManagemAntsClient.Controllers
         }
 
         // GET: DashboardController
-        public async Task<ActionResult> Index()
+        public async Task<ActionResult> Index(string searchFilter = "")
         {
+            
             var user = await getLoggedUser("1");
 
-            HttpClient client = SetupClient("Project/user/" + user.id);
+            HttpClient client = SetupClient("Project/user/" + user.id + "/research/" + searchFilter);
             HttpResponseMessage response = client.GetAsync("").Result;
 
             IEnumerable<Project> projects = null;
@@ -44,6 +45,15 @@ namespace ManagemAntsClient.Controllers
             };
             return View(_page);
         }
+
+        public ActionResult Research(string search)
+        {
+            return RedirectToAction("Index", "Dashboard", new
+            {
+                searchFilter = search
+            });
+        }
+
 
         [HttpGet]
         public async Task<Models.User> getLoggedUser(string userId)

@@ -16,13 +16,13 @@ namespace ManagemAntsServer.DataAccess.Repositories
         { 
         }
 
-        public virtual async Task<IEnumerable<Dbo.Project>> GetProjectByUserId(long id)
+        public virtual async Task<IEnumerable<Dbo.Project>> GetProjectByUserId(long id, string searchFilter)
         {
   
             var agr = _set.AsQueryable()
                             .Include(x => x.Project)
                             .AsEnumerable()
-                            .Where(x => x.UserId == id);
+                            .Where(x => x.UserId == id && x.Project.Name.ToLower().Contains(searchFilter));
 
             var projects = new List<Dbo.Project>();
 

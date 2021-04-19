@@ -18,7 +18,19 @@
                 <div class="text-center">
                     <h3>Liste des projets</h3>
                 </div>
-                <input type="text" class="form-control mb-3" id="ResearchProject" placeholder="Recherche..." autocomplete="off">
+                @using (Html.BeginForm("Research", "Dashboard", FormMethod.Post))
+                {
+                <div class="ml-3 mr-3 mb-3">
+                    <div class="row pt-2">
+                        <div class="col-lg">
+                            <input name="search" class="w-100" placeholder="Nom de projet" value="@Model.search" autocomplete="off" />
+                        </div>
+                        <div class="col-auto">
+                            <button class="btn btn-sm btn-secondary">Rechercher</button>
+                        </div>
+                    </div>
+                </div>
+                }
                 <div class="overflow-auto project-container">
                     @foreach (var project in Model.Projects.projects)
                     {

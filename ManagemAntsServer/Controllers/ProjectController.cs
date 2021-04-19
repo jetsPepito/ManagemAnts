@@ -55,10 +55,13 @@ namespace ManagemAntsServer.Controllers
             return Ok(result);
         }
 
-        [HttpGet("/api/[controller]/user/{userId}")]
-        public async Task<IActionResult> GetProjectByUserId(string userId)
+        [HttpGet("/api/[controller]/user/{userId}/research/{searchFilter=_nofilter_}")]
+        public async Task<IActionResult> GetProjectByUserId(string userId, string searchFilter)
         {
-            var x = await _projectsHasUserRepository.GetProjectByUserId(long.Parse(userId));
+            if (searchFilter == "_nofilter_")
+                searchFilter = "";
+            var filterLower = searchFilter.ToLower();
+            var x = await _projectsHasUserRepository.GetProjectByUserId(long.Parse(userId), searchFilter);
             return Ok(x);
         }
 

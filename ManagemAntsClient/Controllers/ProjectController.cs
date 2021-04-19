@@ -60,7 +60,7 @@ namespace ManagemAntsClient.Controllers
             var taskOpened = GetTaskOpened();
             if (taskOpened == null)
                 taskOpened = "-1";
-            var loggedUser = await getLoggedUser("5");
+            var loggedUser = await getLoggedUser("1");
             var tasks = (await GetTaskByProjectId(projectId, filter));
             tasks = tasks.Where(x => !bool.Parse(myTask) || x.collaborators.Any(y => y.id == loggedUser.id)).ToList();
             var project = (await GetProjectById(projectId));
@@ -216,7 +216,7 @@ namespace ManagemAntsClient.Controllers
         public async Task<IActionResult> DeleteTask(string taskId)
         {
             var client = SetUpClient("task/" + taskId);
-            HttpResponseMessage response = client.DeleteAsync("").Result;
+            HttpResponseMessage response = await client.DeleteAsync("");
 
             return RedirectToAction("Index", "Project", new { projectId = _projectPage.Project.id });
         }
@@ -249,5 +249,32 @@ namespace ManagemAntsClient.Controllers
             responce.EnsureSuccessStatusCode();
             return RedirectToAction("Index", "Project", new { projectId = _projectPage.Project.id });
         }
+
+        [HttpGet]
+        public async Task<IActionResult> FinishTaskAsync(Models.Task task)
+        {
+            var client = SetUpClient("task/");
+            task.state += 1;
+
+            var putRequest = new HttpRequestMessage(HttpMethod.Put, client.BaseAddress)
+            {
+                Content = JsonContent.Create(task)
+            };
+
+            var responce = await client.SendAsync(putRequest);
+
+            responce.EnsureSuccessStatusCode();
+            return RedirectToAction("Index", "Project", new { projectId = _projectPage.Project.id });
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> DeleteProject()
+        {
+            var client = SetUpClient("project/" + _projectPage.Project.id);
+            HttpResponseMessage response = await client.DeleteAsync("");
+
+            return RedirectToAction("Index", "Dashboard");
+        }
+
     }
 }

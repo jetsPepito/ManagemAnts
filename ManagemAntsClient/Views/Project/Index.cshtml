@@ -75,22 +75,25 @@
                                 }
                             }
                             <button class="btn btn-secondary btn-sm ml-2 mr-2" disabled>@task.getState()</button>
-                            @if (task.state == 3)
+                            @if (task.state == 2)
                             {
-                                <button class="btn btn-success btn-sm" disabled>Suivant</button>
+                                <button onclick="openTaskFinished(@task.id)" class="btn btn-info btn-sm" name="rendre">Rendre</button>
                             }
                             else
                             {
-                                @using (Html.BeginForm("NextStateTask", "Project", task, FormMethod.Post))
+                                if (task.state != 3)
                                 {
-                                    <button class="btn btn-success btn-sm" name="suivant">Suivant</button>
+                                    @using (Html.BeginForm("NextStateTask", "Project", task, FormMethod.Post))
+                                    {
+                                        <button class="btn btn-success btn-sm" name="suivant">Suivant</button>
+                                    }
                                 }
                             }
                         </div>
                     </div>
                     <partial name="_taskModifyModal" model="@task" />
                     <partial name="_taskInfoModal" model="@new ManagemAntsClient.Models.InfosTask() { Task = task, LoggedUser = Model.LoggedUser }" />
-
+                    <partial name="_taskFinishedModal" model="@new ManagemAntsClient.Models.InfosTask() { Task = task, LoggedUser = Model.LoggedUser }" />
                 }
                 <div class="row justify-content-center">
                     <button onclick="openTaskAdd()" class="btn btn-secondary btn-sm">+</button>
@@ -155,12 +158,17 @@
                 }
             </div>
             <button class="btn btn-secondary btn-lg m-3">Statistiques</button>
+            @if (Model.LoggedUser.role == 0)
+            {
+                <button onclick="openDeleteProject(@Model.Project.id)" class="btn btn-danger btn-lg m-3">Suprimer le projet</button>
+            }
         </div>
 
 
     </div>
 </div>
 <partial name="_taskAddModal"/>
+<partial name="_projectDeleteModal" model="@Model.Project">
 
 
 <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
@@ -182,6 +190,14 @@
 
     function openTaskAdd() {
         $("#taskAddModal").modal("show");
+    }
+
+    function openTaskFinished(id) {
+        $(`#taskFinishedModal-${id}`).modal("show");
+    }
+
+    function openDeleteProject(id) {
+        $(`#projectDeleteModal-${id}`).modal("show");
     }
 
 

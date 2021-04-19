@@ -89,6 +89,14 @@ namespace ManagemAntsServer.Controllers
         [HttpPost("/api/[controller]/user")]
         public IActionResult Post(Dbo.ProjectsHasUser projectsHasUser)
         {
+
+            var isAlreadyAdded = _projectsHasUserRepository.GetByPredicate(
+                x => x.ProjectId == projectsHasUser.ProjectId &&
+                    x.UserId == projectsHasUser.UserId).FirstOrDefault();
+
+            if (isAlreadyAdded != null)
+                return Ok(false);
+
             var result = _projectsHasUserRepository.Insert(projectsHasUser);
 
             return Ok(result);
@@ -133,6 +141,42 @@ namespace ManagemAntsServer.Controllers
             if (filter == "_nofilter_")
                 filter = "";
             var result = _projectsHasUserRepository.GetProjectCollaboratorsByFilter(long.Parse(projectId), filter);
+            return Ok(result);
+        }
+
+        [HttpDelete("/api/[controller]/{projectId}")]
+        public async Task<IActionResult> DeleteProject(string projectId)
+        {
+            bool result = true;
+
+            // Get & delete all tasks
+            var tasksIds = _taskrepository.GetByPredicate(x => x.ProjectId == long.Parse(projectId)).Select(x => x.Id).ToList();
+
+            // delete each task
+            foreach (var taskId in tasksIds)
+            {
+                var usersHasTasks = _usersHasTaskRepository.GetByPredicate(x => x.TaskId == taskId).ToList();
+
+                foreach (var userHasTask in usersHasTasks)
+                {
+                    result = result && await _usersHasTaskRepository.Delete(userHasTask.Id);
+                }
+
+                result = result && await _taskrepository.Delete(taskId);
+            }
+
+
+            // Get & delete all Collabotrators
+            var collaborators = await _projectsHasUserRepository.GetProjectCollaborators(long.Parse(projectId));
+            foreach (var collaborator in collaborators)
+            {
+                result = result && await _projectsHasUserRepository.removeUserFromProject(long.Parse(projectId), collaborator.Id);
+            }
+
+
+            // Delete the project
+            result = result && await _projectRepository.Delete(long.Parse(projectId));
+
             return Ok(result);
         }
     }

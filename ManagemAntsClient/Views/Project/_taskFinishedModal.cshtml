@@ -1,0 +1,58 @@
+﻿@model ManagemAntsClient.Models.InfosTask
+<div id="taskFinishedModal-@(Model.Task.id)" class="modal" tabindex="-1">
+    <div class="modal-dialog">
+        @using (Html.BeginForm("FinishTask", "Project", FormMethod.Get, new { task = Model.Task }))
+        {
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Confirmation de rendu</h5>
+                <button type="button" class="close noBorder" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" name="projectId" value="@Model.Task.projectId" />
+                <input type="hidden" name="id" value="@Model.Task.id" />
+                <input type="hidden" name="name" value="@Model.Task.name" />
+                <input type="hidden" name="createdAt" value="@Model.Task.createdAt.ToString()" />
+                <input type="hidden" name="state" value="@Model.Task.state" />
+                <input type="hidden" name="description" value="@Model.Task.description" />
+                <input type="hidden" name="duration" value="@Model.Task.duration" />
+                <div id="TaskName" class="row mb-3">
+                    <div class="col-auto font-weight-bold">Nom :</div>
+                    <div class="col-lg mr-3">@Model.Task.name</div>
+                </div>
+                <div id="TaskDescritpion" class="mb-3">
+                    <div class="mb-2 font-weight-bold">Description :</div>
+                    <textarea class="form-control" disabled>@Model.Task.description</textarea>
+                </div>
+                <div id="TaskTime" class="row mb-3">
+                    <div class="col-4 font-weight-bold">Durée estimée :</div>
+                    <div class="col-8">@Model.Task.duration heures</div>
+                </div>
+
+                <div id="TaskFinishedTime" class="row mb-3">
+                    <div class="col-4 font-weight-bold">durée réelle (heures) :</div>
+                    <input autocomplete="off" type="number" name="timeSpent" class="form-control mr-3 ml-3" value="@Model.Task.duration" />
+                </div>
+                <div class="modal-footer justify-content-around">
+                    @if (Model.LoggedUser.role != 2)
+                    {
+                        <div class="m-auto">
+                            <button type="button" class="btn btn-danger" onclick="goBack(@Model.Task.id)">Annuler</button>
+                        </div>
+                    }
+                    <div class="m-auto">
+                        <button type="submit" class="btn btn-success">Valider</button>
+                    </div>
+                </div>
+            </div>
+         </div>
+        }
+    </div>
+</div>
+<script>
+    function goBack(id) {
+        $(`#taskFinishedModal-${id}`).modal("hide");
+    }
+</script>

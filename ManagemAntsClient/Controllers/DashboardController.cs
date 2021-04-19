@@ -29,7 +29,7 @@ namespace ManagemAntsClient.Controllers
         // GET: DashboardController
         public async Task<ActionResult> Index()
         {
-            var user = await getLoggedUser("5");
+            var user = await getLoggedUser("1");
 
             HttpClient client = SetupClient("Project/user/" + user.id);
             HttpResponseMessage response = client.GetAsync("").Result;

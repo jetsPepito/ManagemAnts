@@ -77,7 +77,7 @@ namespace ManagemAntsServer.Controllers
 
 
         [HttpDelete("/api/[controller]/{taskId}")]
-        public async Task<IActionResult> RemoveUserFromProject(string taskId)
+        public async Task<IActionResult> RemoveTaskFromProject(string taskId)
         {
             var usersHasTasks = _usersHasTaskRepository.GetByPredicate(x => x.TaskId == long.Parse(taskId)).ToList();
 

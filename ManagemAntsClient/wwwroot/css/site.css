@@ -69,6 +69,9 @@ button.accept-policy {
 .bg-blue {
     background-color: #284B63;
 }
+.bg-blue-50 {
+    background-color: #f1f1f1;
+}
 
 .bg-lightgray {
     background-color: #f1f1f1;
@@ -90,11 +93,12 @@ button.accept-policy {
 -------------------------------------------------- */
 html {
   position: relative;
-  min-height: 100%;
 }
 
 body {
 }
+
+
 
 .white-img {
     filter: invert(100%);

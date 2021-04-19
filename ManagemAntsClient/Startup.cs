@@ -50,7 +50,7 @@ namespace ManagemAntsClient
             {
                 endpoints.MapControllerRoute(
                     name: "default",
-                    pattern: "{controller=Connexion}/{action=Index}/{id?}");
+                    pattern: "{controller=Dashboard}/{action=Index}/{id?}");
             });
         }
     }

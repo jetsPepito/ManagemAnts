@@ -1,16 +1,16 @@
 ﻿<div id="taskAddModal" class="modal" tabindex="-1">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Ajouter une tache</h5>
-                <button type="button" class="close noBorder" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
+    @using (Html.BeginForm("PostTask", "Project", FormMethod.Post))
+    {
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Ajouter une tache</h5>
+                    <button type="button" class="close noBorder" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
 
-            <div class="modal-body">
-                @using (Html.BeginForm("PostTask", "Project", FormMethod.Post))
-                {
+                <div class="modal-body">
                     <input type="hidden" name="projectId" value="@Model.Project.id" />
                     <div id="TaskModifyName" class="row mb-3">
                         <div class="col-auto font-weight-bold">Nom :</div>
@@ -18,20 +18,19 @@
                     </div>
                     <div id="TaskModifyDescritpion" class="mb-3">
                         <div class="mb-2 font-weight-bold">Description :</div>
-                        <input autocomplete="off" type="text" name="desc" class="form-control" />
+                        <textarea type="text" name="desc" class="form-control"></textarea>
                     </div>
                     <div id="TaskModifyTime" class="row mb-3">
                         <div class="col-4 font-weight-bold">Durée (heures) :</div>
                         <input autocomplete="off" type="number" name="duration" class="form-control mr-3 ml-3" />
                     </div>
-                    <button type="submit" class="btn btn-primary">Ajouter</button>
-                }
-            </div>
-            <div class="modal-footer">
-                <div class="m-auto">
-                    
+                </div>
+                <div class="modal-footer">
+                    <div class="m-auto">
+                        <button type="submit" class="btn btn-primary">Ajouter</button>
+                    </div>
                 </div>
             </div>
         </div>
+    }
     </div>
-</div>

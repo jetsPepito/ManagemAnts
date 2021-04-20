@@ -121,6 +121,7 @@ namespace ManagemAntsClient.Controllers
 
             if (response.IsSuccessStatusCode)
             {
+
                 userList = await JsonSerializer.DeserializeAsync<List<Models.User>>(await response.Content.ReadAsStreamAsync());
                 if (userList.Count == 0)
                 {

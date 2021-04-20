@@ -30,13 +30,17 @@ namespace ManagemAntsServer.Controllers
         [HttpPost("")]
         public async Task<IActionResult> SignUp(Dbo.User user)
         {
+            var res = new List<Dbo.User>();
+            
             var alreadyExist = _userRepository.GetByPredicate(x => x.Pseudo == user.Pseudo).FirstOrDefault();
+            
+            
             if (alreadyExist != null)
-                return Ok(null);
+                return Ok(res);
 
-            var result = _userRepository.Insert(user);
+            res.Add(await _userRepository.Insert(user));
 
-            return Ok(result);
+            return Ok(res);
         }
     }
 }

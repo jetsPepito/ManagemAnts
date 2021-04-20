@@ -30,7 +30,7 @@ namespace ManagemAntsClient.Controllers
         public async Task<ActionResult> Index(string searchFilter = "")
         {
             
-            var user = await getLoggedUser("5");
+            var user = await getLoggedUser("1");
 
             HttpClient client = SetupClient("Project/user/" + user.id + "/research/" + searchFilter);
             HttpResponseMessage response = client.GetAsync("").Result;
@@ -57,6 +57,7 @@ namespace ManagemAntsClient.Controllers
             var labels = new List<string>();
             var valuesCount = new List<int>();
             var valuesTime = new List<int>();
+            var valuesTimeSpent = new List<int>();
 
             if (response.IsSuccessStatusCode)
             {
@@ -67,6 +68,7 @@ namespace ManagemAntsClient.Controllers
                     labels.Add(project.name);
                     int count = 0;
                     int time = 0;
+                    int timeSpent = 0;
                     int index = groupedByProjects.FindIndex(x => x.Key == project.id);
                     if (index != -1)
                     {
@@ -77,14 +79,16 @@ namespace ManagemAntsClient.Controllers
                             {
                                 time += task.duration;
                             }
+                            timeSpent += task.timeSpent != null ? task.timeSpent.Value : 0;
                         }
                     }
                     valuesCount.Add(count);
                     valuesTime.Add(time);
+                    valuesTimeSpent.Add(timeSpent);
                 }
             }
 
-            return Ok(new { labels = labels, valuesCount = valuesCount, valuesTime = valuesTime });
+            return Ok(new { labels = labels, valuesCount = valuesCount, valuesTime = valuesTime, valuesTimeSpent = valuesTimeSpent});
         }
 
         public ActionResult Research(string search)

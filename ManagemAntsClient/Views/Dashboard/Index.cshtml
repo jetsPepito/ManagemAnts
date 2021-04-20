@@ -45,13 +45,31 @@
             <div class="col-5 shadow bg-lightgray p-2 m-3 ml-4 mr-4">
                 <div class="text-center">
                     <h3>Statistiques</h3>
-
-                    <div class="row justify-content-around">
-                        <div class="col-5">
-                            <canvas class="" id="pie"></canvas>
+                    <ul class="nav nav-tabs" id="statsTabs" role="tablist">
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link active" id="task-tab" data-toggle="tab" data-target="#firstStatDashboard" type="button" role="tab" aria-controls="firstStatDashboard" aria-selected="true">Taches</button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link " id="timespent-tab" data-toggle="tab" data-target="#secondStatDashboard" type="button" role="tab" aria-controls="secondStatDashboard" aria-selected="false">Temps passe</button>
+                        </li>
+                    </ul>
+                    <div class="tab-content">
+                        <div class="tab-pane fade show active" id="firstStatDashboard" role="tabpanel" aria-labelledby="task-tab">
+                            <div class="row justify-content-center">
+                                <div class="col-6">
+                                    <canvas id="pie"></canvas>
+                                </div>
+                            </div>
                         </div>
-                        <div class="col-5">
-                            <canvas class="" id="pie2"></canvas>
+                        <div class="tab-pane fade" id="secondStatDashboard" role="tabpanel" aria-labelledby="timespent-tab">
+                            <div class="row justify-content-around">
+                                <div class="col-4">
+                                    <canvas class="" id="pie2"></canvas>
+                                </div>
+                                <div class="col-6">
+                                    <canvas class="" id="bar"></canvas>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -86,9 +104,18 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.1.1/chart.js"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script type="text/javascript">
+    function shuffleColors(arr) {
+        for (let i = arr.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * i)
+            const temp = arr[i]
+            arr[i] = arr[j]
+            arr[j] = temp
+        }
+        return arr
 
+    }
     var colors = ['#f47c7c', '#f7f48b', '#a1de93', '#70a1d7', '#f7b9b7', '#a096e0', '#ece9dd', '#9eaeb2', '#cc859a', '#a5e0b6', '#ffb447', '#e8d7ad', '#b1b1b1', '#9ba1d1', '#988270', '#5fe6d0']
-
+    var colors1 = shuffleColors(colors)
     $.ajax({
         type: "GET",
         url: '@Url.Action("GetStatsTasksByProjects", "Dashboard")',
@@ -103,7 +130,7 @@
                     datasets: [{
                         label: 'Nombre de tâches par projet',
                         data: res.valuesCount,
-                        backgroundColor: colors
+                        backgroundColor: colors1
                     }]
                 },
                 options: {
@@ -128,7 +155,7 @@
                     datasets: [{
                         label: 'Temps restant par projet (en heure)',
                         data: res.valuesTime,
-                        backgroundColor: colors
+                        backgroundColor: colors1
                     }]
                 },
                 options: {
@@ -144,9 +171,33 @@
                     }
                 }
             })
+            var bar = document.getElementById("bar").getContext('2d');
+            var barchat = new Chart(bar, {
+                type: 'bar',
+                data: {
+                    labels: res.labels,
+                    datasets: [{
+                        label: "En heures",
+                        data: res.valuesTimeSpent,
+                        backgroundColor: colors1
+                    }]
+                },
+                options: {
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        title: {
+                            display: true,
+                            text: 'Temps passe par projet'
+                        },
+                    }
+                }
+            })
 
             piechart.update()
             piechart2.update()
+            barchat.update()
         },
         error: function (err) {
             console.error("Error get data chart: " + err)

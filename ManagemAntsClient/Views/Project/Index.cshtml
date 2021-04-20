@@ -9,8 +9,8 @@
         <a href="@Url.Action("Index", "Dashboard")" class="navbar-brand text-white">Accueil</a>
         <span class="navbar-text text-white">@Model.Project.name</span>
         <span class="navbar-text text-white">
-          <button class="btn btn-danger btn-sm mr-2">Deconnexion</button>
-               @Model.LoggedUser.pseudo
+            <button class="btn btn-danger btn-sm mr-2" onclick="logout()">Deconnexion</button>
+            @Model.LoggedUser.pseudo
         </span>
     </nav>
     <div class="row no-gutters justify-content-around">
@@ -173,11 +173,20 @@
 
 <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
 <script>
+    function logout() {
+        $.ajax({
+            type: "POST",
+            url: "@Url.Action("logout", "Connexion")",
+            success: function () {
+                location.reload()
+            }
+        })
+    }
     window.onload = function () {
         if (@Model.OpenedTask != "-1")
             openTaskInfos(@Model.OpenedTask)
     }
- 
+
     let searchParams = new URLSearchParams(window.location.search)
     let filter = searchParams.get("filter");
     if (filter == null)
@@ -221,4 +230,6 @@
                 document.location = url;
             })
         });
+
+
 </script>

@@ -35,10 +35,32 @@ a:hover {
   border-color: #1861ac;
 }
 
+.nav-tabs .nav-link.active {
+    border-left: 0px !important;
+    border-top: 0px !important;
+    border-right: 0px !important;
+}
+button.nav-link {
+    border-bottom-width: 0px;
+    border-style: none;
+    background-color: #f1f1f1;
+}
+.nav-link.active {
+    background-color: #f1f1f1 !important;
+    border-bottom: 2px solid #284B63 !important;
+}
+
+.nav-item {
+    border-bottom: 1px solid #dee2e6 !important;
+}
+.nav-link:focus {
+    text-decoration: none;
+    outline: none;
+}
 /* Sticky footer styles
 -------------------------------------------------- */
 html {
-  font-size: 14px;
+    font-size: 14px;
 }
 @media (min-width: 768px) {
   html {

@@ -20,16 +20,16 @@
                 </div>
                 @using (Html.BeginForm("Research", "Dashboard", FormMethod.Post))
                 {
-                <div class="ml-3 mr-3 mb-3">
-                    <div class="row pt-2">
-                        <div class="col-lg">
-                            <input name="search" class="w-100" placeholder="Nom de projet" value="@Model.search" autocomplete="off" />
-                        </div>
-                        <div class="col-auto">
-                            <button class="btn btn-sm btn-secondary">Rechercher</button>
+                    <div class="ml-3 mr-3 mb-3">
+                        <div class="row pt-2">
+                            <div class="col-lg">
+                                <input name="search" class="w-100" placeholder="Nom de projet" value="@Model.search" autocomplete="off" />
+                            </div>
+                            <div class="col-auto">
+                                <button class="btn btn-sm btn-secondary">Rechercher</button>
+                            </div>
                         </div>
                     </div>
-                </div>
                 }
                 <div class="overflow-auto project-container">
                     @foreach (var project in Model.Projects.projects)
@@ -45,6 +45,22 @@
             <div class="col-5 shadow bg-lightgray p-2 m-3 ml-4 mr-4">
                 <div class="text-center">
                     <h3>Statistiques</h3>
+                    <div class="row">
+                        <div class="col-6">
+                            <canvas class="" id="pie"></canvas>
+                        </div>
+                        <div class="col-6">
+
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-6">
+                            <canvas class="" id="pie2"></canvas>
+                        </div>
+                        <div class="col-6">
+
+                        </div>
+                    </div>
                 </div>
             </div>
             <div class="col-3 shadow bg-lightgray p-2 m-3" style="height:100%">
@@ -74,3 +90,28 @@
         </div>
     </div>
 </div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.1.1/chart.min.js"></script>
+<script type="text/javascript">
+    // CHARTS
+    var pie = document.getElementById("pie").getContext('2d');
+    var piechart = new Chart(pie, {
+        type: 'pie',
+        data: {
+            labels: ['1', '2', '3'],
+            datasets: [{
+                label: 'Stats',
+                data: [10, 20, 30],
+                backgroundColor: ['#f00', '#0f0', '#00f']
+            }],
+            options: {
+                scales: {
+                    yAxes: [{
+                        ticks: {
+                            beginAtZero: true
+                        }
+                    }]
+                }
+            }
+        }
+    })
+</script>

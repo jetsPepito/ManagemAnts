@@ -27,7 +27,7 @@ namespace ManagemAntsServer.Controllers
         [HttpGet("")]
         public IActionResult Get()
         {
-            var result =  _projectRepository.GetAll();
+            var result = _projectRepository.GetAll();
             return Ok(result);
         }
 
@@ -55,14 +55,20 @@ namespace ManagemAntsServer.Controllers
             return Ok(result);
         }
 
+        private async Task<bool> IsUserTask(Dbo.Task task, long userid)
+        {
+            var colls = await _usersHasTaskRepository.GetTaskCollaborators(task.Id);
+            return colls.Any(col => col.Id == userid);
+        }
+
         [HttpGet("/api/[controller]/user/{userId}/research/{searchFilter=_nofilter_}")]
         public async Task<IActionResult> GetProjectByUserId(string userId, string searchFilter)
         {
             if (searchFilter == "_nofilter_")
                 searchFilter = "";
             var filterLower = searchFilter.ToLower();
-            var x = await _projectsHasUserRepository.GetProjectByUserId(long.Parse(userId), searchFilter);
-            return Ok(x);
+            var projects = await _projectsHasUserRepository.GetProjectByUserId(long.Parse(userId), searchFilter);
+            return Ok(projects);
         }
 
         [HttpGet("/api/[controller]/{projectId}/users")]
@@ -181,6 +187,14 @@ namespace ManagemAntsServer.Controllers
             result = result && await _projectRepository.Delete(long.Parse(projectId));
 
             return Ok(result);
+        }
+
+        [HttpGet("/api/[controller]/stats/{userId}")]
+        public async Task<IActionResult> GetTasksFromUser(string userId)
+        {
+            long longUserId = long.Parse(userId);
+            var tasks = _usersHasTaskRepository.GetByPredicate(x => x.UserId == longUserId, x => x.Task).Select(x => x.Task).ToList();
+            return Ok(tasks);
         }
     }
 }

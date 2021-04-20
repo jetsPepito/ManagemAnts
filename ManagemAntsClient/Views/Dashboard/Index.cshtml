@@ -5,15 +5,12 @@
 
 <div>
     <nav class="navbar py-0 bg-blue shadow">
-        <a class="navbar-brand text-white">Accueil</a>
+        <a class="navbar-brand text-white">Managem'Ants</a>
         <span class="navbar-text text-white">Tableau de bord</span>
         <span class="navbar-text text-white">
-            @using (Html.BeginForm("logout", "connexion", FormMethod.Post))
-            {
-                <button class="btn btn-danger btn-sm mr-2">Deconnexion</button>
-            }
-                @Model.LoggedUser.pseudo
-            </span>
+            <button class="btn btn-danger btn-sm mr-2" onclick="logout()">Deconnexion</button>
+            @Model.LoggedUser.pseudo
+           </span>
     </nav>
     <div class="container-fluid">
         <div class="row  no-gutters justify-content-around">
@@ -23,16 +20,16 @@
                 </div>
                 @using (Html.BeginForm("Research", "Dashboard", FormMethod.Post))
                 {
-                <div class="ml-3 mr-3 mb-3">
-                    <div class="row pt-2">
-                        <div class="col-lg">
-                            <input name="search" class="w-100" placeholder="Nom de projet" value="@Model.search" autocomplete="off" />
-                        </div>
-                        <div class="col-auto">
-                            <button class="btn btn-sm btn-secondary">Rechercher</button>
+                    <div class="ml-3 mr-3 mb-3">
+                        <div class="row pt-2">
+                            <div class="col-lg">
+                                <input name="search" class="w-100" placeholder="Nom de projet" value="@Model.search" autocomplete="off" />
+                            </div>
+                            <div class="col-auto">
+                                <button class="btn btn-sm btn-secondary">Rechercher</button>
+                            </div>
                         </div>
                     </div>
-                </div>
                 }
                 <div class="overflow-auto project-container">
                     @foreach (var project in Model.Projects.projects)
@@ -48,6 +45,33 @@
             <div class="col-5 shadow bg-lightgray p-2 m-3 ml-4 mr-4">
                 <div class="text-center">
                     <h3>Statistiques</h3>
+                    <ul class="nav nav-tabs" id="statsTabs" role="tablist">
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link active" id="task-tab" data-toggle="tab" data-target="#firstStatDashboard" type="button" role="tab" aria-controls="firstStatDashboard" aria-selected="true">Taches</button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link " id="timespent-tab" data-toggle="tab" data-target="#secondStatDashboard" type="button" role="tab" aria-controls="secondStatDashboard" aria-selected="false">Temps passe</button>
+                        </li>
+                    </ul>
+                    <div class="tab-content">
+                        <div class="tab-pane fade show active" id="firstStatDashboard" role="tabpanel" aria-labelledby="task-tab">
+                            <div class="row justify-content-center">
+                                <div class="col-6">
+                                    <canvas id="pie"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="tab-pane fade" id="secondStatDashboard" role="tabpanel" aria-labelledby="timespent-tab">
+                            <div class="row justify-content-around">
+                                <div class="col-4">
+                                    <canvas class="" id="pie2"></canvas>
+                                </div>
+                                <div class="col-6">
+                                    <canvas class="" id="bar"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
             <div class="col-3 shadow bg-lightgray p-2 m-3" style="height:100%">
@@ -77,3 +101,119 @@
         </div>
     </div>
 </div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.1.1/chart.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script type="text/javascript">
+
+
+    function logout() {
+        $.ajax({
+            type: "POST",
+            url: "@Url.Action("logout", "Connexion")",
+            success: function () {
+                location.reload()
+            }
+        })
+    }
+
+
+    function shuffleColors(arr) {
+        for (let i = arr.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * i)
+            const temp = arr[i]
+            arr[i] = arr[j]
+            arr[j] = temp
+        }
+        return arr
+
+    }
+    var colors = ['#f47c7c', '#f7f48b', '#a1de93', '#70a1d7', '#f7b9b7', '#a096e0', '#ece9dd', '#9eaeb2', '#cc859a', '#a5e0b6', '#ffb447', '#e8d7ad', '#b1b1b1', '#9ba1d1', '#988270', '#5fe6d0']
+    var colors1 = shuffleColors(colors)
+    $.ajax({
+        type: "GET",
+        url: '@Url.Action("GetStatsTasksByProjects", "Dashboard")',
+        data: {
+        },
+        success: function (res) {
+            var pie = document.getElementById("pie").getContext('2d');
+            var piechart = new Chart(pie, {
+                type: 'pie',
+                data: {
+                    labels: res.labels,
+                    datasets: [{
+                        label: 'Nombre de tâches par projet',
+                        data: res.valuesCount,
+                        backgroundColor: colors1
+                    }]
+                },
+                options: {
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            align: 'start'
+                        },
+                        title: {
+                            display: true,
+                            text: 'Nombre de tâches par projet'
+                        },
+                    }
+                }
+            })
+
+            var pie2 = document.getElementById("pie2").getContext('2d');
+            var piechart2 = new Chart(pie2, {
+                type: 'pie',
+                data: {
+                    labels: res.labels,
+                    datasets: [{
+                        label: 'Temps restant par projet (en heure)',
+                        data: res.valuesTime,
+                        backgroundColor: colors1
+                    }]
+                },
+                options: {
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            align: 'start'
+                        },
+                        title: {
+                            display: true,
+                            text: 'Temps restant par projet (en heure)',
+                        }
+                    }
+                }
+            })
+            var bar = document.getElementById("bar").getContext('2d');
+            var barchat = new Chart(bar, {
+                type: 'bar',
+                data: {
+                    labels: res.labels,
+                    datasets: [{
+                        label: "En heures",
+                        data: res.valuesTimeSpent,
+                        backgroundColor: colors1
+                    }]
+                },
+                options: {
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        title: {
+                            display: true,
+                            text: 'Temps passe par projet'
+                        },
+                    }
+                }
+            })
+
+            piechart.update()
+            piechart2.update()
+            barchat.update()
+        },
+        error: function (err) {
+            console.error("Error get data chart: " + err)
+        }
+    })
+</script>

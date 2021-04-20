@@ -21,6 +21,7 @@ namespace ManagemAntsServer.DataAccess.Repositories
   
             var agr = _set.AsQueryable()
                             .Include(x => x.Project)
+                            .Include(x => x.Project.Tasks)
                             .AsEnumerable()
                             .Where(x => x.UserId == id && x.Project.Name.ToLower().Contains(searchFilter));
 

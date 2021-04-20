@@ -1,0 +1,234 @@
+﻿@{
+    Layout = "~/Views/Shared/_Navbar.cshtml";
+}
+@model ManagemAntsClient.Models.ProjectPage
+
+<div>
+    <nav class="navbar py-0 bg-blue shadow">
+        <a href="@Url.Action("Index", "Project", new { projectId = Model.Project.id })" class="navbar-brand text-white">
+            <button class="btn btn-sm bg-blue-50">Retour au projet</button>
+        </a>
+        <span class="navbar-text text-white">Tableau de bord</span>
+        <span class="navbar-text text-white">
+            <button class="btn btn-danger btn-sm mr-2" onclick="logout()">Deconnexion</button>
+            @Model.LoggedUser.pseudo
+        </span>
+    </nav>
+    <div class="container-fluid">
+        <div class="col-auto shadow bg-lightgray p-2 m-5">
+            <div class="text-center">
+                <h3>Statistiques du projet</h3>
+                <ul class="nav nav-tabs" id="statsTabs" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link active" id="task-tab" data-toggle="tab" data-target="#firstStatDashboard" type="button" role="tab" aria-controls="firstStatDashboard" aria-selected="true">Général</button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link " id="timespent-tab" data-toggle="tab" data-target="#secondStatDashboard" type="button" role="tab" aria-controls="secondStatDashboard" aria-selected="false">Collaborateurs</button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link " id="timespent-tab" data-toggle="tab" data-target="#secondStatDashboard" type="button" role="tab" aria-controls="secondStatDashboard" aria-selected="false">Mes statistiques</button>
+                    </li>
+                </ul>
+                <div class="tab-content">
+                    <div class="tab-pane fade show active" id="firstStatDashboard" role="tabpanel" aria-labelledby="task-tab">
+                        <div class="row justify-content-center mb-5 mt-2">
+                            <div class="col-6">
+                                <canvas id="nbTasksByState"></canvas>
+                            </div>
+                        </div>
+                        <div class="row justify-content-center m-2">
+                            <div class="col-5">
+                                <canvas id="nbTasksTodoByColl"></canvas>
+                            </div>
+                            <div class="col-5">
+                                <canvas id="nbTasksDoneByColl"></canvas>
+                            </div>
+                        </div>
+                        <div class="row justify-content-center">
+                            <div class="col-5">
+                                <canvas id="timeSpentTasksTodoByColl"></canvas>
+                            </div>
+                            <div class="col-5">
+                                <canvas id="timeSpentTasksDoneByColl"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane fade" id="secondStatDashboard" role="tabpanel" aria-labelledby="timespent-tab">
+                        <div class="align-content-center pr-5 pl-5">
+                            <div class="">
+                                <canvas class="" id="pie2"></canvas>
+                            </div>
+                            <div class="">
+                                <canvas class="" id="bar"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.1.1/chart.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script type="text/javascript">
+
+
+    function logout() {
+        $.ajax({
+            type: "POST",
+            url: "@Url.Action("logout", "Connexion")",
+            success: function () {
+                location.reload()
+            }
+        })
+    }
+
+
+    function shuffleColors(arr) {
+        for (let i = arr.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * i)
+            const temp = arr[i]
+            arr[i] = arr[j]
+            arr[j] = temp
+        }
+        return arr
+
+    }
+    var colors = ['#f47c7c', '#f7f48b', '#a1de93', '#70a1d7', '#f7b9b7', '#a096e0', '#ece9dd', '#9eaeb2', '#cc859a', '#a5e0b6', '#ffb447', '#e8d7ad', '#b1b1b1', '#9ba1d1', '#988270', '#5fe6d0']
+    var colors1 = shuffleColors(colors)
+    $.ajax({
+        type: "GET",
+        url: '@Url.Action("GetProjectStats", "ProjectStats")',
+        data: {
+        },
+        success: function (res) {
+            var nbTasksByState = document.getElementById("nbTasksByState").getContext('2d');
+            var nbTasksByStateChart = new Chart(nbTasksByState, {
+                type: 'bar',
+                data: {
+                    labels: ["À faire", "En cours", "Fait", "Rendu"],
+                    datasets: [{
+                        label: 'Nombre de tâches',
+                        data: res.nbTasksByState,
+                        backgroundColor: colors1
+                    }]
+                },
+                options: {
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        title: {
+                            display: true,
+                            text: 'Nombre de tâches par étape'
+                        },
+                    },
+                }
+            })
+            nbTasksByStateChart.update()
+
+            var nbTasksTodoByColl = document.getElementById("nbTasksTodoByColl").getContext('2d');
+            var nbTasksTodoByCollChart = new Chart(nbTasksTodoByColl, {
+                type: 'bar',
+                data: {
+                    labels: res.collaboratorsLabels,
+                    datasets: [{
+                        label: 'Nombre de tâches',
+                        data: res.nbTodoCollaborators,
+                        backgroundColor: colors1
+                    }]
+                },
+                options: {
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        title: {
+                            display: true,
+                            text: 'Nombre de tâches restantes par collaborateur'
+                        },
+                    },
+                }
+            })
+            nbTasksTodoByCollChart.update()
+
+            var nbTasksDoneByColl = document.getElementById("nbTasksDoneByColl").getContext('2d');
+            var nbTasksDoneByCollChart = new Chart(nbTasksDoneByColl, {
+                type: 'bar',
+                data: {
+                    labels: res.collaboratorsLabels,
+                    datasets: [{
+                        label: 'Nombre de tâches',
+                        data: res.nbDoneCollaborators,
+                        backgroundColor: colors1
+                    }]
+                },
+                options: {
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        title: {
+                            display: true,
+                            text: 'Nombre de tâches terminées par collaborateur'
+                        },
+                    },
+                }
+            })
+            nbTasksDoneByCollChart.update()
+
+            var timeSpentTasksTodoByColl = document.getElementById("timeSpentTasksTodoByColl").getContext('2d');
+            var timeSpentTasksTodoByCollChart = new Chart(timeSpentTasksTodoByColl, {
+                type: 'bar',
+                data: {
+                    labels: res.collaboratorsLabels,
+                    datasets: [{
+                        label: 'Heure(s)',
+                        data: res.timeSpentTodoCollaborators,
+                        backgroundColor: colors1
+                    }]
+                },
+                options: {
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        title: {
+                            display: true,
+                            text: 'Temps de travail restant par collaborateur (en heure)'
+                        },
+                    },
+                }
+            })
+            timeSpentTasksTodoByCollChart.update()
+
+            var timeSpentTasksDoneByColl = document.getElementById("timeSpentTasksDoneByColl").getContext('2d');
+            var timeSpentTasksDoneByCollChart = new Chart(timeSpentTasksDoneByColl, {
+                type: 'bar',
+                data: {
+                    labels: res.collaboratorsLabels,
+                    datasets: [{
+                        label: 'Heure(s)',
+                        data: res.timeSpentDoneCollaborators,
+                        backgroundColor: colors1
+                    }]
+                },
+                options: {
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        title: {
+                            display: true,
+                            text: 'Temps de travail effectué par collaborateur (en heure)'
+                        },
+                    },
+                }
+            })
+            timeSpentTasksDoneByCollChart.update()
+        },
+        error: function (err) {
+            console.error("Error get data chart: " + err)
+        }
+    })
+</script>

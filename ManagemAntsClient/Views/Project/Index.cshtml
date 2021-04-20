@@ -14,7 +14,7 @@
         </span>
     </nav>
     <div class="row no-gutters justify-content-around">
-        <div class="col-8 shadow bg-lightgray p-2 m-3">
+        <div class="col-8 shadow bg-lightgray p-2 m-3" style="height:100%">
             <div class="row mt-2">
                 <div class="col-3 align-self-center">
                     <div class="row">
@@ -24,11 +24,11 @@
                             </a>
 
                             <div class="dropdown-menu" id="taskFilters" belaria-laledby="dropdownMenuLink">
+                                <a class="dropdown-item btn">Aucun filtre</a>
                                 <a class="dropdown-item btn">A faire</a>
                                 <a class="dropdown-item btn">En cours</a>
                                 <a class="dropdown-item btn">Fait</a>
                                 <a class="dropdown-item btn">Rendu</a>
-                                <a class="dropdown-item btn">Pas de filtre</a>
                             </div>
                         </div>
                         <div class="form-check align-self-center ml-2">
@@ -96,7 +96,7 @@
                     <partial name="_taskFinishedModal" model="@new ManagemAntsClient.Models.InfosTask() { Task = task, LoggedUser = Model.LoggedUser }" />
                 }
                 <div class="row justify-content-center">
-                    <button onclick="openTaskAdd()" class="btn btn-secondary btn-sm">+</button>
+                    <button onclick="openTaskAdd()" class="btn btn-secondary">+</button>
                 </div>
             </div>
         </div>
@@ -157,11 +157,15 @@
                     </div>
                 }
             </div>
-            <button class="btn btn-secondary btn-lg m-3">Statistiques</button>
-            @if (Model.LoggedUser.role == 0)
-            {
-                <button onclick="openDeleteProject(@Model.Project.id)" class="btn btn-danger btn-lg m-3">Suprimer le projet</button>
-            }
+            <div class="row justify-content-center">
+                <a href="@Url.Action("Index", "ProjectStats", new { projectId = Model.Project.id })">
+                    <button class="btn btn-secondary btn-lg mr-3">Statistiques</button>
+                </a>
+                @if (Model.LoggedUser.role == 0)
+                {
+                    <button onclick="openDeleteProject(@Model.Project.id)" class="btn btn-danger btn-lg ml-3">Suprimer le projet</button>
+                }
+            </div>
         </div>
 
 

@@ -52,16 +52,20 @@ namespace ManagemAntsClient.Controllers
 
             HttpResponseMessage response = client.GetAsync("").Result;
 
-            Models.User user = new Models.User();
+            Models.User user = null;
+
+            var userList = new List<Models.User>();
 
             if (response.IsSuccessStatusCode)
             {
-                user = await JsonSerializer.DeserializeAsync<Models.User>(await response.Content.ReadAsStreamAsync());
-                if (user == null)
+                userList = await JsonSerializer.DeserializeAsync<List<Models.User>>(await response.Content.ReadAsStreamAsync());
+                if (userList.Count == 0)
                 {
                     //user not found
                     return RedirectToAction("Index", "Connexion");
                 }
+
+                user = userList[0];
             }
 
             // check password
@@ -113,14 +117,18 @@ namespace ManagemAntsClient.Controllers
 
             Models.User responseUser = null;
 
+            var userList = new List<Models.User>();
+
             if (response.IsSuccessStatusCode)
             {
-                responseUser = await JsonSerializer.DeserializeAsync<Models.User>(await response.Content.ReadAsStreamAsync());
-                if (responseUser == null)
+                userList = await JsonSerializer.DeserializeAsync<List<Models.User>>(await response.Content.ReadAsStreamAsync());
+                if (userList.Count == 0)
                 {
-                    // nope registered
+                    //user not found
                     return RedirectToAction("Index", "Connexion");
                 }
+
+                responseUser = userList[0];
             }
 
             // yes registered

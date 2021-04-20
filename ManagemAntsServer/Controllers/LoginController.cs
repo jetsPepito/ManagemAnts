@@ -22,9 +22,9 @@ namespace ManagemAntsServer.Controllers
         [HttpGet("/api/[controller]")]
         public IActionResult Login(string pseudo)
         {
-            var user = _userRepository.GetByPredicate(x => x.Pseudo == pseudo).FirstOrDefault();
+            var users = _userRepository.GetByPredicate(x => x.Pseudo == pseudo);
 
-            return Ok(user);
+            return Ok(users);
         }
 
         [HttpPost("")]

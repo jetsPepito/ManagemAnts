@@ -9,7 +9,7 @@
         <a href="@Url.Action("Index", "Project", new { projectId = Model.ProjectId, taskId = Model.TaskId })" class="navbar-brand text-white">Retour au projet</a>
         <span class="navbar-text text-white">@Model.TaskName</span>
         <span class="navbar-text text-white">
-            <button class="btn btn-danger btn-sm mr-2">Deconnexion</button>
+            <button class="btn btn-danger btn-sm mr-2" onclick="logout()">Deconnexion</button>
             @Model.LoggedUser.pseudo
         </span>
     </nav>
@@ -70,6 +70,15 @@
 </div>
 
 <script>
+    function logout() {
+        $.ajax({
+            type: "POST",
+            url: "@Url.Action("logout", "Connexion")",
+            success: function () {
+                location.reload()
+            }
+        })
+    }
     function addCollaborator(id) {
         $.ajax({
             type: "POST",

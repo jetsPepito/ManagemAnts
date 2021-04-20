@@ -81,7 +81,8 @@ namespace ManagemAntsClient.Controllers
                             {
                                 time += task.duration;
                             }
-                            timeSpent += task.timeSpent != null ? task.timeSpent.Value : 0;
+                            if (task.state == 3)
+                                timeSpent += task.timeSpent != null ? task.timeSpent.Value : 0;
                         }
                     }
                     valuesCount.Add(count);

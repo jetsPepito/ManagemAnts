@@ -5,15 +5,12 @@
 
 <div>
     <nav class="navbar py-0 bg-blue shadow">
-        <a class="navbar-brand text-white">Accueil</a>
+        <a class="navbar-brand text-white">Managem'Ants</a>
         <span class="navbar-text text-white">Tableau de bord</span>
         <span class="navbar-text text-white">
-            @using (Html.BeginForm("logout", "connexion", FormMethod.Post))
-            {
-                <button class="btn btn-danger btn-sm mr-2">Deconnexion</button>
-            }
-                @Model.LoggedUser.pseudo
-            </span>
+            <button class="btn btn-danger btn-sm mr-2" onclick="logout()">Deconnexion</button>
+            @Model.LoggedUser.pseudo
+           </span>
     </nav>
     <div class="container-fluid">
         <div class="row  no-gutters justify-content-around">
@@ -107,6 +104,19 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.1.1/chart.js"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script type="text/javascript">
+
+
+    function logout() {
+        $.ajax({
+            type: "POST",
+            url: "@Url.Action("logout", "Connexion")",
+            success: function () {
+                location.reload()
+            }
+        })
+    }
+
+
     function shuffleColors(arr) {
         for (let i = arr.length - 1; i > 0; i--) {
             const j = Math.floor(Math.random() * i)

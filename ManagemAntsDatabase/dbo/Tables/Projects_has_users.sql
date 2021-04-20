@@ -10,3 +10,15 @@
 
 
 
+
+
+
+GO
+CREATE NONCLUSTERED INDEX [IX_Projects_has_users_user_id]
+    ON [dbo].[Projects_has_users]([user_id] ASC);
+
+
+GO
+CREATE NONCLUSTERED INDEX [IX_Projects_has_users_project_id]
+    ON [dbo].[Projects_has_users]([project_id] ASC);
+

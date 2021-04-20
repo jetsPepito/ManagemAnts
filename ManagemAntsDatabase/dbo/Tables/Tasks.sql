@@ -11,3 +11,10 @@
     CONSTRAINT [FK_Tasks_Projects] FOREIGN KEY ([project_id]) REFERENCES [dbo].[Projects] ([id])
 );
 
+
+
+
+GO
+CREATE NONCLUSTERED INDEX [IX_Tasks_project_id]
+    ON [dbo].[Tasks]([project_id] ASC);
+

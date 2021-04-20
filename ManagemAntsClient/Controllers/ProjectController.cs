@@ -60,7 +60,7 @@ namespace ManagemAntsClient.Controllers
             var taskOpened = GetTaskOpened();
             if (taskOpened == null)
                 taskOpened = "-1";
-            var loggedUser = await getLoggedUser("1");
+            var loggedUser = await getLoggedUser("5");
             var tasks = (await GetTaskByProjectId(projectId, filter));
             tasks = tasks.Where(x => !bool.Parse(myTask) || x.collaborators.Any(y => y.id == loggedUser.id)).ToList();
             var project = (await GetProjectById(projectId));

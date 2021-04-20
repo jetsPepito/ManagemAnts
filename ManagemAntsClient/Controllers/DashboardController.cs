@@ -30,7 +30,7 @@ namespace ManagemAntsClient.Controllers
         public async Task<ActionResult> Index(string searchFilter = "")
         {
             
-            var user = await getLoggedUser("1");
+            var user = await getLoggedUser("5");
 
             HttpClient client = SetupClient("Project/user/" + user.id + "/research/" + searchFilter);
             HttpResponseMessage response = client.GetAsync("").Result;
@@ -43,7 +43,48 @@ namespace ManagemAntsClient.Controllers
                 Projects = new Projects(projects),
                 LoggedUser = user,
             };
+            await GetStatsTasksByProjects();
             return View(_page);
+        }
+
+        [HttpGet]
+        public async Task<ActionResult> GetStatsTasksByProjects()
+        {
+            var client = SetupClient("Project/stats/tasks/" + _page.LoggedUser.id);
+            HttpResponseMessage response = client.GetAsync("").Result;
+            var tasks = new List<Models.Task>();
+
+            var labels = new List<string>();
+            var valuesCount = new List<int>();
+            var valuesTime = new List<int>();
+
+            if (response.IsSuccessStatusCode)
+            {
+                tasks = await JsonSerializer.DeserializeAsync<List<Models.Task>>(await response.Content.ReadAsStreamAsync());
+                var groupedByProjects = tasks.GroupBy(el => el.projectId).ToList();
+                foreach (var project in _page.Projects.projects)
+                {
+                    labels.Add(project.name);
+                    int count = 0;
+                    int time = 0;
+                    int index = groupedByProjects.FindIndex(x => x.Key == project.id);
+                    if (index != -1)
+                    {
+                        count = groupedByProjects[index].Count();
+                        foreach (var task in groupedByProjects[index])
+                        {
+                            if (task.state < 2)
+                            {
+                                time += task.duration;
+                            }
+                        }
+                    }
+                    valuesCount.Add(count);
+                    valuesTime.Add(time);
+                }
+            }
+
+            return Ok(new { labels = labels, valuesCount = valuesCount, valuesTime = valuesTime });
         }
 
         public ActionResult Research(string search)

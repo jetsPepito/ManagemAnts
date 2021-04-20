@@ -189,7 +189,7 @@ namespace ManagemAntsServer.Controllers
             return Ok(result);
         }
 
-        [HttpGet("/api/[controller]/stats/{userId}")]
+        [HttpGet("/api/[controller]/stats/tasks/{userId}")]
         public async Task<IActionResult> GetTasksFromUser(string userId)
         {
             long longUserId = long.Parse(userId);

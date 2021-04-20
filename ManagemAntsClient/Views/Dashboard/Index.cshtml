@@ -45,20 +45,13 @@
             <div class="col-5 shadow bg-lightgray p-2 m-3 ml-4 mr-4">
                 <div class="text-center">
                     <h3>Statistiques</h3>
-                    <div class="row">
-                        <div class="col-6">
+
+                    <div class="row justify-content-around">
+                        <div class="col-5">
                             <canvas class="" id="pie"></canvas>
                         </div>
-                        <div class="col-6">
-
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-6">
+                        <div class="col-5">
                             <canvas class="" id="pie2"></canvas>
-                        </div>
-                        <div class="col-6">
-
                         </div>
                     </div>
                 </div>
@@ -90,28 +83,73 @@
         </div>
     </div>
 </div>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.1.1/chart.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.1.1/chart.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script type="text/javascript">
-    // CHARTS
-    var pie = document.getElementById("pie").getContext('2d');
-    var piechart = new Chart(pie, {
-        type: 'pie',
+
+    var colors = ['#f47c7c', '#f7f48b', '#a1de93', '#70a1d7', '#f7b9b7', '#a096e0', '#ece9dd', '#9eaeb2', '#cc859a', '#a5e0b6', '#ffb447', '#e8d7ad', '#b1b1b1', '#9ba1d1', '#988270', '#5fe6d0']
+
+    $.ajax({
+        type: "GET",
+        url: '@Url.Action("GetStatsTasksByProjects", "Dashboard")',
         data: {
-            labels: ['1', '2', '3'],
-            datasets: [{
-                label: 'Stats',
-                data: [10, 20, 30],
-                backgroundColor: ['#f00', '#0f0', '#00f']
-            }],
-            options: {
-                scales: {
-                    yAxes: [{
-                        ticks: {
-                            beginAtZero: true
-                        }
+        },
+        success: function (res) {
+            var pie = document.getElementById("pie").getContext('2d');
+            var piechart = new Chart(pie, {
+                type: 'pie',
+                data: {
+                    labels: res.labels,
+                    datasets: [{
+                        label: 'Nombre de tâches par projet',
+                        data: res.valuesCount,
+                        backgroundColor: colors
                     }]
+                },
+                options: {
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            align: 'start'
+                        },
+                        title: {
+                            display: true,
+                            text: 'Nombre de tâches par projet'
+                        },
+                    }
                 }
-            }
+            })
+
+            var pie2 = document.getElementById("pie2").getContext('2d');
+            var piechart2 = new Chart(pie2, {
+                type: 'pie',
+                data: {
+                    labels: res.labels,
+                    datasets: [{
+                        label: 'Temps restant par projet (en heure)',
+                        data: res.valuesTime,
+                        backgroundColor: colors
+                    }]
+                },
+                options: {
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            align: 'start'
+                        },
+                        title: {
+                            display: true,
+                            text: 'Temps restant par projet (en heure)',
+                        }
+                    }
+                }
+            })
+
+            piechart.update()
+            piechart2.update()
+        },
+        error: function (err) {
+            console.error("Error get data chart: " + err)
         }
     })
 </script>

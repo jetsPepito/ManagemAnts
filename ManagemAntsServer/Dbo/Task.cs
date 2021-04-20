@@ -7,6 +7,10 @@ namespace ManagemAntsServer.Dbo
 {
     public class Task: IObjectWithId
     {
+        public Task()
+        {
+           collaborators = new List<User>();
+        }
         public long Id { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
@@ -16,5 +20,6 @@ namespace ManagemAntsServer.Dbo
         public int? TimeSpent { get; set; }
         public long ProjectId { get; set; }
         public virtual Project Project { get; set; }
+        public List<User> collaborators { get; set; }
     }
 }

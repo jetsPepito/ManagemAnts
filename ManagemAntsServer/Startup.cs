@@ -31,7 +31,7 @@ namespace ManagemAntsServer
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddEntityFrameworkSqlServer()
-                        .AddDbContext<DataAccess.EfModels.ManagemAntsDbContext>(options => options.UseSqlServer("Data Source=.\\MTI;Initial Catalog=ManagemAntsDb;Trusted_Connection=True"));
+                        .AddDbContext<DataAccess.EfModels.ManagemAntsDbContext>(options => options.UseSqlServer(_connectionString));
             services.AddAutoMapper(typeof(DataAccess.AutomapperProfiles));
             services.AddRazorPages();
             services.AddControllers();

@@ -35,6 +35,8 @@ namespace ManagemAntsServer.Controllers
         [HttpGet("/api/[controller]/research/{filter}")]
         public IActionResult GetByFilter(string filter)
         {
+            if (filter== null)
+                filter = "";
             var filterLower = filter.ToLower();
             var result = _userRepository.GetByPredicate(
                     x => x.Firstname.ToLower().Contains(filterLower)

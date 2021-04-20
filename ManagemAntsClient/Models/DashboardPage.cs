@@ -14,6 +14,7 @@ namespace ManagemAntsClient.Models
         public string projectDescription;
 
         public string addedMessage;
+        public string search;
 
         public List<User> addedCollaborators = new List<User>();
     }

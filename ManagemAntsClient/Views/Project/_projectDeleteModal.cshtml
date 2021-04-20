@@ -1,0 +1,34 @@
+﻿@model ManagemAntsClient.Models.Project
+<div id="projectDeleteModal-@(Model.id)" class="modal" tabindex="-1">
+    <div class="modal-dialog">
+        @using (Html.BeginForm("DeleteProject", "Project", FormMethod.Post))
+        {
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">êtes-vous sûr de vouloir supprimer le projet</h5>
+                    <button type="button" class="close noBorder" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+
+                <div class="modal-body">
+                    <div id="TaskModifyName" class="row mb-3">
+                        <div class="col-auto align-self-center font-weight-bold">Nom : @Model.name</div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <div class="m-auto">
+                        <button type="button" class="btn btn-primary" onclick="goBack(@Model.id)">Annuler</button>
+                        <button type="submit" class="btn btn-danger">Supprimer</button>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+<script>
+    function goBack(id) {
+        $(`#projectDeleteModal-${id}`).modal("hide");
+    }
+</script>

@@ -15,7 +15,7 @@ namespace ManagemAntsClient.Controllers
 {
     public class DashboardController : Controller
     {
-        public static DashboardPage dashboard;
+        public static DashboardPage _page;
         private string url = "https://localhost:44352/api/";
 
         private HttpClient SetupClient(string endpoint)
@@ -28,60 +28,55 @@ namespace ManagemAntsClient.Controllers
         }
 
         // GET: DashboardController
-        public async Task<ActionResult> Index()
+        public async Task<ActionResult> Index(string searchFilter = "")
         {
-            HttpClient client = SetupClient("Project/user/5");
+            
+            var user = await getLoggedUser("1");
+
+            HttpClient client = SetupClient("Project/user/" + user.id + "/research/" + searchFilter);
             HttpResponseMessage response = client.GetAsync("").Result;
 
             IEnumerable<Project> projects = null;
             if (response.IsSuccessStatusCode)
                 projects = await JsonSerializer.DeserializeAsync<IEnumerable<Project>>(await response.Content.ReadAsStreamAsync());
 
-            var user = new User() { id = 5, firstname = "Jeremie", lastname = "Zeitoun", pseudo = "Kaijo", password = "toto" };
-            dashboard = new DashboardPage() {
+            _page = new DashboardPage() {
                 Projects = new Projects(projects),
                 LoggedUser = user,
             };
-            return View(dashboard);
+            return View(_page);
         }
 
-        [HttpGet]
-        public async Task<ActionResult> addCollaborator(string pseudo, string projectName, string projectDescription)
+        public ActionResult Research(string search)
         {
-            var newDashboard = new DashboardPage() {
-                projectName = projectName != null ? projectName : "",
-                projectDescription = projectDescription != null ? projectDescription : ""
-            };
-
-            if (dashboard.addedCollaborators.Find((user) => user.pseudo == pseudo) == null)
+            return RedirectToAction("Index", "Dashboard", new
             {
-                HttpClient client = SetupClient("User/pseudo/" + pseudo);
-                HttpResponseMessage response = client.GetAsync("").Result;
-                IEnumerable<User> user = null;
-                if (response.IsSuccessStatusCode)
+                searchFilter = search
+            });
+        }
+
+
+        [HttpGet]
+        public async Task<Models.User> getLoggedUser(string userId)
+        {
+            var client = SetupClient("User/" + userId);
+            HttpResponseMessage response = client.GetAsync("").Result;
+            var user = new Models.User();
+            var responseUser = new List<Models.User>();
+
+            if (response.IsSuccessStatusCode)
+            {
+                responseUser = await JsonSerializer.DeserializeAsync<List<Models.User>>(await response.Content.ReadAsStreamAsync());
+                if (responseUser.Count == 0)
                 {
-                    user = await JsonSerializer.DeserializeAsync<IEnumerable<User>>(await response.Content.ReadAsStreamAsync());
-                    if (user.Count() == 0)
-                    {
-                        newDashboard.addedMessage = "L'utilisateur avec le pseudonyme " + pseudo + " est introuvable.";
-                    }
-                    else
-                    {
-                        newDashboard.addedCollaborators.Add(user.First());
-                        newDashboard.addedMessage = pseudo + " a été ajouté avec succes.";
-                    }
+                    //FIXME
+                    throw new NotImplementedException();
                 }
                 else
-                {
-                    newDashboard.addedMessage = "Impossible d'ajouter ce collaborateur.";
-                }
-            }
-            else
-            {
-                newDashboard.addedMessage = "Ce collaborateur a déjà été ajouté.";
+                    user = responseUser[0];
             }
 
-            return RedirectToAction("Index", "Dashboard");
+            return user;
         }
 
         [HttpPost]

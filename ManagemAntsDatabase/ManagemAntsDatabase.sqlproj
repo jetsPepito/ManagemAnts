@@ -64,5 +64,6 @@
     <Build Include="dbo\Tables\Tasks.sql" />
     <Build Include="dbo\Tables\Users.sql" />
     <Build Include="dbo\Tables\Projects_has_users.sql" />
+    <Build Include="dbo\Tables\Users_has_tasks.sql" />
   </ItemGroup>
 </Project>

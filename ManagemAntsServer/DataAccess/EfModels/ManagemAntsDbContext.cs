@@ -23,6 +23,7 @@ namespace ManagemAntsServer.DataAccess.EfModels
         public virtual DbSet<ProjectsHasUser> ProjectsHasUsers { get; set; }
         public virtual DbSet<Task> Tasks { get; set; }
         public virtual DbSet<User> Users { get; set; }
+        public virtual DbSet<UsersHasTask> UsersHasTasks { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -142,6 +143,29 @@ namespace ManagemAntsServer.DataAccess.EfModels
                     .HasMaxLength(50)
                     .IsUnicode(false)
                     .HasColumnName("pseudo");
+            });
+
+            modelBuilder.Entity<UsersHasTask>(entity =>
+            {
+                entity.ToTable("Users_has_tasks");
+
+                entity.Property(e => e.Id).HasColumnName("id");
+
+                entity.Property(e => e.TaskId).HasColumnName("task_id");
+
+                entity.Property(e => e.UserId).HasColumnName("user_id");
+
+                entity.HasOne(d => d.Task)
+                    .WithMany(p => p.UsersHasTasks)
+                    .HasForeignKey(d => d.TaskId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_Users_has_tasks_Tasks");
+
+                entity.HasOne(d => d.User)
+                    .WithMany(p => p.UsersHasTasks)
+                    .HasForeignKey(d => d.UserId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_Users_has_tasks_Users");
             });
 
             OnModelCreatingPartial(modelBuilder);

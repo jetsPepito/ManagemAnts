@@ -56,6 +56,7 @@ namespace WebApplication.DataAccess
         public virtual async Task<ModelEntity> Insert(ModelEntity entity)
         {
             DBEntity dbEntity = _mapper.Map<DBEntity>(entity);
+
             _set.Add(dbEntity);
             try
             {

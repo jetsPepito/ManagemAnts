@@ -62,7 +62,7 @@ namespace ManagemAntsClient.Controllers
             var taskOpened = GetTaskOpened();
             if (taskOpened == null)
                 taskOpened = "-1";
-            var loggedUser = await getLoggedUser("1");
+            var loggedUser = getLoggedUser();
             var tasks = (await GetTaskByProjectId(projectId, filter));
             tasks = tasks.Where(x => !bool.Parse(myTask) || x.collaborators.Any(y => y.id == loggedUser.id)).ToList();
             var project = (await GetProjectById(projectId));
@@ -92,25 +92,20 @@ namespace ManagemAntsClient.Controllers
             return View(_projectPage);
         }
 
-        [HttpGet]
-        public async Task<Models.User> getLoggedUser(string userId)
+        public Models.User getLoggedUser()
         {
-            var client = SetUpClient("User/" + userId);
-            HttpResponseMessage response = client.GetAsync("").Result;
-            var user = new Models.User();
-            var responseUser = new List<Models.User>();
 
-            if (response.IsSuccessStatusCode)
+            var names = this.UserName().Split(' ');
+            var firstname = names[0];
+            var lastname = names[1];
+
+            var user = new Models.User()
             {
-                responseUser = await JsonSerializer.DeserializeAsync<List<Models.User>>(await response.Content.ReadAsStreamAsync());
-                if (responseUser.Count == 0)
-                {
-                    //FIXME
-                    throw new NotImplementedException();
-                }
-                else
-                    user = responseUser[0];
-            }
+                id = long.Parse(this.UserId()),
+                firstname = firstname,
+                lastname = lastname,
+                pseudo = this.UserPseudo(),
+            };
 
             return user;
         }

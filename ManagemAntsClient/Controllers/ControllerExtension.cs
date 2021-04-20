@@ -14,5 +14,8 @@ namespace ManagemAntsClient.Controllers
 
         public static string UserName(this Controller controller) =>
             controller.User.FindFirstValue(ClaimTypes.Name);
+
+        public static string UserPseudo(this Controller controller) =>
+            controller.User.FindFirstValue(ClaimTypes.GivenName);
     }
 }

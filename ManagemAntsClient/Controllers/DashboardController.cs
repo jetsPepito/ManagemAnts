@@ -32,7 +32,7 @@ namespace ManagemAntsClient.Controllers
         public async Task<ActionResult> Index(string searchFilter = "")
         {
             
-            var user = await getLoggedUser("1");
+            var user = getLoggedUser();
 
             HttpClient client = SetupClient("Project/user/" + user.id + "/research/" + searchFilter);
             HttpResponseMessage response = client.GetAsync("").Result;
@@ -58,24 +58,20 @@ namespace ManagemAntsClient.Controllers
 
 
         [HttpGet]
-        public async Task<Models.User> getLoggedUser(string userId)
+        public Models.User getLoggedUser()
         {
-            var client = SetupClient("User/" + userId);
-            HttpResponseMessage response = client.GetAsync("").Result;
-            var user = new Models.User();
-            var responseUser = new List<Models.User>();
 
-            if (response.IsSuccessStatusCode)
+            var names = this.UserName().Split(' ');
+            var firstname = names[0];
+            var lastname = names[1];
+
+            var user = new Models.User()
             {
-                responseUser = await JsonSerializer.DeserializeAsync<List<Models.User>>(await response.Content.ReadAsStreamAsync());
-                if (responseUser.Count == 0)
-                {
-                    //FIXME
-                    throw new NotImplementedException();
-                }
-                else
-                    user = responseUser[0];
-            }
+                id = long.Parse(this.UserId()),
+                firstname = firstname,
+                lastname = lastname,
+                pseudo = this.UserPseudo(),
+            };
 
             return user;
         }

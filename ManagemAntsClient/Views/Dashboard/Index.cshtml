@@ -8,9 +8,12 @@
         <a class="navbar-brand text-white">Accueil</a>
         <span class="navbar-text text-white">Tableau de bord</span>
         <span class="navbar-text text-white">
-            <button class="btn btn-danger btn-sm mr-2">Deconnexion</button>
-            @Model.LoggedUser.pseudo
-        </span>
+            @using (Html.BeginForm("logout", "connexion", FormMethod.Post))
+            {
+                <button class="btn btn-danger btn-sm mr-2">Deconnexion</button>
+            }
+                @Model.LoggedUser.pseudo
+            </span>
     </nav>
     <div class="container-fluid">
         <div class="row  no-gutters justify-content-around">

@@ -1,4 +1,5 @@
 ﻿using ManagemAntsClient.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -16,6 +17,7 @@ using System.Web;
 
 namespace ManagemAntsClient.Controllers
 {
+    [Authorize]
     public class ProjectController : Controller
     {
         private readonly ILogger<ProjectController> _logger;

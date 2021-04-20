@@ -1,4 +1,5 @@
 ﻿using ManagemAntsClient.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -12,6 +13,7 @@ using System.Threading.Tasks;
 
 namespace ManagemAntsClient.Controllers
 {
+    [Authorize]
     public class DashboardController : Controller
     {
         public static DashboardPage _page;

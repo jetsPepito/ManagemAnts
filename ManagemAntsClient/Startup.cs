@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -24,6 +25,17 @@ namespace ManagemAntsClient
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllersWithViews();
+
+            services.AddSession();
+
+            services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+                .AddCookie(options => {
+                    options.LoginPath = "/connexion";
+
+                });
+
+
+            services.AddMvc(option => option.EnableEndpointRouting = false).AddRazorRuntimeCompilation();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -44,13 +56,30 @@ namespace ManagemAntsClient
 
             app.UseRouting();
 
+            app.UseSession();
+
+            app.UseAuthentication();
+
             app.UseAuthorization();
 
+            /*
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllerRoute(
                     name: "default",
-                    pattern: "{controller=Dashboard}/{action=Index}/{id?}");
+                    pattern: "{controller=Connexion}/{action=Index}/{id?}");
+            });
+
+            */
+            // Register routes here
+            app.UseMvc(routes =>
+            {
+                routes.MapRoute(
+                    name: "default",
+                    template: "{controller=DashBoard}/{action=Index}/{id?}");
+                routes.MapRoute(
+                    name: "Project",
+                    template: "{controller=Project}/{action=Index}/{id?}");
             });
         }
     }

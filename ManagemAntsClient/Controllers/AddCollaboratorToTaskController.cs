@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -11,6 +12,7 @@ using System.Threading.Tasks;
 
 namespace ManagemAntsClient.Controllers
 {
+    [Authorize]
     public class AddCollaboratorToTaskController : Controller
     {
         private string url = "https://localhost:44352/api/";
@@ -27,7 +29,7 @@ namespace ManagemAntsClient.Controllers
         // GET: AddCollaboratorToTaskController
         public async Task<ActionResult> Index(string projectId, string taskId, string taskName, string userId, string searchFilter = "")
         {
-            var user = await getLoggedUser(userId);
+            var user = getLoggedUser();
 
             var searchUsers = new List<Models.User>();
             var client = SetUpClient("Project/" + projectId + "/users/research/" + searchFilter);
@@ -53,24 +55,20 @@ namespace ManagemAntsClient.Controllers
         }
 
         [HttpGet]
-        public async Task<Models.User> getLoggedUser(string userId)
+        public Models.User getLoggedUser()
         {
-            var client = SetUpClient("User/" + userId);
-            HttpResponseMessage response = client.GetAsync("").Result;
-            var user = new Models.User();
-            var responseUser = new List<Models.User>();
 
-            if (response.IsSuccessStatusCode)
+            var names = this.UserName().Split(' ');
+            var firstname = names[0];
+            var lastname = names[1];
+
+            var user = new Models.User()
             {
-                responseUser = await JsonSerializer.DeserializeAsync<List<Models.User>>(await response.Content.ReadAsStreamAsync());
-                if (responseUser.Count == 0)
-                {
-                    //FIXME
-                    throw new NotImplementedException();
-                }
-                else
-                    user = responseUser[0];
-            }
+                id = long.Parse(this.UserId()),
+                firstname = firstname,
+                lastname = lastname,
+                pseudo = this.UserPseudo(),
+            };
 
             return user;
         }

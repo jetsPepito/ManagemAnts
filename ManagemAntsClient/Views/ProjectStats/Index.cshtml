@@ -8,7 +8,7 @@
         <a href="@Url.Action("Index", "Project", new { projectId = Model.Project.id })" class="navbar-brand text-white">
             <button class="btn btn-sm bg-blue-50">Retour au projet</button>
         </a>
-        <span class="navbar-text text-white">Tableau de bord</span>
+        <span class="navbar-text text-white">@Model.Project.name</span>
         <span class="navbar-text text-white">
             <button class="btn btn-danger btn-sm mr-2" onclick="logout()">Deconnexion</button>
             @Model.LoggedUser.pseudo

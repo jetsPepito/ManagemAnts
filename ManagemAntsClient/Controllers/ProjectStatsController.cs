@@ -1,4 +1,5 @@
 ﻿using ManagemAntsClient.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
@@ -14,11 +15,12 @@ using System.Web;
 
 namespace ManagemAntsClient.Controllers
 {
+    [Authorize]
     public class ProjectStatsController : Controller
     {
         private readonly ILogger<ProjectController> _logger;
         private string url = "https://localhost:44352/api/";
-        private static ProjectPage _projectPage;
+        private static ProjectStatsPage _page;
 
         public ProjectStatsController(ILogger<ProjectController> logger)
         {
@@ -45,11 +47,18 @@ namespace ManagemAntsClient.Controllers
         {
             var uri = new Uri(HttpContext.Request.GetDisplayUrl());
             var query = HttpUtility.ParseQueryString(uri.Query);
-            var filter = query.Get("filter");
+            var querySelectedCollaborator = query.Get("selectedCollaborator");
+            Models.User? selectedCollaborator = null;
+            var isInCollaboratorTab = false;
+            if (!string.IsNullOrEmpty(querySelectedCollaborator))
+            {
+                isInCollaboratorTab = true;
+                selectedCollaborator = await getUserByPseudo(querySelectedCollaborator.Split(' ')[0]);
+            }
             var myTask = query.Get("myTasks") == null ? "false" : query.Get("myTasks");
             var projectId = GetProjectId();
             var loggedUser = getLoggedUser();
-            var tasks = (await GetTaskByProjectId(projectId, filter));
+            var tasks = (await GetTaskByProjectId(projectId, ""));
             tasks = tasks.Where(x => !bool.Parse(myTask) || x.collaborators.Any(y => y.id == loggedUser.id)).ToList();
             var project = (await GetProjectById(projectId));
             tasks.Reverse();
@@ -64,23 +73,37 @@ namespace ManagemAntsClient.Controllers
                 loggedUser.role = 1;
 
 
-            _projectPage = new ProjectPage()
+            _page = new ProjectStatsPage()
             {
                 Project = project,
                 LoggedUser = loggedUser,
                 Tasks = tasks,
                 Collaborators = collaborators,
-                Mangers = managers,
+                Managers = managers,
                 Creators = creators,
-                isMyTasks = bool.Parse(myTask)
+                AllCollaborators = creators.Concat(managers.Concat(collaborators)).ToList(),
+                SelectedCollaborator = selectedCollaborator,
+                isInCollaboratorTab = isInCollaboratorTab,
             };
 
-            return View(_projectPage);
+            return View(_page);
+        }
+
+        public async Task<Models.User> getUserByPseudo(string pseudo)
+        {
+            var client = SetUpClient("user/pseudo/" + pseudo);
+            HttpResponseMessage response = client.GetAsync("").Result;
+
+            var user = new List<Models.User>();
+            if (response.IsSuccessStatusCode)
+            {
+                user = await JsonSerializer.DeserializeAsync<List<Models.User>>(await response.Content.ReadAsStreamAsync());
+            }
+            return user.FirstOrDefault();
         }
 
         public Models.User getLoggedUser()
         {
-
             var names = this.UserName().Split(' ');
             var firstname = names[0];
             var lastname = names[1];
@@ -157,38 +180,52 @@ namespace ManagemAntsClient.Controllers
         [HttpGet]
         public async Task<ActionResult> GetProjectStats()
         {
-            var collaborators = _projectPage.Creators.Concat(_projectPage.Mangers.Concat(_projectPage.Collaborators)).ToList();
-            var collaboratorsLabels = collaborators.Select(x => x.pseudo);
-            var timeSpentTodoCollaborators = Enumerable.Repeat(0, collaborators.Count()).ToList();
-            var timeSpentDoneCollaborators = Enumerable.Repeat(0, collaborators.Count()).ToList();
-            var nbTodoCollaborators = Enumerable.Repeat(0, collaborators.Count()).ToList();
-            var nbDoneCollaborators = Enumerable.Repeat(0, collaborators.Count()).ToList();
+            var collaboratorsLabels = _page.AllCollaborators.Select(x => x.pseudo);
+            var timeSpentTodoCollaborators = Enumerable.Repeat(0, _page.AllCollaborators.Count()).ToList();
+            var timeSpentDoneCollaborators = Enumerable.Repeat(0, _page.AllCollaborators.Count()).ToList();
+            var nbTodoCollaborators = Enumerable.Repeat(0, _page.AllCollaborators.Count()).ToList();
+            var nbDoneCollaborators = Enumerable.Repeat(0, _page.AllCollaborators.Count()).ToList();
 
-            var tasksTodo = new List<Models.Task>();
-            var tasksInProgress = new List<Models.Task>();
-            var tasksDone = new List<Models.Task>();
-            var tasksDelivered = new List<Models.Task>();
+            var nbTasksByState = Enumerable.Repeat(0, 4).ToList();
+            var timeByState = Enumerable.Repeat(0, 4).ToList();
 
-            foreach (var task in _projectPage.Tasks)
+            var collaboratorNbByState = Enumerable.Repeat(0, 4).ToList();
+            var collaboratorTimeByState = Enumerable.Repeat(0, 4).ToList();
+            var collaboratorDelay = Enumerable.Repeat(0, 2).ToList();
+
+            var myStatsNbByState = Enumerable.Repeat(0, 4).ToList();
+            var myStatsTimeByState = Enumerable.Repeat(0, 4).ToList();
+            var myStatsDelay = Enumerable.Repeat(0, 2).ToList();
+
+            foreach (var task in _page.Tasks)
             {
-                switch (task.state)
-                {
-                    case 0:
-                        tasksTodo.Add(task);
-                        break;
-                    case 1:
-                        tasksInProgress.Add(task);
-                        break;
-                    case 2:
-                        tasksDone.Add(task);
-                        break;
-                    case 3:
-                        tasksDelivered.Add(task);
-                        break;
-                }
+                nbTasksByState[task.state] += 1;
+                timeByState[task.state] += task.duration;
+
                 foreach (var taskCollaborator in task.collaborators)
                 {
-                    var index = collaborators.FindIndex(x => x.id == taskCollaborator.id);
+                    if (_page.SelectedCollaborator != null && taskCollaborator.id == _page.SelectedCollaborator.id)
+                    {
+                        collaboratorNbByState[task.state] += 1;
+                        collaboratorTimeByState[task.state] += task.duration;
+                        if (task.state > 2)
+                        {
+                            collaboratorDelay[0] += task.duration;
+                            collaboratorDelay[1] += task.timeSpent ?? 0;
+                        }
+                    }
+                    if (taskCollaborator.id == _page.LoggedUser.id)
+                    {
+                        myStatsNbByState[task.state] += 1;
+                        myStatsTimeByState[task.state] += task.duration;
+                        if (task.state > 2)
+                        {
+                            myStatsDelay[0] += task.duration;
+                            myStatsDelay[1] += task.timeSpent ?? 0;
+                        }
+                    }
+
+                    var index = _page.AllCollaborators.FindIndex(x => x.id == taskCollaborator.id);
                     if (index != -1)
                     {
                         if (task.state < 2)
@@ -205,15 +242,20 @@ namespace ManagemAntsClient.Controllers
                 }
             }
 
-
-
             return Ok(new {
-                nbTasksByState = new List<int> { tasksTodo.Count, tasksInProgress.Count, tasksDone.Count, tasksDelivered.Count },
+                nbTasksByState = nbTasksByState,
+                timeByState = timeByState,
                 timeSpentTodoCollaborators = timeSpentTodoCollaborators,
                 timeSpentDoneCollaborators = timeSpentDoneCollaborators,
                 nbTodoCollaborators = nbTodoCollaborators,
                 nbDoneCollaborators = nbDoneCollaborators,
-                collaboratorsLabels = collaboratorsLabels
+                collaboratorsLabels = collaboratorsLabels,
+                collaboratorNbTasksByState = collaboratorNbByState,
+                collaboratorTimeByState = collaboratorTimeByState,
+                collaboratorDelay = collaboratorDelay,
+                myStatsNbTasksByState = myStatsNbByState,
+                myStatsTimeByState = myStatsTimeByState,
+                myStatsDelay = myStatsDelay,
             });
         }
 

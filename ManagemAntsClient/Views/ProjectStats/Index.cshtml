@@ -1,7 +1,7 @@
 ﻿@{
     Layout = "~/Views/Shared/_Navbar.cshtml";
 }
-@model ManagemAntsClient.Models.ProjectPage
+@model ManagemAntsClient.Models.ProjectStatsPage
 
 <div>
     <nav class="navbar py-0 bg-blue shadow">
@@ -20,20 +20,26 @@
                 <h3>Statistiques du projet</h3>
                 <ul class="nav nav-tabs" id="statsTabs" role="tablist">
                     <li class="nav-item" role="presentation">
-                        <button class="nav-link active" id="task-tab" data-toggle="tab" data-target="#firstStatDashboard" type="button" role="tab" aria-controls="firstStatDashboard" aria-selected="true">Général</button>
+                        <button class="@((Model.isInCollaboratorTab) ? "nav-link" : "nav-link active")"  id="general-tab" data-toggle="tab" data-target="#firstStatProject" type="button" role="tab" aria-controls="firstStatProject" aria-selected="@(!Model.isInCollaboratorTab)">Général</button>
                     </li>
                     <li class="nav-item" role="presentation">
-                        <button class="nav-link " id="timespent-tab" data-toggle="tab" data-target="#secondStatDashboard" type="button" role="tab" aria-controls="secondStatDashboard" aria-selected="false">Collaborateurs</button>
+                        <button class="@((Model.isInCollaboratorTab) ? "nav-link active" : "nav-link")" id="collaborators-tab" data-toggle="tab" data-target="#secondStatProject" type="button" role="tab" aria-controls="secondStatProject" aria-selected="@Model.isInCollaboratorTab">Collaborateurs</button>
                     </li>
                     <li class="nav-item" role="presentation">
-                        <button class="nav-link " id="timespent-tab" data-toggle="tab" data-target="#secondStatDashboard" type="button" role="tab" aria-controls="secondStatDashboard" aria-selected="false">Mes statistiques</button>
+                        <button class="nav-link " id="mystats-tab" data-toggle="tab" data-target="#thirdStatProject" type="button" role="tab" aria-controls="thirdStatProject" aria-selected="false">Mes statistiques</button>
                     </li>
                 </ul>
                 <div class="tab-content">
-                    <div class="tab-pane fade show active" id="firstStatDashboard" role="tabpanel" aria-labelledby="task-tab">
+                    <div class="@((Model.isInCollaboratorTab) ? "tab-pane fade" : "tab-pane fade show active")" id="firstStatProject" role="tabpanel" aria-labelledby="general-tab">
+                        <div class="mt-3 mb-5">
+                            <h5>Statistiques générales du projet</h5>
+                        </div>
                         <div class="row justify-content-center mb-5 mt-2">
-                            <div class="col-6">
+                            <div class="col-5">
                                 <canvas id="nbTasksByState"></canvas>
+                            </div>
+                            <div class="col-5">
+                                <canvas id="timeByState"></canvas>
                             </div>
                         </div>
                         <div class="row justify-content-center m-2">
@@ -53,13 +59,54 @@
                             </div>
                         </div>
                     </div>
-                    <div class="tab-pane fade" id="secondStatDashboard" role="tabpanel" aria-labelledby="timespent-tab">
-                        <div class="align-content-center pr-5 pl-5">
-                            <div class="">
-                                <canvas class="" id="pie2"></canvas>
+                    <div class="@((Model.isInCollaboratorTab) ? "tab-pane fade show active" : "tab-pane fade")" id="secondStatProject" role="tabpanel" aria-labelledby="collaborators-tab">
+                        <div class="mt-3 mb-5">
+                            <h5>Statistiques de vos collaborateurs</h5>
+                        </div>
+                        <div>
+                            <div class="dropdown col-auto">
+                                <a class="btn btn-secondary dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    @(Model.SelectedCollaborator == null ? "Selectionez un collaborateur..." :
+                                        Model.SelectedCollaborator.pseudo + " (" + Model.SelectedCollaborator.firstname + " " + Model.SelectedCollaborator.lastname + ")")
+                                </a>
+
+                                <div class="dropdown-menu" id="selectCollaborator" belaria-laledby="dropdownMenuLink">
+                                    @foreach (var collaborator in Model.AllCollaborators.Where(x => x.id != Model.LoggedUser.id))
+                                    {
+                                        <a class="dropdown-item btn">@collaborator.pseudo (@collaborator.firstname @collaborator.lastname)</a>
+                                    }
+                                </div>
                             </div>
-                            <div class="">
-                                <canvas class="" id="bar"></canvas>
+                        </div>
+                        <div class="row justify-content-center mb-5 mt-2">
+                            <div class="col-5">
+                                <canvas id="collaboratorNbTasksByState"></canvas>
+                            </div>
+                            <div class="col-5">
+                                <canvas id="collaboratorTimeByState"></canvas>
+                            </div>
+                        </div>
+                        <div class="row justify-content-center mb-5 mt-2">
+                            <div class="col-5">
+                                <canvas id="collaboratorDelay"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane fade" id="thirdStatProject" role="tabpanel" aria-labelledby="mystats-tab">
+                        <div class="mt-3 mb-5">
+                            <h5>Vos statistiques</h5>
+                            <div class="row justify-content-center mb-5 mt-2">
+                                <div class="col-5">
+                                    <canvas id="myStatsNbTasksByState"></canvas>
+                                </div>
+                                <div class="col-5">
+                                    <canvas id="myStatsTimeByState"></canvas>
+                                </div>
+                            </div>
+                            <div class="row justify-content-center mb-5 mt-2">
+                                <div class="col-5">
+                                    <canvas id="myStatsDelay"></canvas>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -71,8 +118,6 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.1.1/chart.js"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script type="text/javascript">
-
-
     function logout() {
         $.ajax({
             type: "POST",
@@ -96,12 +141,16 @@
     }
     var colors = ['#f47c7c', '#f7f48b', '#a1de93', '#70a1d7', '#f7b9b7', '#a096e0', '#ece9dd', '#9eaeb2', '#cc859a', '#a5e0b6', '#ffb447', '#e8d7ad', '#b1b1b1', '#9ba1d1', '#988270', '#5fe6d0']
     var colors1 = shuffleColors(colors)
+    var colors2 = shuffleColors([...colors1])
+    var colors3 = shuffleColors([...colors2])
     $.ajax({
         type: "GET",
         url: '@Url.Action("GetProjectStats", "ProjectStats")',
         data: {
         },
         success: function (res) {
+            ////////////// General charts ///////////////
+
             var nbTasksByState = document.getElementById("nbTasksByState").getContext('2d');
             var nbTasksByStateChart = new Chart(nbTasksByState, {
                 type: 'bar',
@@ -126,6 +175,31 @@
                 }
             })
             nbTasksByStateChart.update()
+
+            var timeByState = document.getElementById("timeByState").getContext('2d');
+            var timeByStateChart = new Chart(timeByState, {
+                type: 'bar',
+                data: {
+                    labels: ["À faire", "En cours", "Fait", "Rendu"],
+                    datasets: [{
+                        label: 'Heure(s)',
+                        data: res.timeByState,
+                        backgroundColor: colors1
+                    }]
+                },
+                options: {
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        title: {
+                            display: true,
+                            text: 'Coût par étape (en heure)'
+                        },
+                    },
+                }
+            })
+            timeByStateChart.update()
 
             var nbTasksTodoByColl = document.getElementById("nbTasksTodoByColl").getContext('2d');
             var nbTasksTodoByCollChart = new Chart(nbTasksTodoByColl, {
@@ -226,9 +300,178 @@
                 }
             })
             timeSpentTasksDoneByCollChart.update()
+
+
+
+            ////////////// Collaborators charts ///////////////
+
+            var collaboratorNbTasksByState = document.getElementById("collaboratorNbTasksByState").getContext('2d');
+            var collaboratorNbTasksByStateChart = new Chart(collaboratorNbTasksByState, {
+                type: 'bar',
+                data: {
+                    labels: ["À faire", "En cours", "Fait", "Rendu"],
+                    datasets: [{
+                        label: 'Nombre de tâches',
+                        data: res.collaboratorNbTasksByState,
+                        backgroundColor: colors2
+                    }]
+                },
+                options: {
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        title: {
+                            display: true,
+                            text: 'Nombre de tâches par étape'
+                        },
+                    },
+                }
+            })
+            collaboratorNbTasksByStateChart.update()
+
+            var collaboratorTimeByState = document.getElementById("collaboratorTimeByState").getContext('2d');
+            var collaboratorTimeByStateChart = new Chart(collaboratorTimeByState, {
+                type: 'bar',
+                data: {
+                    labels: ["À faire", "En cours", "Fait", "Rendu"],
+                    datasets: [{
+                        label: 'Heure(s)',
+                        data: res.collaboratorTimeByState,
+                        backgroundColor: colors2
+                    }]
+                },
+                options: {
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        title: {
+                            display: true,
+                            text: 'Coût par étape (en heure)'
+                        },
+                    },
+                }
+            })
+            collaboratorTimeByStateChart.update()
+
+            var collaboratorDelay = document.getElementById("collaboratorDelay").getContext('2d');
+            var collaboratorDelayChart = new Chart(collaboratorDelay, {
+                type: 'bar',
+                data: {
+                    labels: ["Temps prévu", "Temps réelement dépensé"],
+                    datasets: [{
+                        label: 'Heure(s)',
+                        data: res.collaboratorDelay,
+                        backgroundColor: colors2
+                    }]
+                },
+                options: {
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        title: {
+                            display: true,
+                            text: 'Temps prévu / Temps réel (en heure)'
+                        },
+                    },
+                }
+            })
+            collaboratorDelayChart.update()
+
+
+
+            ////////////// MyStats charts ///////////////
+
+            var myStatsNbTasksByState = document.getElementById("myStatsNbTasksByState").getContext('2d');
+            var myStatsNbTasksByStateChart = new Chart(myStatsNbTasksByState, {
+                type: 'bar',
+                data: {
+                    labels: ["À faire", "En cours", "Fait", "Rendu"],
+                    datasets: [{
+                        label: 'Nombre de tâches',
+                        data: res.myStatsNbTasksByState,
+                        backgroundColor: colors3
+                    }]
+                },
+                options: {
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        title: {
+                            display: true,
+                            text: 'Nombre de tâches par étape'
+                        },
+                    },
+                }
+            })
+            myStatsNbTasksByStateChart.update()
+
+            var myStatsTimeByState = document.getElementById("myStatsTimeByState").getContext('2d');
+            var myStatsTimeByStateChart = new Chart(myStatsTimeByState, {
+                type: 'bar',
+                data: {
+                    labels: ["À faire", "En cours", "Fait", "Rendu"],
+                    datasets: [{
+                        label: 'Heure(s)',
+                        data: res.myStatsTimeByState,
+                        backgroundColor: colors3
+                    }]
+                },
+                options: {
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        title: {
+                            display: true,
+                            text: 'Coût par étape (en heure)'
+                        },
+                    },
+                }
+            })
+            myStatsTimeByStateChart.update()
+
+            var myStatsDelay = document.getElementById("myStatsDelay").getContext('2d');
+            var myStatsDelayChart = new Chart(myStatsDelay, {
+                type: 'bar',
+                data: {
+                    labels: ["Temps prévu", "Temps réelement dépensé"],
+                    datasets: [{
+                        label: 'Heure(s)',
+                        data: res.myStatsDelay,
+                        backgroundColor: colors3
+                    }]
+                },
+                options: {
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        title: {
+                            display: true,
+                            text: 'Temps prévu / Temps réel (en heure)'
+                        },
+                    },
+                }
+            })
+            myStatsDelayChart.update()
         },
         error: function (err) {
             console.error("Error get data chart: " + err)
         }
     })
+
+
+    $(document).ready(
+        function () {
+            $('#selectCollaborator a').on('click', function () {
+                var filterval = $(this).text().split(" ")[0];
+                var clearurl = document.location.href.split("&")[0];
+                var url = clearurl + "&selectedCollaborator=" + filterval;
+                document.location = url;
+            })
+        });
 </script>

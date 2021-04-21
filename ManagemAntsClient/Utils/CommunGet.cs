@@ -15,7 +15,7 @@ namespace ManagemAntsClient.Utils
             var filterVal = -1;
             switch (filter)
             {
-                case "A faire":
+                case "À faire":
                     filterVal = 0;
                     break;
                 case "En cours":

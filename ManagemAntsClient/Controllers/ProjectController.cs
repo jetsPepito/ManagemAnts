@@ -204,7 +204,7 @@ namespace ManagemAntsClient.Controllers
             var query = HttpUtility.ParseQueryString(uri.Query);
 
             var filterTmp = query.Get("filter");
-            res.Add("filter", query.Get(filterTmp == null ? "" : filterTmp));
+            res.Add("filter", filterTmp == null ? "" : filterTmp);
 
             var myTaskTmp = query.Get("myTasks");
             res.Add("myTasks", myTaskTmp == null ? "false" : myTaskTmp);

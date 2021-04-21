@@ -25,7 +25,7 @@
 
                             <div class="dropdown-menu" id="taskFilters" belaria-laledby="dropdownMenuLink">
                                 <a class="dropdown-item btn">Aucun filtre</a>
-                                <a class="dropdown-item btn">A faire</a>
+                                <a class="dropdown-item btn">À faire</a>
                                 <a class="dropdown-item btn">En cours</a>
                                 <a class="dropdown-item btn">Fait</a>
                                 <a class="dropdown-item btn">Rendu</a>
@@ -120,7 +120,9 @@
                     <partial name="_taskFinishedModal" model="@new ManagemAntsClient.Models.InfosTask() { Task = task, LoggedUser = Model.LoggedUser }" />
                 }
                 <div class="row justify-content-center">
-                    <button onclick="openTaskAdd()" class="btn btn-secondary">+</button>
+                    <button onclick="openTaskAdd()" class="btn btn-secondary bg-transparent border-0 mt-3">
+                        <img src="~/img/plus.png" style="height:25px; width:25px" />
+                    </button>
                 </div>
             </div>
         </div>

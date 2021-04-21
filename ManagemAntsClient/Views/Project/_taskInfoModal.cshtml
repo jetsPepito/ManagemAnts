@@ -18,9 +18,16 @@
                     <textarea class="form-control" disabled>@Model.Task.description</textarea>
                 </div>
                 <div id="TaskTime" class="row mb-3">
-                    <div class="col-4 font-weight-bold">Durée :</div>
+                    <div class="col-4 font-weight-bold">Durée estimée :</div>
                     <div class="col-8">@Model.Task.duration heures</div>
                 </div>
+                @if (Model.Task.state > 2)
+                {
+                    <div id="TaskTimeSpent" class="row mb-3">
+                        <div class="col-4 font-weight-bold">Temps passé :</div>
+                        <div class="col-8">@Model.Task.timeSpent heures</div>
+                    </div>
+                }
                 <div id="TaskState" class="row mb-3">
                     <div class="col-4 font-weight-bold">Etat de la tâche :</div>
                     <div class="col-8">@Model.Task.getState()</div>

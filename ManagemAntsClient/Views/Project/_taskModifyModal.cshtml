@@ -15,7 +15,6 @@
                     <input type="hidden" name="projectId" value="@Model.projectId" />
                     <input type="hidden" name="id" value="@Model.id" />
                     <input type="hidden" name="createdAt" value="@Model.createdAt.ToString()" />
-                    <input type="hidden" name="timeSpent" value="@Model.timeSpent" />
                     <input type="hidden" name="state" value="@Model.state" />
                     <div id="TaskModifyName" class="row mb-3">
                         <div class="col-auto align-self-center font-weight-bold">Nom :</div>
@@ -26,9 +25,16 @@
                         <textarea type="text" name="description" class="form-control">@Model.description</textarea>
                     </div>
                     <div id="TaskModifyTime" class="row mb-3">
-                        <div class="col-4 font-weight-bold">Durée (heures) :</div>
+                        <div class="col-auto font-weight-bold">Durée estimée (heures) :</div>
                         <input autocomplete="off" type="number" name="duration" class="form-control mr-3 ml-3" value="@Model.duration" />
                     </div>
+                    @if (Model.state > 2)
+                    {
+                        <div id="TaskModifyTimeSpent" class="row mb-3">
+                            <div class="col-auto font-weight-bold">Temps réellement depénsé (heures) :</div>
+                            <input autocomplete="off" type="number" name="timeSpent" class="form-control mr-3 ml-3" value="@(Model.timeSpent)" />
+                        </div>
+                    }
                 </div>
                 <div class="modal-footer justify-content-around">
                     <button type="button" class="btn btn-secondary" onclick="goBack(@Model.id)">Annuler</button>

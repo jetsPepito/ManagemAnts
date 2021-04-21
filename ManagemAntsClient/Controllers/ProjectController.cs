@@ -32,15 +32,13 @@ namespace ManagemAntsClient.Controllers
 
             var loggedUser = this.GetLoggedUser();
 
-            var tasks = (await GetTaskByProjectId(parameters["projectId"],
-                    parameters["filter"],
-                    bool.Parse(parameters["myTask"])));
+            var tasks = (await Utils.CommunGet.GetTaskByProjectId(parameters["projectId"], "", parameters["myTask"], this.UserId()));
 
-            var project = (await GetProjectById(parameters["projectId"]));
+            var project = (await Utils.CommunGet.GetProjectById(parameters["projectId"]));
 
-            var collaborators = await GetCollaboratorsByRole(parameters["projectId"], 2);
-            var managers = await GetCollaboratorsByRole(parameters["projectId"], 1);
-            var creators = await GetCollaboratorsByRole(parameters["projectId"], 0);
+            var collaborators = await Utils.CommunGet.GetCollaboratorsByRole(parameters["projectId"], 2);
+            var managers = await Utils.CommunGet.GetCollaboratorsByRole(parameters["projectId"], 1);
+            var creators = await Utils.CommunGet.GetCollaboratorsByRole(parameters["projectId"], 0);
 
             if (creators.Any(x => x.id == loggedUser.id))
                 loggedUser.role = 0;
@@ -62,64 +60,6 @@ namespace ManagemAntsClient.Controllers
             return View(_projectPage);
         }
 
-        public async Task<List<Models.User>> GetCollaboratorsByRole(string projectId, int roleValue)
-        {
-            var client = this.SetUpClient("project/" + projectId + "/users/role/" + roleValue);
-            HttpResponseMessage response = client.GetAsync("").Result;
-
-            var collaborators = new List<Models.User>();
-            if (response.IsSuccessStatusCode)
-            {
-                collaborators = await JsonSerializer.DeserializeAsync<List<Models.User>>(await response.Content.ReadAsStreamAsync());
-            }
-            return collaborators;
-        }
-
-        public async Task<List<Models.Task>> GetTaskByProjectId(string id, string filter, bool myTask)
-        {
-            var filterVal = -1;
-            switch (filter)
-            {
-                case "A faire":
-                    filterVal = 0;
-                    break;
-                case "En cours":
-                    filterVal = 1;
-                    break;
-                case "Fait":
-                    filterVal = 2;
-                    break;
-                case "Rendu":
-                    filterVal = 3;
-                    break;
-                default:
-                    filterVal = -1;
-                    break;
-            }
-            var client = this.SetUpClient("task/" + id + "?filter=" + filterVal);
-            HttpResponseMessage response = client.GetAsync("").Result;
-            var tasks = new List<Models.Task>();
-            if (response.IsSuccessStatusCode)
-            {
-                tasks = await JsonSerializer.DeserializeAsync<List<Models.Task>>(await response.Content.ReadAsStreamAsync());
-            }
-
-            return tasks.Where(x => !myTask || x.collaborators.Any(y => y.id == this.UserId())).Reverse().ToList();
-        }
-
-
-        public async Task<Models.Project> GetProjectById(string id)
-        {
-            var client = this.SetUpClient("Project/" + id);
-            HttpResponseMessage responce = client.GetAsync("").Result;
-            var project = new List<Project>();
-            if (responce.IsSuccessStatusCode)
-            {
-                var p = (await responce.Content.ReadAsStringAsync());
-                project = await JsonSerializer.DeserializeAsync<List<Models.Project>>(await responce.Content.ReadAsStreamAsync());
-            }
-            return project[0];
-        }
 
         [HttpPost]
         public async Task<IActionResult> PostTaskAsync(string name, string desc, int duration, int state, string projectId)
@@ -134,7 +74,7 @@ namespace ManagemAntsClient.Controllers
                 projectId = int.Parse(projectId)
             };
 
-            var client = this.SetUpClient("task/");
+            var client = Utils.Client.SetUpClient("task/");
 
             var postRequest = new HttpRequestMessage(HttpMethod.Post, client.BaseAddress)
             {
@@ -150,7 +90,7 @@ namespace ManagemAntsClient.Controllers
         [HttpGet]
         public async Task<IActionResult> PutTaskAsync(Models.Task task)
         {
-            var client = this.SetUpClient("task/");
+            var client = Utils.Client.SetUpClient("task/");
 
             var postRequest = new HttpRequestMessage(HttpMethod.Put, client.BaseAddress)
             {
@@ -165,7 +105,7 @@ namespace ManagemAntsClient.Controllers
 
         public async Task<IActionResult> DeleteTask(string taskId)
         {
-            var client = this.SetUpClient("task/" + taskId);
+            var client = Utils.Client.SetUpClient("task/" + taskId);
             HttpResponseMessage response = await client.DeleteAsync("");
 
             return RedirectToAction("Index", "Project", new { projectId = _projectPage.Project.id });
@@ -188,7 +128,7 @@ namespace ManagemAntsClient.Controllers
         [HttpPost]
         public async Task<IActionResult> UpdateTask(Models.Task task)
         {
-            var client = this.SetUpClient("task/");
+            var client = Utils.Client.SetUpClient("task/");
 
             var putRequest = new HttpRequestMessage(HttpMethod.Put, client.BaseAddress)
             {
@@ -204,7 +144,7 @@ namespace ManagemAntsClient.Controllers
         [HttpGet]
         public async Task<IActionResult> FinishTaskAsync(Models.Task task)
         {
-            var client = this.SetUpClient("task/");
+            var client = Utils.Client.SetUpClient("task/");
             task.state += 1;
 
             var putRequest = new HttpRequestMessage(HttpMethod.Put, client.BaseAddress)
@@ -221,7 +161,7 @@ namespace ManagemAntsClient.Controllers
         [HttpPost]
         public async Task<IActionResult> DeleteProject()
         {
-            var client = this.SetUpClient("project/" + _projectPage.Project.id);
+            var client = Utils.Client.SetUpClient("project/" + _projectPage.Project.id);
             HttpResponseMessage response = await client.DeleteAsync("");
 
             return RedirectToAction("Index", "Dashboard");

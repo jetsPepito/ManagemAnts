@@ -17,18 +17,17 @@ namespace ManagemAntsClient.Controllers
     {
         private static Models.AddCollaboratorToTaskPage _page;
 
-        // GET: AddCollaboratorToTaskController
         public async Task<ActionResult> Index(string projectId, string taskId, string taskName, string userId, string searchFilter = "")
         {
             var user = this.GetLoggedUser();
 
             var searchUsers = new List<Models.User>();
-            var client = this.SetUpClient("Project/" + projectId + "/users/research/" + searchFilter);
+            var client = Utils.Client.SetUpClient("Project/" + projectId + "/users/research/" + searchFilter);
             var response = client.GetAsync("").Result;
             if (response.IsSuccessStatusCode)
                 searchUsers = await JsonSerializer.DeserializeAsync<List<Models.User>>(await response.Content.ReadAsStreamAsync());
 
-            var collaborators = await GetCollaborators(taskId);
+            var collaborators = await GetTaskCollaborators(taskId);
 
             searchUsers = searchUsers.Where(el => !collaborators.Any(collab => collab.pseudo == el.pseudo)).ToList();
             _page = new Models.AddCollaboratorToTaskPage()
@@ -47,21 +46,6 @@ namespace ManagemAntsClient.Controllers
         }
 
 
-        [HttpGet]
-        public async Task<List<Models.User>> GetCollaborators(string taskId)
-        {
-            var client = this.SetUpClient("Task/" + taskId + "/Users");
-            HttpResponseMessage response = client.GetAsync("").Result;
-
-            var collaborators = new List<Models.User>();
-            if (response.IsSuccessStatusCode)
-            {
-                collaborators = await JsonSerializer.DeserializeAsync<List<Models.User>>(await response.Content.ReadAsStreamAsync());
-            }
-            return collaborators;
-        }
-
-
         public ActionResult Research(string search)
         {
             return RedirectToAction("Index", "AddCollaboratorToTask", new
@@ -75,9 +59,9 @@ namespace ManagemAntsClient.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> AddNew(long collaboratorId)
+        public async Task<ActionResult> AddNewCollaboratorToTask(long collaboratorId)
         {
-            HttpClient client = this.SetUpClient("Task/Users");
+            HttpClient client = Utils.Client.SetUpClient("Task/Users");
             var postRequest = new HttpRequestMessage(HttpMethod.Post, client.BaseAddress)
             {
                 Content = JsonContent.Create(new
@@ -101,7 +85,7 @@ namespace ManagemAntsClient.Controllers
         [HttpDelete]
         public async Task<ActionResult> RemoveCollaborator(long collaboratorId)
         {
-            HttpClient client = this.SetUpClient("Task/" + _page.TaskId + "/User/" + collaboratorId);
+            HttpClient client = Utils.Client.SetUpClient("Task/" + _page.TaskId + "/User/" + collaboratorId);
             var deleteRequest = new HttpRequestMessage(HttpMethod.Delete, client.BaseAddress);
             var response = await client.SendAsync(deleteRequest);
             response.EnsureSuccessStatusCode();
@@ -113,6 +97,19 @@ namespace ManagemAntsClient.Controllers
                 userId = _page.LoggedUser.id.ToString(),
                 search = _page.search
             });
+        }
+
+        public static async Task<List<Models.User>> GetTaskCollaborators(string taskId)
+        {
+            var client = Utils.Client.SetUpClient("Task/" + taskId + "/users");
+            HttpResponseMessage response = client.GetAsync("").Result;
+
+            var collaborators = new List<Models.User>();
+            if (response.IsSuccessStatusCode)
+            {
+                collaborators = await JsonSerializer.DeserializeAsync<List<Models.User>>(await response.Content.ReadAsStreamAsync());
+            }
+            return collaborators;
         }
 
     }

@@ -25,13 +25,13 @@ namespace ManagemAntsClient.Controllers
             var searchUsers = new List<Models.User>();
             if (!string.IsNullOrEmpty(searchFilter))
             {
-                var client = this.SetUpClient("User/research/" + searchFilter);
+                var client = Utils.Client.SetUpClient("User/research/" + searchFilter);
                 var response = client.GetAsync("").Result;
                 if (response.IsSuccessStatusCode)
                     searchUsers = await JsonSerializer.DeserializeAsync<List<Models.User>>(await response.Content.ReadAsStreamAsync());
             }
 
-            var collaborators = await GetCollaborators(projectId);
+            var collaborators = await GetProjectCollaborators(projectId);
 
             user.role = collaborators.Where(x => x.id == user.id).FirstOrDefault().role;
 
@@ -53,7 +53,7 @@ namespace ManagemAntsClient.Controllers
 
         public async Task<ActionResult> ModifyRole(string userId, string roleValue)
         {
-            var client = this.SetUpClient("project/" + _page.ProjectId + "/user/" + userId + "/role/" + roleValue);
+            var client = Utils.Client.SetUpClient("project/" + _page.ProjectId + "/user/" + userId + "/role/" + roleValue);
 
             var putRequest = new HttpRequestMessage(HttpMethod.Put, client.BaseAddress);
 
@@ -67,20 +67,6 @@ namespace ManagemAntsClient.Controllers
                 userId = _page.LoggedUser.id.ToString(),
                 searchFilter = _page.search
             });
-        }
-
-        [HttpGet]
-        public async Task<List<Models.User>> GetCollaborators(string projectId)
-        {
-            var client = this.SetUpClient("project/" + projectId + "/users");
-            HttpResponseMessage response = client.GetAsync("").Result;
-
-            var collaborators = new List<Models.User>();
-            if (response.IsSuccessStatusCode)
-            {
-                collaborators = await JsonSerializer.DeserializeAsync<List<Models.User>>(await response.Content.ReadAsStreamAsync());
-            }
-            return collaborators;
         }
 
 
@@ -98,7 +84,7 @@ namespace ManagemAntsClient.Controllers
         [HttpPost]
         public async Task<ActionResult> AddNewCollaborator(long collaboratorId)
         {
-            HttpClient client = this.SetUpClient("Project/User");
+            HttpClient client = Utils.Client.SetUpClient("Project/User");
             var postRequest = new HttpRequestMessage(HttpMethod.Post, client.BaseAddress)
             {
                 Content = JsonContent.Create(new
@@ -122,7 +108,7 @@ namespace ManagemAntsClient.Controllers
         [HttpDelete]
         public async Task<ActionResult> RemoveCollaborator(long collaboratorId)
         {
-            HttpClient client = this.SetUpClient("Project/" + _page.ProjectId + "/User/" + collaboratorId);
+            HttpClient client = Utils.Client.SetUpClient("Project/" + _page.ProjectId + "/User/" + collaboratorId);
             var deleteRequest = new HttpRequestMessage(HttpMethod.Delete, client.BaseAddress);
             var response = await client.SendAsync(deleteRequest);
             response.EnsureSuccessStatusCode();
@@ -133,6 +119,20 @@ namespace ManagemAntsClient.Controllers
                 userId = _page.LoggedUser.id.ToString(),
                 search = _page.search
             });
+        }
+
+
+        public static async Task<List<Models.User>> GetProjectCollaborators(string projectId)
+        {
+            var client = Utils.Client.SetUpClient("Project/" + projectId + "/users");
+            HttpResponseMessage response = client.GetAsync("").Result;
+
+            var collaborators = new List<Models.User>();
+            if (response.IsSuccessStatusCode)
+            {
+                collaborators = await JsonSerializer.DeserializeAsync<List<Models.User>>(await response.Content.ReadAsStreamAsync());
+            }
+            return collaborators;
         }
 
     }

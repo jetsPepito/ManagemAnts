@@ -29,24 +29,12 @@ namespace ManagemAntsClient.Controllers
     public class ConnexionController : Controller
     {
         private readonly ILogger<ConnexionController> _logger;
-        private string url = "https://localhost:44352/api/";
 
         public ConnexionController(ILogger<ConnexionController> logger)
         {
             _logger = logger;
         }
 
-
-        private HttpClient SetUpClient(string endpoint)
-        {
-            var client = new HttpClient();
-            client.BaseAddress = new Uri(url + endpoint);
-            client.DefaultRequestHeaders.Accept.Add(
-            new MediaTypeWithQualityHeaderValue("application/json"));
-            return client;
-        }
-
-        // GET: ConnexionController
         public ActionResult Index()
         {
             var uri = new Uri(HttpContext.Request.GetDisplayUrl());
@@ -71,7 +59,7 @@ namespace ManagemAntsClient.Controllers
         public async Task<IActionResult> loginAsync(string pseudo, string password)
         {
 
-            HttpClient client = SetUpClient("Login?pseudo=" + pseudo);
+            HttpClient client = Utils.Client.SetUpClient("Login?pseudo=" + pseudo);
 
             HttpResponseMessage response = client.GetAsync("").Result;
 
@@ -121,7 +109,7 @@ namespace ManagemAntsClient.Controllers
 
             var passwordHash = BCrypt.Net.BCrypt.HashPassword(password);
 
-            HttpClient client = SetUpClient("Login");
+            HttpClient client = Utils.Client.SetUpClient("Login");
 
             var user = new Models.User()
             {

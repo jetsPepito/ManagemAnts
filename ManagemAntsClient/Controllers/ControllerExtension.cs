@@ -11,8 +11,7 @@ namespace ManagemAntsClient.Controllers
 {
     public static class ControllerExtension
     {
-        public static string Url(this Controller controller) =>
-            "https://localhost:44352/api/";
+       
 
         public static long UserId(this Controller controller) =>
             long.Parse(controller.User.FindFirstValue(ClaimTypes.NameIdentifier));
@@ -33,16 +32,6 @@ namespace ManagemAntsClient.Controllers
 
             return user;
         }
-
-        public static HttpClient SetUpClient(this Controller controller, string endpoint)
-        {
-            var client = new HttpClient();
-            client.BaseAddress = new Uri(Url(controller) + endpoint);
-            client.DefaultRequestHeaders.Accept.Add(
-            new MediaTypeWithQualityHeaderValue("application/json"));
-            return client;
-        }
-
 
     }
 }

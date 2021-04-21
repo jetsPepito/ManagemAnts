@@ -24,7 +24,7 @@ namespace ManagemAntsClient.Controllers
             
             var user = this.GetLoggedUser();
 
-            HttpClient client = this.SetUpClient("Project/user/" + user.id + "/research/" + searchFilter);
+            HttpClient client = Utils.Client.SetUpClient("Project/user/" + user.id + "/research/" + searchFilter);
             HttpResponseMessage response = client.GetAsync("").Result;
 
             IEnumerable<Project> projects = null;
@@ -42,7 +42,7 @@ namespace ManagemAntsClient.Controllers
         [HttpGet]
         public async Task<ActionResult> GetStatsTasksByProjects()
         {
-            var client = this.SetUpClient("Project/stats/tasks/" + _page.LoggedUser.id);
+            var client = Utils.Client.SetUpClient("Project/stats/tasks/" + _page.LoggedUser.id);
             HttpResponseMessage response = client.GetAsync("").Result;
             var tasks = new List<Models.Task>();
 
@@ -95,7 +95,7 @@ namespace ManagemAntsClient.Controllers
         [HttpPost]
         public async Task<ActionResult> AddProject(string name, string description, string ownerId)
         {
-            HttpClient client = this.SetUpClient("Project?Owner=" + ownerId);
+            HttpClient client = Utils.Client.SetUpClient("Project?Owner=" + ownerId);
             var project = new Project() { name=name, description=description };
             var postRequest = new HttpRequestMessage(HttpMethod.Post, client.BaseAddress)
             {

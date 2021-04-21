@@ -17,24 +17,14 @@ namespace ManagemAntsClient.Controllers
     public class DashboardController : Controller
     {
         public static DashboardPage _page;
-        private string url = "https://localhost:44352/api/";
-
-        private HttpClient SetupClient(string endpoint)
-        {
-            HttpClient client = new HttpClient();
-            client.BaseAddress = new Uri(url + endpoint);
-            client.DefaultRequestHeaders.Accept.Add(
-            new MediaTypeWithQualityHeaderValue("application/json"));
-            return client;
-        }
 
         // GET: DashboardController
         public async Task<ActionResult> Index(string searchFilter = "")
         {
             
-            var user = getLoggedUser();
+            var user = this.GetLoggedUser();
 
-            HttpClient client = SetupClient("Project/user/" + user.id + "/research/" + searchFilter);
+            HttpClient client = this.SetUpClient("Project/user/" + user.id + "/research/" + searchFilter);
             HttpResponseMessage response = client.GetAsync("").Result;
 
             IEnumerable<Project> projects = null;
@@ -52,7 +42,7 @@ namespace ManagemAntsClient.Controllers
         [HttpGet]
         public async Task<ActionResult> GetStatsTasksByProjects()
         {
-            var client = SetupClient("Project/stats/tasks/" + _page.LoggedUser.id);
+            var client = this.SetUpClient("Project/stats/tasks/" + _page.LoggedUser.id);
             HttpResponseMessage response = client.GetAsync("").Result;
             var tasks = new List<Models.Task>();
 
@@ -102,30 +92,10 @@ namespace ManagemAntsClient.Controllers
             });
         }
 
-
-        [HttpGet]
-        public Models.User getLoggedUser()
-        {
-
-            var names = this.UserName().Split(' ');
-            var firstname = names[0];
-            var lastname = names[1];
-
-            var user = new Models.User()
-            {
-                id = long.Parse(this.UserId()),
-                firstname = firstname,
-                lastname = lastname,
-                pseudo = this.UserPseudo(),
-            };
-
-            return user;
-        }
-
         [HttpPost]
         public async Task<ActionResult> AddProject(string name, string description, string ownerId)
         {
-            HttpClient client = SetupClient("Project?Owner=" + ownerId);
+            HttpClient client = this.SetUpClient("Project?Owner=" + ownerId);
             var project = new Project() { name=name, description=description };
             var postRequest = new HttpRequestMessage(HttpMethod.Post, client.BaseAddress)
             {
@@ -134,75 +104,6 @@ namespace ManagemAntsClient.Controllers
             var response = await client.SendAsync(postRequest);
             response.EnsureSuccessStatusCode();
             return RedirectToAction("Index", "Dashboard");
-        }
-
-        // GET: DashboardController/Details/5
-        public ActionResult Details(int id)
-        {
-            return View();
-        }
-
-        // GET: DashboardController/Create
-        public ActionResult Create()
-        {
-            return View();
-        }
-
-        // POST: DashboardController/Create
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Create(IFormCollection collection)
-        {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
-        }
-
-        // GET: DashboardController/Edit/5
-        public ActionResult Edit(int id)
-        {
-            return View();
-        }
-
-        // POST: DashboardController/Edit/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
-        {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
-        }
-
-        // GET: DashboardController/Delete/5
-        public ActionResult Delete(int id)
-        {
-            return View();
-        }
-
-        // POST: DashboardController/Delete/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
-        {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
         }
     }
 }

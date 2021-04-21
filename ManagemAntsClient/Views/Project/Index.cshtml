@@ -109,10 +109,10 @@
                 <div class="m-4">
                     <h5>Créateur</h5>
                 </div>
-                @foreach (var collaborator in Model.Creators)
+                @foreach (var creator in Model.Creators)
                 {
                     <div class="m-4 p-2 shadow bg-collaborator">
-                        @collaborator.pseudo (@collaborator.firstname @collaborator.lastname)
+                        @creator.pseudo (@creator.firstname @creator.lastname)
                     </div>
                 }
 
@@ -121,10 +121,10 @@
                     <div class="m-4">
                         <h5>Manageur(s)</h5>
                     </div>
-                    @foreach (var collaborator in Model.Mangers)
+                    @foreach (var manager in Model.Mangers)
                     {
                         <div class="m-4 p-2 shadow bg-collaborator">
-                            @collaborator.pseudo (@collaborator.firstname @collaborator.lastname)
+                            @manager.pseudo (@manager.firstname @manager.lastname)
                         </div>
                     }
                 }

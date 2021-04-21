@@ -108,7 +108,7 @@
     function addCollaborator(id) {
         $.ajax({
             type: "POST",
-            url: '@Url.Action("AddNew", "AddCollaborator")',
+            url: '@Url.Action("AddNewCollaborator", "AddCollaborator")',
             data: {
                 collaboratorId: id
             },

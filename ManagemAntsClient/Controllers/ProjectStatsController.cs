@@ -108,11 +108,12 @@ namespace ManagemAntsClient.Controllers
         [HttpGet]
         public async Task<ActionResult> GetProjectStats()
         {
-            var collaboratorsLabels = _page.AllCollaborators.Select(x => x.pseudo);
-            var timeSpentTodoCollaborators = Enumerable.Repeat(0, _page.AllCollaborators.Count()).ToList();
-            var timeSpentDoneCollaborators = Enumerable.Repeat(0, _page.AllCollaborators.Count()).ToList();
-            var nbTodoCollaborators = Enumerable.Repeat(0, _page.AllCollaborators.Count()).ToList();
-            var nbDoneCollaborators = Enumerable.Repeat(0, _page.AllCollaborators.Count()).ToList();
+            var collaboratorsLabels = _page.AllCollaborators.Select(x => x.pseudo).ToList();
+            collaboratorsLabels.Insert(0, "Sans collaborateur");
+            var timeSpentTodoCollaborators = Enumerable.Repeat(0, collaboratorsLabels.Count()).ToList();
+            var timeSpentDoneCollaborators = Enumerable.Repeat(0, collaboratorsLabels.Count()).ToList();
+            var nbTodoCollaborators = Enumerable.Repeat(0, collaboratorsLabels.Count()).ToList();
+            var nbDoneCollaborators = Enumerable.Repeat(0, collaboratorsLabels.Count()).ToList();
 
             var nbTasksByState = Enumerable.Repeat(0, 4).ToList();
             var timeByState = Enumerable.Repeat(0, 4).ToList();
@@ -158,14 +159,28 @@ namespace ManagemAntsClient.Controllers
                     {
                         if (task.state < 2)
                         {
-                            timeSpentTodoCollaborators[index] += task.duration;
-                            nbTodoCollaborators[index] += 1;
+                            timeSpentTodoCollaborators[index + 1] += task.duration;
+                            nbTodoCollaborators[index + 1] += 1;
                         }
                         else
                         {
-                            timeSpentDoneCollaborators[index] += task.timeSpent ?? 0;
-                            nbDoneCollaborators[index] += 1;
+                            timeSpentDoneCollaborators[index + 1] += task.timeSpent ?? 0;
+                            nbDoneCollaborators[index + 1] += 1;
                         }
+                    }
+                }
+
+                if (task.collaborators.Count == 0)
+                {
+                    if (task.state < 2)
+                    {
+                        timeSpentTodoCollaborators[0] += task.duration;
+                        nbTodoCollaborators[0] += 1;
+                    }
+                    else
+                    {
+                        timeSpentDoneCollaborators[0] += task.timeSpent ?? 0;
+                        nbDoneCollaborators[0] += 1;
                     }
                 }
             }

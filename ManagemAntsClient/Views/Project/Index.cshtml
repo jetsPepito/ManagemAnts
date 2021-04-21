@@ -5,12 +5,12 @@
 
 
 <div>
-    <nav class="navbar py-0 bg-blue shadow">
+    <nav class="navbar py-0 bg-blue shadow sticky-top">
         <a href="@Url.Action("Index", "Dashboard")" class="navbar-brand text-white">Accueil</a>
-        <span class="navbar-text text-white">@Model.Project.name</span>
+        <h3 class="text-white m-2">@Model.Project.name</h3>
         <span class="navbar-text text-white">
-            <button class="btn btn-danger btn-sm mr-2" onclick="logout()">Deconnexion</button>
             @Model.LoggedUser.pseudo
+            <button class="btn btn-danger btn-sm ml-2" onclick="logout()">Deconnexion</button>
         </span>
     </nav>
     <div class="row no-gutters justify-content-around">
@@ -41,26 +41,40 @@
                                 <input class="form-check-input" type="checkbox" value="true" id="myTasks" checked/>
                             }
                             <label class="form-check-label" for="flexCheckDefault">
-                                Mes Taches
+                                Mes Tâches
                             </label>
                         </div>
                     </div>
                 </div>
-                <div class="col-6 text-center"><h3>Todo List</h3></div>
+                <div class="col-6 text-center"><h3>Tâches</h3></div>
                 <div class="col-3 text-right align-self-center">
-                    <button onclick="openTaskAdd()" class="btn btn-secondary btn-sm text-sm-center ">Ajouter une tache</button>
+                    <button onclick="openTaskAdd()" class="btn btn-secondary btn-sm text-sm-center ">Ajouter une tâche</button>
                 </div>
             </div>
             <div class="p-3">
+                @if (Model.Tasks.Count == 0)
+                {
+                    <div class="row justify-content-center m-4">
+                        <h5 class="align-self-center">Aucune tâche n'a été trouvée.</h5>
+                    </div>
+                }
+
                 @foreach (var task in Model.Tasks)
                 {
-                    <div class="row bg-dark rounded mb-2 p-2">
+                    <div class="row bg-dark rounded mb-2 p-2" style="@(task.state == 3 ? "opacity:0.9" : "")">
                         <div class="col-auto mr-auto text-white align-self-center pl-1">
                             <button class="btn btn-sm btn-secondary mr-1 bg-transparent noBorder border-0">
                                 <img class="white-img " src="~/img/edit-solid.svg" onclick="openTaskInfos(@task.id)" />
                             </button>
 
-                            @task.name
+                            @if (task.state == 3)
+                            {
+                                <del>@task.name</del>
+                            }
+                            else
+                            {
+                                @task.name
+                            }
                         </div>
                         <div class="col-auto pr-1 d-flex">
                             @if (task.state == 0)
@@ -101,6 +115,14 @@
             </div>
         </div>
         <div class="col-lg">
+            <div class="shadow mb-4 bg-lightgray p-2 m-3">
+                <div class="m-4">
+                    <h3>Description</h3>
+                </div>
+                <div class="m-4">
+                    @Model.Project.description
+                </div>
+            </div>
             <div class="shadow mb-4 bg-lightgray p-2 m-3">
                 <div class="m-4">
                     <h3>Membres</h3>

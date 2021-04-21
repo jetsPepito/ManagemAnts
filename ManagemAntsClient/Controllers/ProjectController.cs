@@ -32,7 +32,7 @@ namespace ManagemAntsClient.Controllers
 
             var loggedUser = this.GetLoggedUser();
 
-            var tasks = (await Utils.CommunGet.GetTaskByProjectId(parameters["projectId"], "", parameters["myTask"], this.UserId()));
+            var tasks = sortTasks(await Utils.CommunGet.GetTaskByProjectId(parameters["projectId"], "", parameters["myTask"], this.UserId()));
 
             var project = (await Utils.CommunGet.GetProjectById(parameters["projectId"]));
 
@@ -44,7 +44,6 @@ namespace ManagemAntsClient.Controllers
                 loggedUser.role = 0;
             else if (managers.Any(x => x.id == loggedUser.id))
                 loggedUser.role = 1;
-
 
             _projectPage = new ProjectPage() {
                 Project = project,
@@ -58,6 +57,17 @@ namespace ManagemAntsClient.Controllers
                 };
 
             return View(_projectPage);
+        }
+
+        private List<Models.Task> sortTasks(List<Models.Task> tasks)
+        {
+            return new List<List<Models.Task>>()
+            {
+                tasks.Where(x => x.state == 2).ToList(),
+                tasks.Where(x => x.state == 1).ToList(),
+                tasks.Where(x => x.state == 0).ToList(),
+                tasks.Where(x => x.state == 3).ToList(),
+            }.SelectMany(x => x).ToList();
         }
 
 

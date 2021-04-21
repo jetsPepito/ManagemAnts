@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Org.BouncyCastle.Crypto.Generators;
@@ -14,9 +15,17 @@ using System.Net.Http.Json;
 using System.Security.Claims;
 using System.Text.Json;
 using System.Threading.Tasks;
+using System.Web;
 
 namespace ManagemAntsClient.Controllers
 {
+    // return code 
+    // 1 -> registered
+    // 2 -> pseudo already exist
+    // 3 -> passwords not equal
+    // 4 -> wrong pseudo or password
+
+
     public class ConnexionController : Controller
     {
         private readonly ILogger<ConnexionController> _logger;
@@ -40,7 +49,21 @@ namespace ManagemAntsClient.Controllers
         // GET: ConnexionController
         public ActionResult Index()
         {
-            return View();
+            var uri = new Uri(HttpContext.Request.GetDisplayUrl());
+            var query = HttpUtility.ParseQueryString(uri.Query);
+            
+            
+            var returnCode = query.Get("returnCode");
+
+            if (returnCode == null)
+                returnCode = "0";
+
+            Models.Login login = new Models.Login
+            {
+                status = (Models.Login.statusEnum)int.Parse(returnCode),
+            };
+
+            return View(login);
         }
 
         [HttpPost]
@@ -62,7 +85,7 @@ namespace ManagemAntsClient.Controllers
                 if (userList.Count == 0)
                 {
                     //user not found
-                    return RedirectToAction("Index", "Connexion");
+                    return RedirectToAction("Index", "Connexion", new { returnCode = 4});
                 }
 
                 user = userList[0];
@@ -72,7 +95,7 @@ namespace ManagemAntsClient.Controllers
             if (!BCrypt.Net.BCrypt.Verify(password, user.password))
             {
                 //wrong password
-                return RedirectToAction("Index", "Connexion");
+                return RedirectToAction("Index", "Connexion", new { returnCode = 4 });
             }
                 
 
@@ -94,7 +117,7 @@ namespace ManagemAntsClient.Controllers
         public async Task<IActionResult> signUpAsync(string lastname, string firstname, string pseudo, string password, string verification_password)
         {
             if (password != verification_password) // password not equal
-                return RedirectToAction("Index", "Connexion");
+                return RedirectToAction("Index", "Connexion", new { returnCode = 3});
 
             var passwordHash = BCrypt.Net.BCrypt.HashPassword(password);
 
@@ -125,15 +148,15 @@ namespace ManagemAntsClient.Controllers
                 userList = await JsonSerializer.DeserializeAsync<List<Models.User>>(await response.Content.ReadAsStreamAsync());
                 if (userList.Count == 0)
                 {
-                    //user not found
-                    return RedirectToAction("Index", "Connexion");
+                    //user already exist
+                    return RedirectToAction("Index", "Connexion", new { returnCode = 2});
                 }
 
                 responseUser = userList[0];
             }
 
             // yes registered
-            return RedirectToAction("Index", "Connexion");
+            return RedirectToAction("Index", "Connexion", new { returnCode = 1});
         }
 
         public async Task<IActionResult> logout()

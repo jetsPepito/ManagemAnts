@@ -1,6 +1,7 @@
 ﻿@{
     Layout = "~/Views/Shared/_Navbar.cshtml";
 }
+@model ManagemAntsClient.Models.Login
 
 <div>
     <nav class="navbar py-0 bg-blue shadow">
@@ -8,11 +9,15 @@
     </nav>
     <div class="mt-5 pt-5 container-fluid">
         <div class="row justify-content-around no-gutters align-items-center">
-           
+
             <div class="col-5 shadow bg-lightgray p-5">
                 @using (Html.BeginForm("Login", "Connexion", FormMethod.Post))
                 {
                     <h3 class="text-center">Connexion</h3>
+                    @if (Model.status == Login.statusEnum.PSEUDO_PASSWORD)
+                    {
+                        <div class="text-danger m-auto">Pseudo / Mot de passe incorrect</div>
+                    }
                     <div class="row justify-content-center">
                         <div class="col-md-6">
                             <div>Pseudo</div>
@@ -23,38 +28,50 @@
                     <div class="row justify-content-center mt-3">
                         <div class="col-md-6">
                             <div>Mot de passe</div>
-                            <input type="password" name="password" value="" placeholder="********" class="form-control" required/>
+                            <input type="password" name="password" value="" placeholder="********" class="form-control" required />
                         </div>
                     </div>
                     <div class="text-center  mt-5">
                         <button class="btn btn-sm btn-secondary m-auto">Connexion</button>
                     </div>
                 }
-                </div>
+            </div>
             <div class="col-5 shadow bg-lightgray p-4">
                 @using (Html.BeginForm("SignUp", "Connexion", FormMethod.Post))
                 {
                     <h3 class="text-center">Inscription</h3>
+                    @if (Model.status == Login.statusEnum.REGISTERED)
+                    {
+                        <div class="text-success justify-content-center">Vous avez bien été enregistré</div>
+                    }
                     <div class="row justify-content-center">
                         <div class="col-8">
                             <div class="row justify-content-between mt-3">
                                 <div class="col-6">
                                     <div>Nom</div>
-                                    <input value="" name="lastname" placeholder="Nom" class="form-control" required/>
+                                    <input value="" name="lastname" placeholder="Nom" class="form-control" required />
                                 </div>
                                 <div class="col-6">
                                     <div>Prenom</div>
-                                    <input value="" name="firstname" placeholder="Prenom" class="form-control" required/>
+                                    <input value="" name="firstname" placeholder="Prenom" class="form-control" required />
                                 </div>
                             </div>
                             <div class="row mt-3">
                                 <div>
                                     <div class="col-12 justify-content-start">
+                                        @if (Model.status == Login.statusEnum.PSEUDO)
+                                        {
+                                            <div class="text-danger">Le pseudo existe déjà</div>
+                                        }
                                         <div>Pseudo</div>
-                                        <input value="" name="pseudo" placeholder="Pseudo" class="form-control" required/>
+                                        <input value="" name="pseudo" placeholder="Pseudo" class="form-control" required />
                                     </div>
                                 </div>
                             </div>
+                            @if (Model.status == Login.statusEnum.PASSWORD)
+                            {
+                                <div class="text-danger">Les mots de passe ne correspondent pas</div>
+                            }
                             <div class="row justify-content-between mt-3">
                                 <div class="col-6">
                                     <div>Mot de passe</div>
@@ -62,7 +79,7 @@
                                 </div>
                                 <div class="col-6">
                                     <div>Confirmer</div>
-                                    <input type="password" name="verification_password" value="" placeholder="********" class="form-control" required/>
+                                    <input type="password" name="verification_password" value="" placeholder="********" class="form-control" required />
                                 </div>
                             </div>
                         </div>
@@ -71,7 +88,7 @@
                         <button class="btn btn-sm btn-secondary m-auto">Inscription</button>
                     </div>
                 }
-                </div>
             </div>
+        </div>
     </div>
 </div>

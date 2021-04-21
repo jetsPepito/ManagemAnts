@@ -10,7 +10,6 @@ namespace ManagemAntsClient.Utils
 {
     public class CommunGet
     {
-
         public static async Task<List<Models.Task>> GetTaskByProjectId(string id, string filter, string myTask, long userId)
         {
             var filterVal = -1;

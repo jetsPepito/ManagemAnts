@@ -126,3 +126,7 @@ body {
     filter: invert(100%);
     height: 20px;
 }
+
+.black-img {
+    height: 15px;
+}

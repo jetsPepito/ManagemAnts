@@ -5,16 +5,18 @@
 
 
 <div>
-    <nav class="navbar py-0 bg-blue shadow">
-        <a href="@Url.Action("Index", "Project", new { projectId = Model.ProjectId, taskId = Model.TaskId })" class="navbar-brand text-white">Retour au projet</a>
-        <span class="navbar-text text-white">@Model.TaskName</span>
+    <nav class="navbar py-0 bg-blue shadow sticky-top">
+        <a href="@Url.Action("Index", "Project", new { projectId = Model.ProjectId, taskId = Model.TaskId })" class="navbar-brand text-white">
+            <button class="btn btn-sm bg-blue-50">Retour au projet</button>
+        </a>
+        <h3 class="text-white m-2">@Model.TaskName</h3>
         <span class="navbar-text text-white">
-            <button class="btn btn-danger btn-sm mr-2" onclick="logout()">Deconnexion</button>
             @Model.LoggedUser.pseudo
+            <button class="btn btn-danger btn-sm ml-2" onclick="logout()">Deconnexion</button>
         </span>
     </nav>
     <div class="row m-3 justify-content-around">
-        <div class="col-5 p-3 shadow bg-lightgray">
+        <div class="col-5 p-3 shadow bg-lightgray" style="height:100%">
             <h3>Ajout de collaborateurs</h3>
             @using (Html.BeginForm("Research", "AddCollaboratorToTask", FormMethod.Post))
             {
@@ -48,9 +50,9 @@
 
             </div>
         </div>
-        <div class="col-6 p-2 shadow bg-lightgray">
+        <div class="col-6 p-3 shadow bg-lightgray" style="height:100%">
             <h3>Gestion des collaborateurs</h3>
-            <div class="overflow-auto project-container">
+            <div class="project-container mb-2">
 
                 @foreach (var collaborator in Model.Collaborators)
                 {

@@ -4,14 +4,14 @@
 @model ManagemAntsClient.Models.ProjectStatsPage
 
 <div>
-    <nav class="navbar py-0 bg-blue shadow">
+    <nav class="navbar py-0 bg-blue shadow sticky-top">
         <a href="@Url.Action("Index", "Project", new { projectId = Model.Project.id })" class="navbar-brand text-white">
             <button class="btn btn-sm bg-blue-50">Retour au projet</button>
         </a>
-        <span class="navbar-text text-white">@Model.Project.name</span>
+        <h3 class="text-white m-2">@Model.Project.name</h3>
         <span class="navbar-text text-white">
-            <button class="btn btn-danger btn-sm mr-2" onclick="logout()">Deconnexion</button>
             @Model.LoggedUser.pseudo
+            <button class="btn btn-danger btn-sm ml-2" onclick="logout()">Deconnexion</button>
         </span>
     </nav>
     <div class="container-fluid">

@@ -25,7 +25,7 @@ namespace ManagemAntsClient.Models
             switch(state)
             {
                 case 0:
-                    return "A faire";
+                    return "À faire";
                 case 1:
                     return "En cours";
                 case 2:

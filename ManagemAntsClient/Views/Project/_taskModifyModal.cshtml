@@ -18,7 +18,7 @@
                     <input type="hidden" name="state" value="@Model.state" />
                     <div id="TaskModifyName" class="row mb-3">
                         <div class="col-auto align-self-center font-weight-bold">Nom :</div>
-                        <input autocomplete="off" type="text" name="name" class="form-control col-lg align-self-center mr-3" value="@Model.name" />
+                        <input autocomplete="off" type="text" name="name" class="form-control col-lg align-self-center mr-3" value="@Model.name" required />
                     </div>
                     <div id="TaskModifyDescritpion" class="mb-3">
                         <div class="mb-2 font-weight-bold">Description :</div>
@@ -37,7 +37,7 @@
                     }
                 </div>
                 <div class="modal-footer justify-content-around">
-                    <button type="button" class="btn btn-secondary" onclick="goBack(@Model.id)">Annuler</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="goBack(@Model.id)">Annuler</button>
                     <button type="submit" class="btn btn-success">Valider</button>
                 </div>
             </div>

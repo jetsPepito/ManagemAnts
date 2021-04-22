@@ -4,13 +4,13 @@
 @model ManagemAntsClient.Models.DashboardPage
 
 <div>
-    <nav class="navbar py-0 bg-blue shadow">
+    <nav class="navbar py-0 bg-blue shadow sticky-top">
         <a class="navbar-brand text-white">Managem'Ants</a>
-        <span class="navbar-text text-white">Tableau de bord</span>
+        <h3 class="text-white m-2">Tableau de bord</h3>
         <span class="navbar-text text-white">
-            <button class="btn btn-danger btn-sm mr-2" onclick="logout()">Deconnexion</button>
             @Model.LoggedUser.pseudo
-           </span>
+            <button class="btn btn-danger btn-sm ml-2" onclick="logout()">Deconnexion</button>
+        </span>
     </nav>
     <div class="container-fluid">
         <div class="row  no-gutters justify-content-around">
@@ -31,7 +31,7 @@
                         </div>
                     </div>
                 }
-                <div class="overflow-auto project-container">
+                <div class="project-container">
                     @foreach (var project in Model.Projects.projects)
                     {
                         <a href='@Url.Action("Index", "Project", new { projectId = project.id })'>
@@ -42,7 +42,7 @@
                     }
                 </div>
             </div>
-            <div class="col-5 shadow bg-lightgray p-2 m-3 ml-4 mr-4">
+            <div class="col-5 shadow bg-lightgray p-2 m-3 ml-4 mr-4" style="height:100%">
                 <div class="text-center">
                     <h3>Mes Statistiques</h3>
                     <ul class="nav nav-tabs" id="statsTabs" role="tablist">
@@ -84,7 +84,7 @@
                     <div>
                         <h4>Nom</h4>
                         <div class="md-form">
-                            <input id="addProjectName" value="@Model.projectName" type="text" name="name" class="form-control" placeholder="Nom du projet" autocomplete="off">
+                            <input id="addProjectName" required value="@Model.projectName" type="text" name="name" class="form-control" placeholder="Nom du projet" autocomplete="off">
                         </div>
                     </div>
                     <div class="mt-4">

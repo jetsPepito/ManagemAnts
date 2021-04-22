@@ -32,7 +32,7 @@ namespace ManagemAntsClient.Controllers
 
             var loggedUser = this.GetLoggedUser();
 
-            var tasks = (await Utils.CommunGet.GetTaskByProjectId(parameters["projectId"], "", parameters["myTask"], this.UserId()));
+            var tasks = sortTasks(await Utils.CommunGet.GetTaskByProjectId(parameters["projectId"], parameters["filter"], parameters["myTasks"], this.UserId()));
 
             var project = (await Utils.CommunGet.GetProjectById(parameters["projectId"]));
 
@@ -45,7 +45,6 @@ namespace ManagemAntsClient.Controllers
             else if (managers.Any(x => x.id == loggedUser.id))
                 loggedUser.role = 1;
 
-
             _projectPage = new ProjectPage() {
                 Project = project,
                 LoggedUser = loggedUser,
@@ -54,10 +53,21 @@ namespace ManagemAntsClient.Controllers
                 Mangers = managers,
                 Creators = creators,
                 OpenedTask = long.Parse(parameters["taskOpen"]),
-                isMyTasks = bool.Parse(parameters["myTask"])
+                isMyTasks = bool.Parse(parameters["myTasks"])
                 };
 
             return View(_projectPage);
+        }
+
+        private List<Models.Task> sortTasks(List<Models.Task> tasks)
+        {
+            return new List<List<Models.Task>>()
+            {
+                tasks.Where(x => x.state == 2).ToList(),
+                tasks.Where(x => x.state == 1).ToList(),
+                tasks.Where(x => x.state == 0).ToList(),
+                tasks.Where(x => x.state == 3).ToList(),
+            }.SelectMany(x => x).ToList();
         }
 
 
@@ -100,7 +110,12 @@ namespace ManagemAntsClient.Controllers
             var response = await Utils.Client.SendAsync(client, postRequest);
 
             response.EnsureSuccessStatusCode();
-            return RedirectToAction("Index", "Project", new { projectId = task.projectId });
+
+            return RedirectToAction("Index", "Project", new
+            {
+                projectId = _projectPage.Project.id,
+                myTasks = _projectPage.isMyTasks
+            });
         }
 
         public async Task<IActionResult> DeleteTask(string taskId)
@@ -108,7 +123,11 @@ namespace ManagemAntsClient.Controllers
             var client = Utils.Client.SetUpClient("task/" + taskId);
             HttpResponseMessage response = await client.DeleteAsync("");
 
-            return RedirectToAction("Index", "Project", new { projectId = _projectPage.Project.id });
+            return RedirectToAction("Index", "Project", new
+            {
+                projectId = _projectPage.Project.id,
+                myTasks = _projectPage.isMyTasks
+            });
         }
 
         [HttpPost]
@@ -137,8 +156,10 @@ namespace ManagemAntsClient.Controllers
 
             var responce = await Utils.Client.SendAsync(client, putRequest);
 
-            responce.EnsureSuccessStatusCode();
-            return RedirectToAction("Index", "Project", new { projectId = _projectPage.Project.id });
+            return RedirectToAction("Index", "Project", new {
+                projectId = _projectPage.Project.id,
+                myTasks = _projectPage.isMyTasks
+            });
         }
 
         [HttpGet]
@@ -155,7 +176,12 @@ namespace ManagemAntsClient.Controllers
             var responce = await Utils.Client.SendAsync(client, putRequest);
 
             responce.EnsureSuccessStatusCode();
-            return RedirectToAction("Index", "Project", new { projectId = _projectPage.Project.id });
+
+            return RedirectToAction("Index", "Project", new
+            {
+                projectId = _projectPage.Project.id,
+                myTasks = _projectPage.isMyTasks
+            });
         }
 
         [HttpPost]
@@ -175,10 +201,11 @@ namespace ManagemAntsClient.Controllers
             var uri = new Uri(HttpContext.Request.GetDisplayUrl());
             var query = HttpUtility.ParseQueryString(uri.Query);
 
-            res.Add("filter", query.Get("filter"));
+            var filterTmp = query.Get("filter");
+            res.Add("filter", filterTmp == null ? "" : filterTmp);
 
             var myTaskTmp = query.Get("myTasks");
-            res.Add("myTask", myTaskTmp == null ? "false" : myTaskTmp);
+            res.Add("myTasks", myTaskTmp == null ? "false" : myTaskTmp);
 
             res.Add("projectId", query.Get("projectId"));
 

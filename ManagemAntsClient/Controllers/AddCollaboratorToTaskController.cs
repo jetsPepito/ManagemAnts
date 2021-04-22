@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -22,7 +23,9 @@ namespace ManagemAntsClient.Controllers
             var user = this.GetLoggedUser();
 
             var searchUsers = new List<Models.User>();
+
             var client = Utils.Client.SetUpClient("Project/" + projectId + "/users/research/" + searchFilter);
+
             var response = await Utils.Client.GetAsync(client, "");
             if (response.IsSuccessStatusCode)
                 searchUsers = await JsonSerializer.DeserializeAsync<List<Models.User>>(await response.Content.ReadAsStreamAsync());
@@ -71,7 +74,18 @@ namespace ManagemAntsClient.Controllers
                 })
             };
             var response = await Utils.Client.SendAsync(client, postRequest);
-            response.EnsureSuccessStatusCode();
+            
+            try
+            {
+                response.EnsureSuccessStatusCode();
+            }
+            catch (Exception e)
+            {
+                TextWriter errorWriter = Console.Error;
+                errorWriter.WriteLine("SetUpClient");
+                errorWriter.WriteLine(e.Message);
+            }
+
             return RedirectToAction("Index", "AddCollaboratorToTask", new
             {
                 projectId = _page.ProjectId,
@@ -88,7 +102,18 @@ namespace ManagemAntsClient.Controllers
             HttpClient client = Utils.Client.SetUpClient("Task/" + _page.TaskId + "/User/" + collaboratorId);
             var deleteRequest = new HttpRequestMessage(HttpMethod.Delete, client.BaseAddress);
             var response = await Utils.Client.SendAsync(client, deleteRequest);
-            response.EnsureSuccessStatusCode();
+
+            try
+            {
+                response.EnsureSuccessStatusCode();
+            }
+            catch (Exception e)
+            {
+                TextWriter errorWriter = Console.Error;
+                errorWriter.WriteLine("SetUpClient");
+                errorWriter.WriteLine(e.Message);
+            }
+
             return RedirectToAction("Index", "AddCollaboratorToTask", new
             {
                 projectId = _page.ProjectId,

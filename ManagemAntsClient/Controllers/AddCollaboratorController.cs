@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -46,7 +47,6 @@ namespace ManagemAntsClient.Controllers
                 search = searchFilter,
                 noResult = searchUsers.Count == 0 && searchFilter != ""
             };
-
             return View(_page);
         }
 
@@ -58,8 +58,17 @@ namespace ManagemAntsClient.Controllers
             var putRequest = new HttpRequestMessage(HttpMethod.Put, client.BaseAddress);
 
             var response = await Utils.Client.SendAsync(client, putRequest);
-
-            response.EnsureSuccessStatusCode();
+            try
+            {
+                response.EnsureSuccessStatusCode();
+            }
+            catch (Exception e)
+            {
+                TextWriter errorWriter = Console.Error;
+                errorWriter.WriteLine("ModifyRole");
+                errorWriter.WriteLine(e.Message);
+            }
+            
             return RedirectToAction("Index", "AddCollaborator", new
             {
                 projectId = _page.ProjectId,
@@ -93,7 +102,18 @@ namespace ManagemAntsClient.Controllers
                 })
             };
             var response = await Utils.Client.SendAsync(client, postRequest);
-            response.EnsureSuccessStatusCode();
+
+            try
+            {
+                response.EnsureSuccessStatusCode();
+            }
+            catch (Exception e)
+            {
+                TextWriter errorWriter = Console.Error;
+                errorWriter.WriteLine("AddNewCollaborator");
+                errorWriter.WriteLine(e.Message);
+            }
+
             return RedirectToAction("Index", "AddCollaborator", new
             {
                 projectId = _page.ProjectId,
@@ -107,7 +127,20 @@ namespace ManagemAntsClient.Controllers
         {
             HttpClient client = Utils.Client.SetUpClient("Project/" + _page.ProjectId + "/User/" + collaboratorId);
             var deleteRequest = new HttpRequestMessage(HttpMethod.Delete, client.BaseAddress);
+
             var response = await Utils.Client.SendAsync(client, deleteRequest);
+
+            try
+            {
+                response.EnsureSuccessStatusCode();
+            }
+            catch (Exception e)
+            {
+                TextWriter errorWriter = Console.Error;
+                errorWriter.WriteLine("SetUpClient");
+                errorWriter.WriteLine(e.Message);
+            }
+
             return RedirectToAction("Index", "AddCollaborator", new
             {
                 projectId = _page.ProjectId,
@@ -123,6 +156,7 @@ namespace ManagemAntsClient.Controllers
             HttpResponseMessage response = await Utils.Client.GetAsync(client, "");
 
             var collaborators = new List<Models.User>();
+
             if (response.IsSuccessStatusCode)
             {
                 collaborators = await JsonSerializer.DeserializeAsync<List<Models.User>>(await response.Content.ReadAsStreamAsync());

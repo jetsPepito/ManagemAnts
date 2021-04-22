@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -91,9 +92,18 @@ namespace ManagemAntsClient.Controllers
                 Content = JsonContent.Create(task)
             };
 
-            var responce = await Utils.Client.SendAsync(client, postRequest);
+            var response = await Utils.Client.SendAsync(client, postRequest);
 
-            responce.EnsureSuccessStatusCode();
+            try
+            {
+                response.EnsureSuccessStatusCode();
+            }
+            catch (Exception e)
+            {
+                TextWriter errorWriter = Console.Error;
+                errorWriter.WriteLine("ProjectController PostTaskAsync");
+                errorWriter.WriteLine(e.Message);
+            }
             return RedirectToAction("Index", "Project", new { projectId = projectId });
         }
 
@@ -109,7 +119,16 @@ namespace ManagemAntsClient.Controllers
 
             var response = await Utils.Client.SendAsync(client, postRequest);
 
-            response.EnsureSuccessStatusCode();
+            try
+            {
+                response.EnsureSuccessStatusCode();
+            }
+            catch (Exception e)
+            {
+                TextWriter errorWriter = Console.Error;
+                errorWriter.WriteLine("ProjectController PutTaskAsync");
+                errorWriter.WriteLine(e.Message);
+            }
 
             return RedirectToAction("Index", "Project", new
             {
@@ -173,9 +192,18 @@ namespace ManagemAntsClient.Controllers
                 Content = JsonContent.Create(task)
             };
 
-            var responce = await Utils.Client.SendAsync(client, putRequest);
+            var response = await Utils.Client.SendAsync(client, putRequest);
 
-            responce.EnsureSuccessStatusCode();
+            try
+            {
+                response.EnsureSuccessStatusCode();
+            }
+            catch (Exception e)
+            {
+                TextWriter errorWriter = Console.Error;
+                errorWriter.WriteLine("ProjectController FinishTaskAsync");
+                errorWriter.WriteLine(e.Message);
+            }
 
             return RedirectToAction("Index", "Project", new
             {
@@ -192,7 +220,6 @@ namespace ManagemAntsClient.Controllers
 
             return RedirectToAction("Index", "Dashboard");
         }
-
 
         private Dictionary<string, string> GetParameters()
         {
@@ -214,6 +241,5 @@ namespace ManagemAntsClient.Controllers
 
             return res;
         }
-
     }
 }

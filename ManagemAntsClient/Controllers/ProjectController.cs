@@ -221,6 +221,26 @@ namespace ManagemAntsClient.Controllers
             return RedirectToAction("Index", "Dashboard");
         }
 
+        [HttpPost]
+        public async Task<IActionResult> UpdateProject(Project project)
+        {
+            var client = Utils.Client.SetUpClient("project/");
+
+            var putRequest = new HttpRequestMessage(HttpMethod.Put, client.BaseAddress)
+            {
+                Content = JsonContent.Create(project)
+            };
+
+            var responce = await Utils.Client.SendAsync(client, putRequest);
+
+            return RedirectToAction("Index", "Project", new
+            {
+                projectId = _projectPage.Project.id,
+                myTasks = _projectPage.isMyTasks
+            });
+        }
+
+
         private Dictionary<string, string> GetParameters()
         {
             var res = new Dictionary<string, string>();

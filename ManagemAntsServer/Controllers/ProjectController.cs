@@ -55,6 +55,13 @@ namespace ManagemAntsServer.Controllers
             return Ok(result);
         }
 
+        [HttpPut]
+        public async Task<IActionResult> Put(Dbo.Project project)
+        {
+            var res = await _projectRepository.Update(project);
+            return Ok(res);
+        }
+
         private async Task<bool> IsUserTask(Dbo.Task task, long userid)
         {
             var colls = await _usersHasTaskRepository.GetTaskCollaborators(task.Id);

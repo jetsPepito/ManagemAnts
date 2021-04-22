@@ -1,0 +1,30 @@
+﻿@model ManagemAntsClient.Models.Project
+<div id="descriptionModifyModal" class="modal" tabindex="-1">
+    <input type="hidden" name="userId" value="" />
+    <div class="modal-dialog">
+        @using (Html.BeginForm("UpdateProject", "Project", FormMethod.Post))
+        {
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">@Model.name</h5>
+                    <button type="button" class="close noBorder" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" name="id" value="@Model.id" />
+                    <input type="hidden" name="name" value="@Model.name" />
+
+                    <div id="ProjectModifyDescritpion" class="mb-3">
+                        <div class="mb-2 font-weight-bold">Description :</div>
+                        <textarea type="text" name="description" class="form-control" rows="8">@Model.description</textarea>
+                    </div>
+                </div>
+                <div class="modal-footer justify-content-around">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
+                    <button type="submit" class="btn btn-success">Valider</button>
+                </div>
+            </div>
+        }
+    </div>
+</div>

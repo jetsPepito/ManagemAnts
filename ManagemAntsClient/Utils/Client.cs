@@ -11,7 +11,9 @@ namespace ManagemAntsClient.Utils
 {
     public class Client
     {
-        private static string Url = "https://managemantsserver.azurewebsites.net/api/";
+        
+        //private static string Url = "https://managemantsserver.azurewebsites.net/api/";
+        private static string Url = "https://localhost:44352/api/";
 
 
         public static HttpClient SetUpClient(string endpoint)

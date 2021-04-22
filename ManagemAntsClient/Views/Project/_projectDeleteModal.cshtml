@@ -19,7 +19,7 @@
                 </div>
                 <div class="modal-footer">
                     <div class="m-auto">
-                        <button type="button" class="btn btn-primary mr-2" onclick="goBack(@Model.id)">Annuler</button>
+                        <button type="button" class="btn btn-primary mr-2" data-dismiss="modal">Annuler</button>
                         <button type="submit" class="btn btn-danger ml-2">Supprimer</button>
                     </div>
                 </div>
@@ -27,9 +27,3 @@
         }
     </div>
 </div>
-
-<script>
-    function goBack(id) {
-        $(`#projectDeleteModal-${id}`).modal("hide");
-    }
-</script>

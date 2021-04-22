@@ -14,7 +14,7 @@
     </nav>
     <div class="container-fluid">
         <div class="row  no-gutters justify-content-around">
-            <div class="col-3 shadow bg-lightgray p-2 m-3 column" style="height:100%">
+            <div class="col-3 shadow bg-lightgray p-2 m-3 column">
                 <div class="text-center">
                     <h3>Liste des projets</h3>
                 </div>
@@ -31,7 +31,7 @@
                         </div>
                     </div>
                 }
-                <div class="project-container">
+                <div class="project-container ">
                     @foreach (var project in Model.Projects.projects)
                     {
                         <a href='@Url.Action("Index", "Project", new { projectId = project.id })'>

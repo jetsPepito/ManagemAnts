@@ -132,9 +132,12 @@
                     <h3>Description</h3>
                     @if (Model.LoggedUser.role == 0)
                     {
-                        <button class="btn btn-sm btn-secondary mr-1 bg-transparent noBorder border-0">
+                        <button onclick="openDescriptionModify()" class="btn btn-sm btn-secondary mr-1 bg-transparent noBorder border-0">
                             <img class="black-img mb-1" src="~/img/edit-solid.svg" />
                         </button>
+
+                        <partial name="_descriptionModifyModal" model="@Model.Project" />
+
                     }
                 </div>
                 <div class="m-4">
@@ -253,6 +256,9 @@
         $(`#projectDeleteModal-${id}`).modal("show");
     }
 
+    function openDescriptionModify() {
+        $(`#descriptionModifyModal`).modal("show");
+    }
 
     $(document).ready(
         function () {

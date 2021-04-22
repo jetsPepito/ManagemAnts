@@ -33,7 +33,7 @@ namespace ManagemAntsClient.Utils
                     break;
             }
             var client = Client.SetUpClient("task/" + id + "?filter=" + filterVal);
-            HttpResponseMessage response = client.GetAsync("").Result;
+            HttpResponseMessage response = await Client.GetAsync(client, "");
             var tasks = new List<Models.Task>();
             if (response.IsSuccessStatusCode)
             {
@@ -48,7 +48,7 @@ namespace ManagemAntsClient.Utils
         public static async Task<List<Models.User>> GetCollaboratorsByRole(string projectId, int roleValue)
         {
             var client = Client.SetUpClient("project/" + projectId + "/users/role/" + roleValue);
-            HttpResponseMessage response = client.GetAsync("").Result;
+            HttpResponseMessage response = await Client.GetAsync(client, "");
 
             var collaborators = new List<Models.User>();
             if (response.IsSuccessStatusCode)
@@ -61,14 +61,14 @@ namespace ManagemAntsClient.Utils
         public static async Task<Models.Project> GetProjectById(string id)
         {
             var client = Client.SetUpClient("Project/" + id);
-            HttpResponseMessage responce = client.GetAsync("").Result;
+            HttpResponseMessage responce = await Client.GetAsync(client, "");
             var project = new List<Models.Project>();
             if (responce.IsSuccessStatusCode)
             {
                 var p = (await responce.Content.ReadAsStringAsync());
                 project = await JsonSerializer.DeserializeAsync<List<Models.Project>>(await responce.Content.ReadAsStreamAsync());
             }
-            return project[0];
+            return project.FirstOrDefault();
         }
 
     }

@@ -14,6 +14,7 @@ namespace ManagemAntsClient.Models
             PSEUDO,
             PASSWORD,
             PSEUDO_PASSWORD,
+            SOMETHING_WENT_WRONG,
         }
 
         public statusEnum status;

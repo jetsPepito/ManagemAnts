@@ -18,7 +18,7 @@ namespace ManagemAntsClient.Controllers
         private static Models.AddCollaboratorPage _page;
 
 
-        public async Task<ActionResult> Index(string projectId, string projectName, string userId, string searchFilter = "")
+        public async Task<ActionResult> Index(string projectId, string projectName, string searchFilter = "")
         {
             var user = this.GetLoggedUser();
 
@@ -26,7 +26,7 @@ namespace ManagemAntsClient.Controllers
             if (!string.IsNullOrEmpty(searchFilter))
             {
                 var client = Utils.Client.SetUpClient("User/research/" + searchFilter);
-                var response = client.GetAsync("").Result;
+                var response = await Utils.Client.GetAsync(client, "");
                 if (response.IsSuccessStatusCode)
                     searchUsers = await JsonSerializer.DeserializeAsync<List<Models.User>>(await response.Content.ReadAsStreamAsync());
             }
@@ -57,14 +57,13 @@ namespace ManagemAntsClient.Controllers
 
             var putRequest = new HttpRequestMessage(HttpMethod.Put, client.BaseAddress);
 
-            var response = await client.SendAsync(putRequest);
+            var response = await Utils.Client.SendAsync(client, putRequest);
 
             response.EnsureSuccessStatusCode();
             return RedirectToAction("Index", "AddCollaborator", new
             {
                 projectId = _page.ProjectId,
-                projectName = _page.ProjectName,
-                userId = _page.LoggedUser.id.ToString(),
+                projectName = _page.ProjectName,          
                 searchFilter = _page.search
             });
         }
@@ -76,7 +75,6 @@ namespace ManagemAntsClient.Controllers
             {
                 projectId = _page.ProjectId,
                 projectName = _page.ProjectName,
-                userId = _page.LoggedUser.id.ToString(),
                 searchFilter = search
             });
         }
@@ -94,13 +92,12 @@ namespace ManagemAntsClient.Controllers
                     role = 2
                 })
             };
-            var response = await client.SendAsync(postRequest);
+            var response = await Utils.Client.SendAsync(client, postRequest);
             response.EnsureSuccessStatusCode();
             return RedirectToAction("Index", "AddCollaborator", new
             {
                 projectId = _page.ProjectId,
                 projectName = _page.ProjectName,
-                userId = _page.LoggedUser.id.ToString(),
                 search = _page.search
             });
         }
@@ -110,13 +107,11 @@ namespace ManagemAntsClient.Controllers
         {
             HttpClient client = Utils.Client.SetUpClient("Project/" + _page.ProjectId + "/User/" + collaboratorId);
             var deleteRequest = new HttpRequestMessage(HttpMethod.Delete, client.BaseAddress);
-            var response = await client.SendAsync(deleteRequest);
-            response.EnsureSuccessStatusCode();
+            var response = await Utils.Client.SendAsync(client, deleteRequest);
             return RedirectToAction("Index", "AddCollaborator", new
             {
                 projectId = _page.ProjectId,
                 projectName = _page.ProjectName,
-                userId = _page.LoggedUser.id.ToString(),
                 search = _page.search
             });
         }
@@ -125,7 +120,7 @@ namespace ManagemAntsClient.Controllers
         public static async Task<List<Models.User>> GetProjectCollaborators(string projectId)
         {
             var client = Utils.Client.SetUpClient("Project/" + projectId + "/users");
-            HttpResponseMessage response = client.GetAsync("").Result;
+            HttpResponseMessage response = await Utils.Client.GetAsync(client, "");
 
             var collaborators = new List<Models.User>();
             if (response.IsSuccessStatusCode)

@@ -9,7 +9,10 @@
     </nav>
     <div class="mt-5 pt-5 container-fluid">
         <div class="row justify-content-around no-gutters align-items-center">
-
+            @if (Model.status == Login.statusEnum.SOMETHING_WENT_WRONG)
+            {
+                <div class="text-danger m-auto">Problème de connexion avec le serveur</div>
+            }
             <div class="col-5 shadow bg-lightgray p-5">
                 @using (Html.BeginForm("Login", "Connexion", FormMethod.Post))
                 {

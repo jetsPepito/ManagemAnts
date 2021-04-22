@@ -81,7 +81,7 @@ namespace ManagemAntsClient.Controllers
                 Content = JsonContent.Create(task)
             };
 
-            var responce =  await client.SendAsync(postRequest);
+            var responce = await Utils.Client.SendAsync(client, postRequest);
 
             responce.EnsureSuccessStatusCode();
             return RedirectToAction("Index", "Project", new { projectId = projectId });
@@ -97,7 +97,7 @@ namespace ManagemAntsClient.Controllers
                 Content = JsonContent.Create(task)
             };
 
-            var response = await client.SendAsync(postRequest);
+            var response = await Utils.Client.SendAsync(client, postRequest);
 
             response.EnsureSuccessStatusCode();
             return RedirectToAction("Index", "Project", new { projectId = task.projectId });
@@ -135,7 +135,7 @@ namespace ManagemAntsClient.Controllers
                 Content = JsonContent.Create(task)
             };
 
-            var responce = await client.SendAsync(putRequest);
+            var responce = await Utils.Client.SendAsync(client, putRequest);
 
             responce.EnsureSuccessStatusCode();
             return RedirectToAction("Index", "Project", new { projectId = _projectPage.Project.id });
@@ -152,7 +152,7 @@ namespace ManagemAntsClient.Controllers
                 Content = JsonContent.Create(task)
             };
 
-            var responce = await client.SendAsync(putRequest);
+            var responce = await Utils.Client.SendAsync(client, putRequest);
 
             responce.EnsureSuccessStatusCode();
             return RedirectToAction("Index", "Project", new { projectId = _projectPage.Project.id });

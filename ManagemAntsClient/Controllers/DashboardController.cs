@@ -18,18 +18,17 @@ namespace ManagemAntsClient.Controllers
     {
         public static DashboardPage _page;
 
-        // GET: DashboardController
         public async Task<ActionResult> Index(string searchFilter = "")
         {
             
             var user = this.GetLoggedUser();
 
             HttpClient client = Utils.Client.SetUpClient("Project/user/" + user.id + "/research/" + searchFilter);
-            HttpResponseMessage response = client.GetAsync("").Result;
+            HttpResponseMessage response = await Utils.Client.GetAsync(client, "");
 
-            IEnumerable<Project> projects = null;
+            var projects = new List<Project>();
             if (response.IsSuccessStatusCode)
-                projects = await JsonSerializer.DeserializeAsync<IEnumerable<Project>>(await response.Content.ReadAsStreamAsync());
+                projects = await JsonSerializer.DeserializeAsync<List<Project>>(await response.Content.ReadAsStreamAsync());
 
             _page = new DashboardPage() {
                 Projects = new Projects(projects),
@@ -43,7 +42,7 @@ namespace ManagemAntsClient.Controllers
         public async Task<ActionResult> GetStatsTasksByProjects()
         {
             var client = Utils.Client.SetUpClient("Project/stats/tasks/" + _page.LoggedUser.id);
-            HttpResponseMessage response = client.GetAsync("").Result;
+            HttpResponseMessage response = await Utils.Client.GetAsync(client, "");
             var tasks = new List<Models.Task>();
 
             var labels = new List<string>();
@@ -101,7 +100,7 @@ namespace ManagemAntsClient.Controllers
             {
                 Content = JsonContent.Create(project)
             };
-            var response = await client.SendAsync(postRequest);
+            var response = await Utils.Client.SendAsync(client, postRequest);
             response.EnsureSuccessStatusCode();
             return RedirectToAction("Index", "Dashboard");
         }

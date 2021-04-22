@@ -93,7 +93,7 @@ namespace ManagemAntsClient.Controllers
         public async Task<Models.User> getUserByPseudo(string pseudo)
         {
             var client = Utils.Client.SetUpClient("user/pseudo/" + pseudo);
-            HttpResponseMessage response = client.GetAsync("").Result;
+            HttpResponseMessage response = await Utils.Client.GetAsync(client, "");
 
             var user = new List<Models.User>();
             if (response.IsSuccessStatusCode)

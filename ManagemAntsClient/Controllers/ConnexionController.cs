@@ -24,6 +24,7 @@ namespace ManagemAntsClient.Controllers
     // 2 -> pseudo already exist
     // 3 -> passwords not equal
     // 4 -> wrong pseudo or password
+    // 5 -> something went wrong (connection to the server)
 
 
     public class ConnexionController : Controller
@@ -61,14 +62,15 @@ namespace ManagemAntsClient.Controllers
 
             HttpClient client = Utils.Client.SetUpClient("Login?pseudo=" + pseudo);
 
-            HttpResponseMessage response = client.GetAsync("").Result;
+            HttpResponseMessage response = await Utils.Client.GetAsync(client, "");
 
-            Models.User user = null;
-
-            var userList = new List<Models.User>();
+            
 
             if (response.IsSuccessStatusCode)
             {
+                Models.User user = null;
+                var userList = new List<Models.User>();
+
                 userList = await JsonSerializer.DeserializeAsync<List<Models.User>>(await response.Content.ReadAsStreamAsync());
                 if (userList.Count == 0)
                 {
@@ -76,30 +78,31 @@ namespace ManagemAntsClient.Controllers
                     return RedirectToAction("Index", "Connexion", new { returnCode = 4});
                 }
 
-                user = userList[0];
-            }
-
-            // check password
-            if (!BCrypt.Net.BCrypt.Verify(password, user.password))
-            {
-                //wrong password
-                return RedirectToAction("Index", "Connexion", new { returnCode = 4 });
-            }
+                user = userList.FirstOrDefault();
                 
-
-            var identity = new ClaimsIdentity(
-                new[]
+                // check password
+                if (!BCrypt.Net.BCrypt.Verify(password, user.password))
                 {
+                    //wrong password
+                    return RedirectToAction("Index", "Connexion", new { returnCode = 4 });
+                }
+
+
+                var identity = new ClaimsIdentity(
+                    new[]
+                    {
                     new Claim(ClaimTypes.NameIdentifier, user.id.ToString()),
                     new Claim(ClaimTypes.Name, $"{user.firstname} {user.lastname}"),
                     new Claim(ClaimTypes.GivenName, $"{user.pseudo}")
-                },
-                CookieAuthenticationDefaults.AuthenticationScheme);
+                    },
+                    CookieAuthenticationDefaults.AuthenticationScheme);
 
-            // Sign in and redirect to home page
-            await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(identity), new AuthenticationProperties { IsPersistent = true });
-            return RedirectToAction("Index", "Dashboard");
+                // Sign in and redirect to home page
+                await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(identity), new AuthenticationProperties { IsPersistent = true });
+                return RedirectToAction("Index", "Dashboard");
+            }
 
+            return RedirectToAction("Index", "Connexion", new { returnCode = 5 });
         }
 
         public async Task<IActionResult> signUpAsync(string lastname, string firstname, string pseudo, string password, string verification_password)
@@ -124,27 +127,22 @@ namespace ManagemAntsClient.Controllers
                 Content = JsonContent.Create(user)
             };
 
-            var response = await client.SendAsync(postRequest);
-
-            Models.User responseUser = null;
-
-            var userList = new List<Models.User>();
+            var response = await Utils.Client.SendAsync(client, postRequest);
 
             if (response.IsSuccessStatusCode)
             {
-
-                userList = await JsonSerializer.DeserializeAsync<List<Models.User>>(await response.Content.ReadAsStreamAsync());
+                var userList = await JsonSerializer.DeserializeAsync<List<Models.User>>(await response.Content.ReadAsStreamAsync());
                 if (userList.Count == 0)
                 {
                     //user already exist
                     return RedirectToAction("Index", "Connexion", new { returnCode = 2});
                 }
-
-                responseUser = userList[0];
+                // yes registered
+                return RedirectToAction("Index", "Connexion", new { returnCode = 1 });
             }
 
-            // yes registered
-            return RedirectToAction("Index", "Connexion", new { returnCode = 1});
+            // Something went wrong with the serveur
+            return RedirectToAction("Index", "Connexion", new { returnCode = 5 });
         }
 
         public async Task<IActionResult> logout()

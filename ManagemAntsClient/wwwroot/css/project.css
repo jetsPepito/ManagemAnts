@@ -1,3 +1,11 @@
 ﻿.bg-collaborator {
     background-color: #e1e2e3;
 }
+
+.w-md {
+    width: 35%;
+}
+
+.w-sm {
+    width: 27%;
+}

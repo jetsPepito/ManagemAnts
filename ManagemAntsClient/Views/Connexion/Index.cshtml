@@ -5,7 +5,12 @@
 
 <div>
     <nav class="navbar py-0 bg-blue shadow p-2 sticky-top">
-        <h3 class="text-white m-auto">Connexion</h3>
+        <span class="d-flex align-items-center">
+            <img src="~/img/logo.png" height="45" width="45" />
+            <a class="navbar-brand text-white ml-1">Managem'Ants</a>
+        </span>
+        <h3 class="text-white">Connexion</h3>
+        <div style="width:14%;"></div>
     </nav>
     @if (Model.status == Login.statusEnum.SOMETHING_WENT_WRONG)
     {

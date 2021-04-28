@@ -79,7 +79,7 @@
                         <div class="col-sm-3 pr-1 d-flex align-items-center justify-content-center">
                             @if (task.state == 0)
                             {
-                                <div class="h-100" style="width:100px"></div>
+                                <div class="h-100 w-sm"></div>
                             }
                             else
                             {
@@ -89,7 +89,7 @@
                                 }
                             }
 
-                            <label class="text-white bg-transparent border pr-2 pl-2 pt-1 pb-1 ml-2 mr-2 ml-2 text-center" style="border-radius:5px; width:100%">@task.getState()</label>
+                            <label class="text-white bg-transparent border pr-2 pl-2 pt-1 pb-1 ml-2 mr-2 ml-2 text-center w-md" style="border-radius:5px;">@task.getState()</label>
 
                             @if (task.state == 2)
                             {
@@ -111,7 +111,7 @@
                             }
                             else
                             {
-                                <div class="h-100" style="width:130px"></div>
+                                <div class="h-100 w-sm"></div>
                             }
                         </div>
                     </div>

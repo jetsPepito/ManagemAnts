@@ -156,8 +156,19 @@ namespace ManagemAntsClient.Controllers
             if (tasks.Count() != 0)
             {
                 var task = tasks.FirstOrDefault();
-                task.state += 1;
-                return await UpdateTask(task);
+                var newTask = new Models.Task()
+                {
+                    id = task.id,
+                    createdAt = task.createdAt,
+                    collaborators = task.collaborators,
+                    description = task.description,
+                    name = task.name,
+                    duration = task.duration,
+                    timeSpent = task.timeSpent,
+                    projectId = task.projectId,
+                    state = task.state < 3 ? task.state + 1 : task.state
+                };
+                return await UpdateTask(newTask);
             }
             else
                 return RedirectToAction("Index", "Project", new
@@ -174,8 +185,18 @@ namespace ManagemAntsClient.Controllers
             if (tasks.Count() != 0)
             {
                 var task = tasks.FirstOrDefault();
-                task.state -= 1;
-                return await UpdateTask(task);
+                var newTask = new Models.Task() {
+                    id = task.id,
+                    createdAt = task.createdAt,
+                    collaborators = task.collaborators,
+                    description = task.description,
+                    name = task.name,
+                    duration = task.duration,
+                    timeSpent = task.timeSpent,
+                    projectId = task.projectId,
+                    state = task.state > 0 ? task.state - 1 : task.state
+                };
+                return await UpdateTask(newTask);
             }
             else
                 return RedirectToAction("Index", "Project", new

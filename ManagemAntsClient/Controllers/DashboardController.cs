@@ -33,6 +33,7 @@ namespace ManagemAntsClient.Controllers
             _page = new DashboardPage() {
                 Projects = new Projects(projects),
                 LoggedUser = user,
+                search = searchFilter
             };
             await GetStatsTasksByProjects();
             return View(_page);

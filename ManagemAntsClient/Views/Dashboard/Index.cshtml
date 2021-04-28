@@ -14,7 +14,7 @@
     </nav>
     <div class="container-fluid">
         <div class="row  no-gutters justify-content-around">
-            <div class="col-3 shadow bg-lightgray p-2 m-3 column">
+            <div class="col-3 shadow bg-lightgray p-2 m-3 h-100">
                 <div class="text-center">
                     <h3>Liste des projets</h3>
                 </div>
@@ -23,7 +23,14 @@
                     <div class="ml-3 mr-3 mb-3">
                         <div class="row pt-2">
                             <div class="col-lg">
-                                <input name="search" class="w-100" placeholder="Nom de projet" value="@Model.search" autocomplete="off" />
+                                <span>
+                                    <input name="search" style="width: @(string.IsNullOrEmpty(Model.search) ? "100%" : " 90%");" placeholder="Nom de projet" value="@Model.search" autocomplete="off" />
+                                    @if (!string.IsNullOrEmpty(Model.search))
+                                    {
+                                        <a style="margin-left:-25px" href="@Url.Action("Index", "Dashboard")"><img src="~/img/clear.png" height="12" width="12" /></a>
+                                    }
+                                </span>
+                                
                             </div>
                             <div class="col-auto">
                                 <button class="btn btn-sm btn-secondary">Rechercher</button>
@@ -31,7 +38,7 @@
                         </div>
                     </div>
                 }
-                <div class="project-container ">
+                <div>
                     @foreach (var project in Model.Projects.projects)
                     {
                         <a href='@Url.Action("Index", "Project", new { projectId = project.id })'>

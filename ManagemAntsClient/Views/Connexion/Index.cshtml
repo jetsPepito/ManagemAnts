@@ -7,12 +7,20 @@
     <nav class="navbar py-0 bg-blue shadow p-2 sticky-top">
         <h3 class="text-white m-auto">Connexion</h3>
     </nav>
+    @if (Model.status == Login.statusEnum.SOMETHING_WENT_WRONG)
+    {
+        <div class="row no-gutters">
+            <div class="text-danger m-auto">
+                <span class="d-flex align-items-center">
+                    <img src="~/img/error.png" width="17" height="17">
+                    <div class="ml-1 mr-1">Problème de connexion avec le serveur</div>
+                    <img src="~/img/error.png" width="17" height="17">
+                </span>
+            </div>
+        </div>
+    }
     <div class="mt-5 pt-5 container-fluid">
         <div class="row justify-content-around no-gutters align-items-center">
-            @if (Model.status == Login.statusEnum.SOMETHING_WENT_WRONG)
-            {
-                <div class="text-danger m-auto">Problème de connexion avec le serveur</div>
-            }
             <div class="col-5 shadow bg-lightgray p-5">
                 @using (Html.BeginForm("Login", "Connexion", FormMethod.Post))
                 {
@@ -46,10 +54,6 @@
                 @using (Html.BeginForm("SignUp", "Connexion", FormMethod.Post))
                 {
                     <h3 class="text-center">Inscription</h3>
-                    @if (Model.status == Login.statusEnum.REGISTERED)
-                    {
-                        <div class="text-success justify-content-center">Vous avez bien été enregistré</div>
-                    }
                     <div class="row justify-content-center">
                         <div class="col-8">
                             <div class="row justify-content-between mt-3">
@@ -90,7 +94,11 @@
                             }
                         </div>
                     </div>
-                    <div class="text-center  mt-5">
+                    <div class="text-center @(Model.status == Login.statusEnum.REGISTERED ? "mt-3" : "mt-5")">
+                        @if (Model.status == Login.statusEnum.REGISTERED)
+                        {
+                            <div class="text-success justify-content-center mb-2">Vous avez bien été enregistré</div>
+                        }
                         <button class="btn btn-sm btn-secondary m-auto">Inscription</button>
                     </div>
                 }

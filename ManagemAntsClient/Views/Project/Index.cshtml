@@ -79,39 +79,31 @@
                         <div class="col-sm-3 pr-1 d-flex align-items-center justify-content-center">
                             @if (task.state == 0)
                             {
-                                <div class="h-100 w-sm"></div>
+                                <div class="h-100 mr-1" style="width:33%;"></div>
                             }
                             else
                             {
-                                @using (Html.BeginForm("BackStateTask", "Project", task, FormMethod.Post))
-                                {
-                                    <button class="btn btn-danger btn-sm">Retour</button>
-                                }
+                                <button class="btn btn-danger btn-sm  mr-1 ml-1 " style="width:30%;" onclick="backStateTask(@task.id)">Retour</button>
                             }
-
-                            <label class="text-white bg-transparent border pr-2 pl-2 pt-1 pb-1 ml-2 mr-2 ml-2 text-center w-md" style="border-radius:5px;">@task.getState()</label>
+                            <div class="text-white bg-transparent border pr-2 pl-2 pt-1 pb-1 ml-2 mr-2 text-center" style="border-radius:5px; width:40%;">
+                                <label>@task.getState()</label>
+                            </div>
 
                             @if (task.state == 2)
                             {
-                                <button class="btn btn-primary btn-sm mr-1 ml-1" onclick="openTaskFinished(@task.id)" name="rendre">Rendre</button>
+                                <button class="btn btn-primary btn-sm mr-1 ml-1 text-center" style="width:30%;" onclick="openTaskFinished(@task.id)" name="rendre">Rendre</button>
                             }
                             else if (task.state == 1)
                             {
-                                @using (Html.BeginForm("NextStateTask", "Project", task, FormMethod.Post))
-                                {
-                                    <button class="btn btn-info btn-sm" name="finir">Terminer</button>
-                                }
+                                <button class="btn btn-info btn-sm mr-1 ml-1 text-center" style="width:30%;" name="finir" onclick="nextStateTask(@task.id)">Terminer</button>
                             }
                             else if (task.state == 0)
                             {
-                                @using (Html.BeginForm("NextStateTask", "Project", task, FormMethod.Post))
-                                {
-                                    <button class="btn btn-success btn-sm" name="suivant">Suivant</button>
-                                }
+                                <button class="btn btn-success btn-sm mr-1 ml-1 text-center" style="width:30%;" name="suivant" onclick="nextStateTask(@task.id)">Suivant</button>
                             }
                             else
                             {
-                                <div class="h-100 w-sm"></div>
+                                <div class="h-100 ml-1" style="width:33%;"></div>
                             }
                         </div>
                     </div>
@@ -133,7 +125,7 @@
                     @if (Model.LoggedUser.role == 0)
                     {
                         <button onclick="openDescriptionModify()" class="btn btn-sm btn-secondary mr-1 bg-transparent noBorder border-0">
-                            <img class="black-img mb-1" src="~/img/edit-solid.svg" />
+                            <img class="mb-1" width="15" height="15" src="~/img/edit-solid.svg" />
                         </button>
 
                         <partial name="_descriptionModifyModal" model="@Model.Project" />
@@ -220,6 +212,32 @@
 
 <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
 <script>
+
+    function backStateTask(id) {
+
+        $.ajax({
+            type: "POST",
+            url: "@Url.Action("BackStateTask", "Project")",
+            data: {taskId : id},
+            success: function () {
+                location.reload()
+            }
+        })
+    }
+
+    function nextStateTask(id) {
+
+        $.ajax({
+            type: "POST",
+            url: "@Url.Action("NextStateTask", "Project")",
+            data: {taskId : id},
+            success: function () {
+                location.reload()
+            }
+        })
+    }
+
+
     function logout() {
         $.ajax({
             type: "POST",

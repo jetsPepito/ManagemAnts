@@ -150,17 +150,39 @@ namespace ManagemAntsClient.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> NextStateTask(Models.Task task)
+        public async Task<IActionResult> NextStateTask(string taskId)
         {
-            task.state += 1;
-            return await UpdateTask(task);
+            var tasks = _projectPage.Tasks.Where(el => el.id == long.Parse(taskId));
+            if (tasks.Count() != 0)
+            {
+                var task = tasks.FirstOrDefault();
+                task.state += 1;
+                return await UpdateTask(task);
+            }
+            else
+                return RedirectToAction("Index", "Project", new
+                {
+                    projectId = _projectPage.Project.id,
+                    myTasks = _projectPage.isMyTasks
+                });
         }
 
         [HttpPost]
-        public async Task<IActionResult> BackStateTask(Models.Task task)
+        public async Task<IActionResult> BackStateTask(string taskId)
         {
-            task.state -= 1;
-            return await UpdateTask(task);
+            var tasks = _projectPage.Tasks.Where(el => el.id == long.Parse(taskId));
+            if (tasks.Count() != 0)
+            {
+                var task = tasks.FirstOrDefault();
+                task.state -= 1;
+                return await UpdateTask(task);
+            }
+            else
+                return RedirectToAction("Index", "Project", new
+                {
+                    projectId = _projectPage.Project.id,
+                    myTasks = _projectPage.isMyTasks
+                });
         }
 
         [HttpPost]

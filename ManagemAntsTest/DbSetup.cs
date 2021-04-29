@@ -7,7 +7,7 @@ using ManagemAntsServer.DataAccess.EfModels;
 
 namespace ManagemAntsTest
 {
-    class DbSetup
+    public class DbSetup
     {
         private readonly Fixtures _fixtures;
         public DbSet<User> UsersSet => GetMockDbSet(_fixtures.Users);

@@ -7,7 +7,7 @@ using ManagemAntsServer.DataAccess.EfModels;
 
 namespace ManagemAntsTest
 {
-    class Fixtures
+    public class Fixtures
     {
         public List<User> Users;
 

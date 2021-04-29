@@ -28,9 +28,32 @@ namespace ManagemAntsTest.API
         public void GetUsers()
         {
             var result = _userController.Get() as Microsoft.AspNetCore.Mvc.OkObjectResult;
+            
             Assert.AreEqual(200, result.StatusCode);
-            var users = result.Value as User[];
-            Assert.AreEqual(2, users.Length);
+
+            var users = result.Value as ManagemAntsServer.Dbo.User[];
+            Assert.AreEqual(_refFixture.Users.Count, users.Length);
+        }
+
+        [Test]
+        public void GetUserById()
+        {
+            var userToGet = _refFixture.Users[0];
+            var result = _userController.GetById(userToGet.Id.ToString()) as Microsoft.AspNetCore.Mvc.OkObjectResult;
+            
+            Assert.AreEqual(200, result.StatusCode);
+
+            var users = result.Value as ManagemAntsServer.Dbo.User[];
+            Assert.AreEqual(1, users.Length);
+            Assert.IsTrue(IsEqualUsers(userToGet, users[0]));
+        }
+        
+        public bool IsEqualUsers(User a, ManagemAntsServer.Dbo.User b)
+        {
+            return a.Pseudo == b.Pseudo &&
+                a.Firstname == b.Firstname &&
+                a.Lastname == b.Lastname &&
+                a.Password == b.Password;
         }
     }
 }

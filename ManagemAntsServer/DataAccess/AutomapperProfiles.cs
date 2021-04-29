@@ -24,7 +24,6 @@ namespace ManagemAntsServer.DataAccess
 
             CreateMap<Dbo.UsersHasTask, EfModels.UsersHasTask>();
             CreateMap<EfModels.UsersHasTask, Dbo.UsersHasTask>();
-
         }
     }
 }

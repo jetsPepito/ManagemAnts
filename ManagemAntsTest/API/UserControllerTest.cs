@@ -6,6 +6,7 @@ using System;
 using AutoMapper;
 using ManagemAntsServer.DataAccess.EfModels;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace ManagemAntsTest.API
 {
@@ -22,6 +23,14 @@ namespace ManagemAntsTest.API
             IMapper mapper = new Mapper(configuration);
             UserRepository userRepository = new UserRepository(contextMock.Object, null, mapper);
             _userController = new UserController(userRepository);
+        }
+
+        public bool IsEqualUsers(User a, ManagemAntsServer.Dbo.User b)
+        {
+            return a.Pseudo == b.Pseudo &&
+                a.Firstname == b.Firstname &&
+                a.Lastname == b.Lastname &&
+                a.Password == b.Password;
         }
 
         [Test]
@@ -47,13 +56,79 @@ namespace ManagemAntsTest.API
             Assert.AreEqual(1, users.Length);
             Assert.IsTrue(IsEqualUsers(userToGet, users[0]));
         }
-        
-        public bool IsEqualUsers(User a, ManagemAntsServer.Dbo.User b)
+
+        [Test]
+        public void GetUserByIdUnknown()
         {
-            return a.Pseudo == b.Pseudo &&
-                a.Firstname == b.Firstname &&
-                a.Lastname == b.Lastname &&
-                a.Password == b.Password;
+            var result = _userController.GetById("-1") as Microsoft.AspNetCore.Mvc.OkObjectResult;
+
+            Assert.AreEqual(200, result.StatusCode);
+
+            var users = result.Value as ManagemAntsServer.Dbo.User[];
+            Assert.AreEqual(0, users.Length);
+        }
+
+        [Test]
+        public void GetUserByFilter()
+        {
+            var filter = _refFixture.Users[0].Pseudo.Substring(2).ToLower();
+            var usersToGet = _refFixture.Users.Where(
+                    x => x.Firstname.ToLower().Contains(filter)
+                    || x.Lastname.ToLower().Contains(filter)
+                    || x.Pseudo.ToLower().Contains(filter)).ToList();
+
+            var result = _userController.GetByFilter(filter) as Microsoft.AspNetCore.Mvc.OkObjectResult;
+
+            Assert.AreEqual(200, result.StatusCode);
+
+            var users = result.Value as ManagemAntsServer.Dbo.User[];
+            Assert.AreEqual(usersToGet.Count(), users.Length);
+            for (int i = 0; i < users.Length; i++)
+            {
+                Assert.IsTrue(IsEqualUsers(usersToGet[i], users[i]));
+            }
+        }
+
+        [Test]
+        public void GetUserByEmptyFilter()
+        {
+            var filter = "";
+            var usersToGet = _refFixture.Users.ToList();
+
+            var result = _userController.GetByFilter(filter) as Microsoft.AspNetCore.Mvc.OkObjectResult;
+
+            Assert.AreEqual(200, result.StatusCode);
+
+            var users = result.Value as ManagemAntsServer.Dbo.User[];
+            Assert.AreEqual(usersToGet.Count(), users.Length);
+            for (int i = 0; i < users.Length; i++)
+            {
+                Assert.IsTrue(IsEqualUsers(usersToGet[i], users[i]));
+            }
+        }
+
+        [Test]
+        public void GetUserByPseudo()
+        {
+            var userToGet = _refFixture.Users[0];
+            var result = _userController.GetByPseudo(userToGet.Pseudo) as Microsoft.AspNetCore.Mvc.OkObjectResult;
+
+            Assert.AreEqual(200, result.StatusCode);
+
+            var users = result.Value as ManagemAntsServer.Dbo.User[];
+            Assert.AreEqual(1, users.Length);
+            Assert.IsTrue(IsEqualUsers(userToGet, users[0]));
+        }
+
+        [Test]
+        public void GetUserByPseudoFail()
+        {
+            var result = _userController.GetByPseudo("THISUSERDOESNOTEXISTS") as Microsoft.AspNetCore.Mvc.OkObjectResult;
+
+            Assert.AreEqual(200, result.StatusCode);
+
+            var users = result.Value as ManagemAntsServer.Dbo.User[];
+            Assert.AreEqual(0, users.Length);
         }
     }
 }

@@ -11,7 +11,7 @@ namespace ManagemAntsTest
         public List<User> Users;
         public List<Project> Projects;
         public List<ProjectsHasUser> ProjectsHasUsers;
-        public List<Task> Task;
+        public List<Task> Tasks;
         public List<UsersHasTask> UsersHasTasks;
 
         public Fixtures()
@@ -102,7 +102,7 @@ namespace ManagemAntsTest
 
         private void setTasks()
         {
-            Task = new List<Task>()
+            Tasks = new List<Task>()
             {
                 new Task()
                 {

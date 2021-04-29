@@ -3,7 +3,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using ManagemAntsServer.DataAccess.EfModels;
 
 namespace ManagemAntsTest.API
@@ -19,9 +18,15 @@ namespace ManagemAntsTest.API
             var database = new DbSetup();
             contextMock.Setup(s => s.Set<User>()).Returns(database.UsersSet);
             contextMock.Setup(s => s.Users).Returns(database.UsersSet);
-            _refFixture = new Fixtures();
             contextMock.Setup(s => s.Set<Project>()).Returns(database.ProjectsSet);
             contextMock.Setup(s => s.Projects).Returns(database.ProjectsSet);
+            contextMock.Setup(s => s.Set<Task>()).Returns(database.Tasks);
+            contextMock.Setup(s => s.Projects).Returns(database.ProjectsSet);
+            contextMock.Setup(s => s.Set<ProjectsHasUser>()).Returns(database.ProjectHasUsersSet);
+            contextMock.Setup(s => s.Projects).Returns(database.ProjectsSet);
+            contextMock.Setup(s => s.Set<UsersHasTask>()).Returns(database.UsersHasTasks);
+            contextMock.Setup(s => s.Projects).Returns(database.ProjectsSet);
+            _refFixture = new Fixtures();
         }
     }
 }

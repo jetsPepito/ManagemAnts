@@ -12,9 +12,9 @@ namespace ManagemAntsTest
         private readonly Fixtures _fixtures;
         public DbSet<User> UsersSet => GetMockDbSet(_fixtures.Users);
         public DbSet<Project> ProjectsSet => GetMockDbSet(_fixtures.Projects);
-        public DbSet<ProjectsHasUser> ProjectHasUsersSet => GetMockDbSet(_fixtures.Projects);
-        public DbSet<Project> ProjectsSet => GetMockDbSet(_fixtures.Projects);
-        public DbSet<Project> ProjectsSet => GetMockDbSet(_fixtures.Projects);
+        public DbSet<ProjectsHasUser> ProjectHasUsersSet => GetMockDbSet(_fixtures.ProjectsHasUsers);
+        public DbSet<Task> Tasks => GetMockDbSet(_fixtures.Tasks);
+        public DbSet<UsersHasTask> UsersHasTasks => GetMockDbSet(_fixtures.UsersHasTasks);
 
         public DbSetup()
         {

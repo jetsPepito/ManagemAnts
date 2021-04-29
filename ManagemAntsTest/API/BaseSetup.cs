@@ -21,11 +21,11 @@ namespace ManagemAntsTest.API
             contextMock.Setup(s => s.Set<Project>()).Returns(database.ProjectsSet);
             contextMock.Setup(s => s.Projects).Returns(database.ProjectsSet);
             contextMock.Setup(s => s.Set<Task>()).Returns(database.Tasks);
-            contextMock.Setup(s => s.Projects).Returns(database.ProjectsSet);
+            contextMock.Setup(s => s.Tasks).Returns(database.Tasks);
             contextMock.Setup(s => s.Set<ProjectsHasUser>()).Returns(database.ProjectHasUsersSet);
-            contextMock.Setup(s => s.Projects).Returns(database.ProjectsSet);
+            contextMock.Setup(s => s.ProjectsHasUsers).Returns(database.ProjectHasUsersSet);
             contextMock.Setup(s => s.Set<UsersHasTask>()).Returns(database.UsersHasTasks);
-            contextMock.Setup(s => s.Projects).Returns(database.ProjectsSet);
+            contextMock.Setup(s => s.UsersHasTasks).Returns(database.UsersHasTasks);
             _refFixture = new Fixtures();
         }
     }

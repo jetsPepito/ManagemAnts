@@ -74,29 +74,28 @@ namespace ManagemAntsTest
                     Id = 1,
                     ProjectId = 1,
                     UserId = 1,
-                    Role = 0
+                    Role = 0,
+                    Project = Projects[0],
+                    User = Users[0]
                 },
                 new ProjectsHasUser()
                 {
                     Id = 2,
                     ProjectId = 1,
                     UserId = 2,
-                    Role = 1
+                    Role = 1,
+                    Project = Projects[0],
+                    User = Users[1]
                 },
                 new ProjectsHasUser()
                 {
                     Id = 3,
                     ProjectId = 2,
                     UserId = 1,
-                    Role = 1
-                },
-                new ProjectsHasUser()
-                {
-                    Id = 4,
-                    ProjectId = 2,
-                    UserId = 2,
-                    Role = 0
-                },
+                    Role = 1,
+                    Project = Projects[1],
+                    User = Users[0]
+                }
             };
         }
 

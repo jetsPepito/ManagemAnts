@@ -65,9 +65,8 @@ namespace ManagemAntsTest.API
 
             Assert.AreEqual(200, result.StatusCode);
 
-            var addedUserResult = _loginController.Login(newUser.Pseudo) as Microsoft.AspNetCore.Mvc.OkObjectResult;
-            var users = addedUserResult.Value as ManagemAntsServer.Dbo.User[];
-            Assert.AreEqual(1, users.Length);
+            var users = result.Value as List<ManagemAntsServer.Dbo.User>;
+            Assert.AreEqual(1, users.Count);
             Assert.IsTrue(UserUtils.IsEqualUsers(newUser, users[0]));
         }
 

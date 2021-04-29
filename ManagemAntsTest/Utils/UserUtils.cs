@@ -11,14 +11,16 @@ namespace ManagemAntsTest.Utils
     {
         public static bool IsEqualUsers(User a, ManagemAntsServer.Dbo.User b)
         {
-            return a.Pseudo == b.Pseudo &&
+            return a.Id == b.Id && 
+                a.Pseudo == b.Pseudo &&
                 a.Firstname == b.Firstname &&
                 a.Lastname == b.Lastname &&
                 a.Password == b.Password;
         }
         public static bool IsEqualUsers(ManagemAntsServer.Dbo.User a, ManagemAntsServer.Dbo.User b)
         {
-            return a.Pseudo == b.Pseudo &&
+            return a.Id == b.Id && 
+                a.Pseudo == b.Pseudo &&
                 a.Firstname == b.Firstname &&
                 a.Lastname == b.Lastname &&
                 a.Password == b.Password;

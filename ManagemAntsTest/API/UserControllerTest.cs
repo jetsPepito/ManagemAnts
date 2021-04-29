@@ -7,6 +7,7 @@ using AutoMapper;
 using ManagemAntsServer.DataAccess.EfModels;
 using System.Collections.Generic;
 using System.Linq;
+using ManagemAntsTest.Utils;
 
 namespace ManagemAntsTest.API
 {
@@ -23,14 +24,6 @@ namespace ManagemAntsTest.API
             IMapper mapper = new Mapper(configuration);
             UserRepository userRepository = new UserRepository(contextMock.Object, null, mapper);
             _userController = new UserController(userRepository);
-        }
-
-        public bool IsEqualUsers(User a, ManagemAntsServer.Dbo.User b)
-        {
-            return a.Pseudo == b.Pseudo &&
-                a.Firstname == b.Firstname &&
-                a.Lastname == b.Lastname &&
-                a.Password == b.Password;
         }
 
         [Test]
@@ -54,7 +47,7 @@ namespace ManagemAntsTest.API
 
             var users = result.Value as ManagemAntsServer.Dbo.User[];
             Assert.AreEqual(1, users.Length);
-            Assert.IsTrue(IsEqualUsers(userToGet, users[0]));
+            Assert.IsTrue(UserUtils.IsEqualUsers(userToGet, users[0]));
         }
 
         [Test]
@@ -85,7 +78,7 @@ namespace ManagemAntsTest.API
             Assert.AreEqual(usersToGet.Count(), users.Length);
             for (int i = 0; i < users.Length; i++)
             {
-                Assert.IsTrue(IsEqualUsers(usersToGet[i], users[i]));
+                Assert.IsTrue(UserUtils.IsEqualUsers(usersToGet[i], users[i]));
             }
         }
 
@@ -103,7 +96,7 @@ namespace ManagemAntsTest.API
             Assert.AreEqual(usersToGet.Count(), users.Length);
             for (int i = 0; i < users.Length; i++)
             {
-                Assert.IsTrue(IsEqualUsers(usersToGet[i], users[i]));
+                Assert.IsTrue(UserUtils.IsEqualUsers(usersToGet[i], users[i]));
             }
         }
 
@@ -117,7 +110,7 @@ namespace ManagemAntsTest.API
 
             var users = result.Value as ManagemAntsServer.Dbo.User[];
             Assert.AreEqual(1, users.Length);
-            Assert.IsTrue(IsEqualUsers(userToGet, users[0]));
+            Assert.IsTrue(UserUtils.IsEqualUsers(userToGet, users[0]));
         }
 
         [Test]

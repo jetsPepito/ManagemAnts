@@ -6,6 +6,7 @@ using System;
 using AutoMapper;
 using ManagemAntsServer.DataAccess.EfModels;
 using System.Collections.Generic;
+using Microsoft.AspNetCore.Mvc;
 
 namespace ManagemAntsTest.API
 {
@@ -30,7 +31,7 @@ namespace ManagemAntsTest.API
         [Test]
         public void GetProjects()
         {
-            var result = _projectController.Get() as Microsoft.AspNetCore.Mvc.OkObjectResult;
+            var result = _projectController.Get() as OkObjectResult;
             Assert.AreEqual(200, result.StatusCode);
             var projects = result.Value as ManagemAntsServer.Dbo.Project[];
             Assert.AreEqual(2, projects.Length);
@@ -39,14 +40,14 @@ namespace ManagemAntsTest.API
         [Test]
         public void GetProjectsById()
         {
-            var result = _projectController.GetById("1") as Microsoft.AspNetCore.Mvc.OkObjectResult;
+            var result = _projectController.GetById("1") as OkObjectResult;
             Assert.AreEqual(200, result.StatusCode);
             var projects = result.Value as ManagemAntsServer.Dbo.Project[];
             Assert.AreEqual("Premier projet", projects[0].Name);
         }
 
-/*        [Test]
-        public void Post()
+        [Test]
+        public async System.Threading.Tasks.Task Post()
         {
             var newProj = new ManagemAntsServer.Dbo.Project()
             {
@@ -54,10 +55,14 @@ namespace ManagemAntsTest.API
                 Name = "Nouveau projet",
                 Description = "La description du nouveau projet"
             };
-            var result = _projectController.Post(newProj) as Microsoft.AspNetCore.Mvc.OkObjectResult;
+            var result = await _projectController.Post(newProj, 1) as OkObjectResult;
             Assert.AreEqual(200, result.StatusCode);
-            var projects = result.Value as ManagemAntsServer.Dbo.Project[];
-            Assert.AreEqual("Premier projet", projects[0].Name);
-        }*/
+            var getProject = _projectController.Get() as OkObjectResult;
+            var projects = getProject.Value as ManagemAntsServer.Dbo.Project[];
+            Assert.AreEqual(_refFixture.Projects.Count + 1, projects.Length);
+            var getProjectById = _projectController.GetById("3") as OkObjectResult;
+            var project = getProjectById.Value as ManagemAntsServer.Dbo.Project[];
+            Assert.AreEqual("Nouveau projet", project[0].Name);
+        }
     }
 }

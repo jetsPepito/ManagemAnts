@@ -19,6 +19,8 @@ namespace ManagemAntsTest
             setUsers();
             setProjects();
             setProjectHasUsers();
+            setTasks();
+            setUserHasTasks();
         }
 
         private void setUsers()
@@ -95,6 +97,76 @@ namespace ManagemAntsTest
                     UserId = 2,
                     Role = 0
                 },
+            };
+        }
+
+        private void setTasks()
+        {
+            Task = new List<Task>()
+            {
+                new Task()
+                {
+                    Id = 1,
+                    Name = "Premier tache",
+                    Description = "Premiere description",
+                    State = 0,
+                    ProjectId = 1
+                },
+                new Task()
+                {
+                    Id = 2,
+                    Name = "Deuxieme tache",
+                    Description = "Deuxieme description",
+                    State = 1,
+                    ProjectId = 1
+                },
+                new Task()
+                {
+                    Id = 3,
+                    Name = "Premier tache",
+                    Description = "Premiere description",
+                    State = 1,
+                    ProjectId = 2
+                },
+                new Task()
+                {
+                    Id = 4,
+                    Name = "Deuxieme tache",
+                    Description = "Deuxieme description",
+                    State = 0,
+                    ProjectId = 2
+                },
+            };
+        }
+
+        private void setUserHasTasks()
+        {
+            UsersHasTasks = new List<UsersHasTask>()
+            {
+                new UsersHasTask()
+                {
+                    Id = 1,
+                    UserId = 1,
+                    TaskId = 1
+                },
+                new UsersHasTask()
+                {
+                    Id = 2,
+                    UserId = 2,
+                    TaskId = 2
+                },
+                new UsersHasTask()
+                {
+                    Id = 3,
+                    UserId = 1,
+                    TaskId = 3
+                },
+                new UsersHasTask()
+                {
+                    Id = 4,
+                    UserId = 2,
+                    TaskId = 4
+                }
             };
         }
     }

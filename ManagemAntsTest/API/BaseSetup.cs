@@ -18,6 +18,8 @@ namespace ManagemAntsTest.API
             var database = new DbSetup();
             contextMock.Setup(s => s.Set<User>()).Returns(database.UsersSet);
             contextMock.Setup(s => s.Users).Returns(database.UsersSet);
+            contextMock.Setup(s => s.Set<Project>()).Returns(database.ProjectsSet);
+            contextMock.Setup(s => s.Projects).Returns(database.ProjectsSet);
         }
     }
 }

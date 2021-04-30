@@ -150,60 +150,37 @@ namespace ManagemAntsClient.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> NextStateTask(string taskId)
+        public async Task<IActionResult> NextStateTask(string taskId, string actualState)
         {
-            var tasks = _projectPage.Tasks.Where(el => el.id == long.Parse(taskId));
-            if (tasks.Count() != 0)
+            var client = Utils.Client.SetUpClient("task/NextState/" + taskId + "/" + actualState);
+
+            var putRequest = new HttpRequestMessage(HttpMethod.Post, client.BaseAddress)
             {
-                var task = tasks.FirstOrDefault();
-                var newTask = new Models.Task()
-                {
-                    id = task.id,
-                    createdAt = task.createdAt,
-                    collaborators = task.collaborators,
-                    description = task.description,
-                    name = task.name,
-                    duration = task.duration,
-                    timeSpent = task.timeSpent,
-                    projectId = task.projectId,
-                    state = task.state < 3 ? task.state + 1 : task.state
-                };
-                return await UpdateTask(newTask);
-            }
-            else
-                return RedirectToAction("Index", "Project", new
-                {
-                    projectId = _projectPage.Project.id,
-                    myTasks = _projectPage.isMyTasks
-                });
+                Content = JsonContent.Create("")
+            };
+            await Utils.Client.SendAsync(client, putRequest);
+            return RedirectToAction("Index", "Project", new
+            {
+                projectId = _projectPage.Project.id,
+                myTasks = _projectPage.isMyTasks
+            });
         }
 
         [HttpPost]
-        public async Task<IActionResult> BackStateTask(string taskId)
+        public async Task<IActionResult> BackStateTask(string taskId, string actualState)
         {
-            var tasks = _projectPage.Tasks.Where(el => el.id == long.Parse(taskId));
-            if (tasks.Count() != 0)
+            var client = Utils.Client.SetUpClient("task/BackState/" + taskId + "/" + actualState);
+
+            var putRequest = new HttpRequestMessage(HttpMethod.Post, client.BaseAddress)
             {
-                var task = tasks.FirstOrDefault();
-                var newTask = new Models.Task() {
-                    id = task.id,
-                    createdAt = task.createdAt,
-                    collaborators = task.collaborators,
-                    description = task.description,
-                    name = task.name,
-                    duration = task.duration,
-                    timeSpent = task.timeSpent,
-                    projectId = task.projectId,
-                    state = task.state > 0 ? task.state - 1 : task.state
-                };
-                return await UpdateTask(newTask);
-            }
-            else
-                return RedirectToAction("Index", "Project", new
-                {
-                    projectId = _projectPage.Project.id,
-                    myTasks = _projectPage.isMyTasks
-                });
+                Content = JsonContent.Create("")
+            };
+            var result = await Utils.Client.SendAsync(client, putRequest);
+            return RedirectToAction("Index", "Project", new
+            {
+                projectId = _projectPage.Project.id,
+                myTasks = _projectPage.isMyTasks
+            });
         }
 
         [HttpPost]

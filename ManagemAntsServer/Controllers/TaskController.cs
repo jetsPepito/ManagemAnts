@@ -91,5 +91,29 @@ namespace ManagemAntsServer.Controllers
 
             return Ok(result);
         }
+
+        [HttpPost("/api/[controller]/NextState/{taskId}/{actualState}")]
+        public async Task<IActionResult> NextState(string taskId, string actualState)
+        {
+            var task = _taskrepository.GetByPredicate(x => x.Id == long.Parse(taskId)).FirstOrDefault();
+            if (task.State == int.Parse(actualState) && int.Parse(actualState) < 3)
+            {
+                task.State += 1;
+                return Ok(await _taskrepository.Update(task));
+            }
+            return Ok(task);
+        }
+
+        [HttpPost("/api/[controller]/BackState/{taskId}/{actualState}")]
+        public async Task<IActionResult> BackState(string taskId, string actualState)
+        {
+            var task = _taskrepository.GetByPredicate(x => x.Id == long.Parse(taskId)).FirstOrDefault();
+            if (task.State == int.Parse(actualState) && int.Parse(actualState) > 0)
+            {
+                task.State -= 1;
+                return Ok(await _taskrepository.Update(task));
+            }
+            return Ok(task);
+        }
     }
 }

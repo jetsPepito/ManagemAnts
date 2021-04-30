@@ -83,7 +83,7 @@
                             }
                             else
                             {
-                                <button class="btn btn-danger btn-sm  mr-1 ml-1 " style="width:30%;" onclick="backStateTask(@task.id)">Retour</button>
+                                <button class="btn btn-danger btn-sm  mr-1 ml-1 " style="width:30%;" onclick="backStateTask(@task.id, @task.state)">Retour</button>
                             }
                             <div class="text-white bg-transparent border pr-2 pl-2 pt-1 pb-1 ml-2 mr-2 text-center" style="border-radius:5px; width:40%;">
                                 <label>@task.getState()</label>
@@ -95,11 +95,11 @@
                             }
                             else if (task.state == 1)
                             {
-                                <button class="btn btn-info btn-sm mr-1 ml-1 text-center" style="width:30%;" name="finir" onclick="nextStateTask(@task.id)">Terminer</button>
+                                <button class="btn btn-info btn-sm mr-1 ml-1 text-center" style="width:30%;" name="finir" onclick="nextStateTask(@task.id, @task.state)">Terminer</button>
                             }
                             else if (task.state == 0)
                             {
-                                <button class="btn btn-success btn-sm mr-1 ml-1 text-center" style="width:30%;" name="suivant" onclick="nextStateTask(@task.id)">Suivant</button>
+                                <button class="btn btn-success btn-sm mr-1 ml-1 text-center" style="width:30%;" name="suivant" onclick="nextStateTask(@task.id, @task.state)">Suivant</button>
                             }
                             else
                             {
@@ -213,24 +213,30 @@
 <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
 <script>
 
-    function backStateTask(id) {
+    function backStateTask(id, state) {
 
         $.ajax({
             type: "POST",
             url: "@Url.Action("BackStateTask", "Project")",
-            data: {taskId : id},
+            data: {
+                taskId: id,
+                actualState: state
+            },
             success: function () {
                 location.reload()
             }
         })
     }
 
-    function nextStateTask(id) {
+    function nextStateTask(id, state) {
 
         $.ajax({
             type: "POST",
             url: "@Url.Action("NextStateTask", "Project")",
-            data: {taskId : id},
+            data: {
+                taskId: id,
+                actualState: state
+            },
             success: function () {
                 location.reload()
             }

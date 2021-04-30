@@ -75,7 +75,6 @@ namespace ManagemAntsServer.Controllers
             return Ok(res);
         }
 
-
         [HttpDelete("/api/[controller]/{taskId}")]
         public async Task<IActionResult> RemoveTaskFromProject(string taskId)
         {

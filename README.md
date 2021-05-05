@@ -25,6 +25,11 @@ Il peut être accéder à cette adresse : https://managemantsclient.azurewebsite
 
 #### Vous pouvez maintenant lancer le serveur et le client
 
+# Lancer la testsuit
+- Ouvrir la solution dans Visual studio
+- Clique droit sur le projet ``ManagemAntsTest`` > ``Executer les tests``
+(Inutile de lancer le serveur ou le client pour lancer les tests)
+
 # Déploiement Azure
 
 ## Base de donnée

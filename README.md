@@ -1,6 +1,31 @@
-# README
+# Managem'Ants
 
-# Déploiement
+![forthebadge](https://img.shields.io/badge/.NET-5C2D91?style=for-the-badge&logo=.net&logoColor=white)
+![forthebadge](https://img.shields.io/badge/HTML-239120?style=for-the-badge&logo=html5&logoColor=white)
+![forthebadge](https://img.shields.io/badge/CSS-239120?&style=for-the-badge&logo=css3&logoColor=white)
+![forthebadge](https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black)
+
+##### Managem'Ants est un site web de gestion projet.
+Il permet de créer des projets, d'ajouter des collaborateurs à ces projets et d'assigner des tâches à ces collaborateurs.
+On peut également y retrouver des statistiques détaillées sur chaque projet afin de visualiser leur avancement ou d'aider à leur gestion et à la répartition des tâches entre les différents collaborateurs.
+
+# Lancer le projet en local
+
+#### Ouvrir la solution dans visual studio
+#### Créer la base de données locale
+- Créer une nouvelle base de donnée locale appelée ``ManagemAntsDb``
+#### Ajout des tables dans la base de donée
+- Clique droit sur le projet ``ManagemAntsDatabase`` de la solution > ``Comparaison de schémas...``
+- Mettre la base de données locale dans la cible
+- Comparer et mettre à jour
+#### Relier le serveur locale à la base de donées locale
+- Dans le fichier ``appsettings.json`` du projet ``ManagemAntsServer`` : Changer la ``connexionString`` afin qu'elle corresponde à votre base de données locale
+#### Relier le client au serveur
+- S'assurer que la variable ``Url`` dans le fichier ``Utils/Client.cs`` du projet ``ManagemAntsClient`` est ègale à ``https://localhost:44352/api/``
+
+#### Vous pouvez maintenant lancer le serveur et le client
+
+# Déploiement Azure
 
 ## Base de donnée
 Afin de pouvoir déployer le serveur et le client sur Azure nous avons tout d'abord créer une base de données sur notre portail Azure puis nous avons fais une migration du schema de notre base de données SSMS dans celle d'Azure grâce à la l'outil "Microsoft Data Migration Assistant".
@@ -20,3 +45,12 @@ Clic droit sur le projet -> Publier -> Cible Azure -> Azure App Service (Windows
 
 ## Client
 Pour le client, c'est exactement pareil que le serveur, création d'une app service sur Azure puis publication sur visual studio. Il faut au préalable avoir changer l'url pour accèder à l'API en mettant celle donnée par Azure pour le serveur (dans la vue d'ensemble du serveur). Cette modification est à faire dans le projet Client dans le fichier Utils/Client.cs
+
+# Auteurs
+* **Louis Le Gatt** _alias_ [@jetsPepito](https://github.com/jetsPepito)
+* **Corentin Le Guennec** _alias_ [@Guennator](https://github.com/Guennator)
+* **Jeremie Zeitoun** _alias_ [@J3remiez](https://github.com/J3remiez)
+* **Wassim Ajili** _alias_ [@Userleef](https://github.com/Userleef)
+
+# License
+Ceci est un projet réalisé dans le cadre de la majeure MTI à l'EPITA

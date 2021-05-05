@@ -1,9 +1,10 @@
-# Managem'Ants
+# Managem'Ants  ![ManagemAntsLogo](./ManagemAntsClient/wwwroot/img/favicon.ico)
 
 ![forthebadge](https://img.shields.io/badge/.NET-5C2D91?style=for-the-badge&logo=.net&logoColor=white)
 ![forthebadge](https://img.shields.io/badge/HTML-239120?style=for-the-badge&logo=html5&logoColor=white)
 ![forthebadge](https://img.shields.io/badge/CSS-239120?&style=for-the-badge&logo=css3&logoColor=white)
 ![forthebadge](https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black)
+
 
 ##### Managem'Ants est un site web de gestion projet.
 Il permet de créer des projets, d'ajouter des collaborateurs à ces projets et d'assigner des tâches à ces collaborateurs.

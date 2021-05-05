@@ -32,7 +32,7 @@ Il peut être accéder à cette adresse : https://managemantsclient.azurewebsite
 
 # Déploiement Azure
 
-## Base de donnée
+### Base de donnée
 Afin de pouvoir déployer le serveur et le client sur Azure nous avons tout d'abord créer une base de données sur notre portail Azure puis nous avons fais une migration du schema de notre base de données SSMS dans celle d'Azure grâce à la l'outil "Microsoft Data Migration Assistant".
 
 Pour se faire, il faut ouvrir l'utilitaire de migration puis :
@@ -53,7 +53,7 @@ Une fois dans le projet de migration :
 
 Une fois la migration effectuée, nous pouvons récupéerer la connection string dans Azure dans la vue d'ensemble, dans le champs ``Chaînes de connexion``. Une fois la chaîne de connexion récupérée il faut la mettre dans le fichier ``appsettings.json`` du projet Serveur et le mettre dans le champs ``ConnectionStrings.ManagemAnts``.
 
-## Serveur
+### Serveur
 Pour ce qui est du serveur, nous avons créer une App Service sur Azure : 
 - Créer une App Services dans le portail Azure
 On arrive sur la page de création :
@@ -66,7 +66,7 @@ On arrive sur la page de création :
 On peut désormais publier notre projet grâce à Visual Studio 2019 en faisant comme suit :
 Clic droit sur le projet ``ManagemantsServer`` -> Publier -> Cible Azure -> Azure App Service (Windows) -> Choisir l'App Service créée plus tôt -> Ignorer l'étape de Gestion d'API -> Publier (fichier XML)  -> __Publier__.
 
-## Client
+### Client
 Pour le client, c'est exactement pareil que le serveur, création d'une app service sur Azure puis publication sur visual studio. Il faut au préalable avoir changer l'url pour accèder à l'API en mettant celle donnée par Azure pour le serveur (dans la vue d'ensemble du serveur). Cette modification est à faire dans le projet ``ManagemantsClient`` dans le fichier ``Utils/Client.cs``
 
 # Auteurs

@@ -74,7 +74,7 @@ Pour le client, c'est exactement pareil que le serveur. En effet, il faut créer
 # Auteurs
 * **Louis Le Gatt** _alias_ [@jetsPepito](https://github.com/jetsPepito)
 * **Corentin Le Guennec** _alias_ [@Guennator](https://github.com/Guennator)
-* **Jeremie Zeitoun** _alias_ [@J3remiez](https://github.com/J3remiez)
+* **Jérémie Zeitoun** _alias_ [@J3remiez](https://github.com/J3remiez)
 * **Wassim Ajili** _alias_ [@Userleef](https://github.com/Userleef)
 
 # License

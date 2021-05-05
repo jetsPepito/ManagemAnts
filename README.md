@@ -1,4 +1,4 @@
-# Managem'Ants  ![ManagemAntsLogo](./ManagemAntsClient/wwwroot/img/favicon.ico)
+# Managem'Ants  ![ManagemAntsLogo](https://i.imgur.com/WQjH135.png)
 
 ![forthebadge](https://img.shields.io/badge/.NET-5C2D91?style=for-the-badge&logo=.net&logoColor=white)
 ![forthebadge](https://img.shields.io/badge/HTML-239120?style=for-the-badge&logo=html5&logoColor=white)

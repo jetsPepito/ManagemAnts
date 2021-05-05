@@ -25,12 +25,12 @@ On peut également y retrouver des statistiques détaillées sur chaque projet a
 #### Ouvrir la solution dans visual studio
 #### Créer la base de données locale
 - Créer une nouvelle base de donnée locale appelée ``ManagemAntsDb``
-#### Ajout des tables dans la base de donée
+#### Ajout des tables dans la base de données
 - Clique droit sur le projet ``ManagemAntsDatabase`` de la solution > ``Comparaison de schémas...``
 - Mettre la base de données locale dans la cible
 - Comparer et mettre à jour
 #### Relier le serveur locale à la base de donées locale
-- Dans le fichier ``appsettings.json`` du projet ``ManagemAntsServer`` : Changer la ``connexionString`` afin qu'elle corresponde à votre base de données locale
+- Dans le fichier ``appsettings.json`` du projet ``ManagemAntsServer`` : Changer la ``connexionString`` afin qu'elle corresponde à la base de données locale
 #### Relier le client au serveur
 - S'assurer que la variable ``Url`` dans le fichier ``Utils/Client.cs`` du projet ``ManagemAntsClient`` est ègale à ``https://localhost:44352/api/``
 
@@ -38,13 +38,13 @@ On peut également y retrouver des statistiques détaillées sur chaque projet a
 
 # Lancer la testsuite
 - Ouvrir la solution dans Visual studio
-- Clique droit sur le projet ``ManagemAntsTest`` > ``Executer les tests``
+- Clic droit sur le projet ``ManagemAntsTest`` > ``Executer les tests``
 _(Inutile de lancer le serveur ou le client pour lancer les tests)_
 
 # Déploiement Azure
 
-### Base de donnée
-Afin de pouvoir déployer le serveur et le client sur Azure nous avons tout d'abord créé une base de données sur notre portail Azure puis nous avons fais une migration du schema de notre base de données SSMS dans celle d'Azure grâce à l'outil "Microsoft Data Migration Assistant".
+### Base de données
+Afin de pouvoir déployer le serveur et le client sur Azure nous avons tout d'abord créé une base de données sur notre portail Azure puis nous avons fait une migration du schema de notre base de données SSMS dans celle d'Azure grâce à l'outil ``Microsoft Data Migration Assistant``.
 
 #### Pour se faire, il faut ouvrir l'utilitaire de migration puis :
 - Créer un nouveau projet de migration
@@ -54,18 +54,18 @@ Afin de pouvoir déployer le serveur et le client sur Azure nous avons tout d'ab
 - Choisir le nom du serveur de la base de données SSMS et la méthode d'authentification
 - Ajouter l'option ``Trust server certificate`` et appuyer sur __Connect__
 - Choisir la database qui va être migrer
-- Choisir le serveur de la base de données Azure _(cette information peut être obtenu sur le portail Azure dans la vue d'ensemble de la base de la donnée)_
+- Choisir le serveur de la base de données Azure _(cette information peut être obtenue sur le portail Azure dans la vue d'ensemble de la base de la donnée)_
 - Choisir ensuite ``SQL Server Authentication`` dans le type d'authentification
 - Entrer le ``username`` et le ``password`` administrateur de la base de données
 - Ajouter l'option ``Trust server certificate`` dans les propriétés de connexion
-- Choisir ensuite la base de données Azure dans les bases de données proposés et valider sur __Next__
+- Choisir ensuite la base de données Azure dans les bases de données proposées et valider sur __Next__
 - Séléctionner ensuite les tables qui doivent être migrées puis valider en appuyant sur __Generate SQL script__
 - Appuyer sur __Deploy schema__ pour valider le processus.
 
-Une fois la migration effectuée, nous pouvons récupéerer la connection string dans Azure dans la vue d'ensemble, dans le champs ``Chaînes de connexion``. Une fois la chaîne de connexion récupérée il faut la mettre dans le fichier ``appsettings.json`` du projet Serveur et le mettre dans le champs ``ConnectionStrings.ManagemAnts``.
+Une fois la migration effectuée, nous pouvons récupérer la _connection string_ dans Azure dans la vue d'ensemble, dans le champs ``Chaînes de connexion``. Une fois la _connection string_ récupérée il faut la mettre dans le fichier ``appsettings.json`` du projet ``ManagemantsServeur`` et le mettre dans le champs ``ConnectionStrings.ManagemAnts``.
 
 ### Serveur
-#### Pour ce qui est du serveur, nous avons créé une App Service sur Azure : 
+#### Pour ce qui est du serveur, nous avons créé une App Services sur Azure : 
 - Créer une App Services dans le portail Azure
 #### On arrive sur la page de création :
 - Préciser un Groupe de ressources (en créer un si c'est la première fois)

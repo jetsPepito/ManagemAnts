@@ -11,6 +11,14 @@ On peut également y retrouver des statistiques détaillées sur chaque projet a
 ##### Le site est accéssible à cette adresse : https://managemantsclient.azurewebsites.net/
 
 
+## Sommaire
+
+ - [Lancer le projet en local](#lancer-le-projet-en-local)
+ - [Lancer la testsuite](#lancer-la-testsuite)
+ - [Déploiement Azure](#déploiement-azure)
+ - [Auteurs](#auteurs)
+ - [License](#license)
+
 # Lancer le projet en local
 
 #### Ouvrir la solution dans visual studio
@@ -27,7 +35,7 @@ On peut également y retrouver des statistiques détaillées sur chaque projet a
 
 #### Vous pouvez maintenant lancer le serveur et le client
 
-# Lancer la testsuit
+# Lancer la testsuite
 - Ouvrir la solution dans Visual studio
 - Clique droit sur le projet ``ManagemAntsTest`` > ``Executer les tests``
 _(Inutile de lancer le serveur ou le client pour lancer les tests)_

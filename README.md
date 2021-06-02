@@ -87,4 +87,4 @@ Pour le client, c'est exactement pareil que le serveur. En effet, il faut créer
 * **Wassim Ajili** _alias_ [@Userleef](https://github.com/Userleef)
 
 # License
-Ceci est un projet réalisé dans le cadre de la majeure MTI à l'EPITA
+Ceci est un projet réalisé dans le cadre de la majeure MTI à l'EPITA.

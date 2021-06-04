@@ -19,9 +19,7 @@ jobs:
           working_directory: ManagemAntsTest/
           name: Run tests
           command: |
-            echo $PWD
-            ls
-            dotnet test 
+            dotnet test ManagemAntsTest.csproj
             
 
 workflows:

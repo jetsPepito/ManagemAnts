@@ -20,6 +20,7 @@ jobs:
           name: Run tests
           command: |
             echo $PWD
+            ls
             dotnet test ./ManagemAntsTest/ManagemAntsTest.csproj
             
 

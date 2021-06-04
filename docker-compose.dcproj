@@ -3,7 +3,7 @@
   <PropertyGroup Label="Globals">
     <ProjectVersion>2.1</ProjectVersion>
     <DockerTargetOS>Linux</DockerTargetOS>
-    <ProjectGuid>756df67b-7392-476c-84c1-530651e4e449</ProjectGuid>
+    <ProjectGuid>471c2fed-e9be-4e4a-96a6-aeed94aee92e</ProjectGuid>
     <DockerLaunchAction>LaunchBrowser</DockerLaunchAction>
     <DockerServiceUrl>{Scheme}://localhost:{ServicePort}/</DockerServiceUrl>
     <DockerServiceName>managemantsclient</DockerServiceName>

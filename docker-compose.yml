@@ -1,5 +1,9 @@
 version: '3.4'
 
+
+networks:
+  ManagemAnts-networks:
+
 services:
   managemantsclient:
     image: ${DOCKER_REGISTRY-}managemantsclient
@@ -7,12 +11,17 @@ services:
       context: .
       dockerfile: ManagemAntsClient/Dockerfile
     ports:
-        - "8082:80"
+        - "8080:80"
+        - "8081:443"
     depends_on:
         - managemantsserver
-        
+    networks:
+        - "ManagemAnts-networks"
+
   managemantsserver:
     image: ${DOCKER_REGISTRY-}managemantsserver
     build:
       context: .
       dockerfile: ManagemAntsServer/Dockerfile
+    networks:
+        - "ManagemAnts-networks"

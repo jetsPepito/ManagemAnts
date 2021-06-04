@@ -20,7 +20,7 @@ jobs:
           name: Run tests
           command: |
             echo $PWD
-            dotnet test ./ManagemAntsTest/
+            dotnet test ./ManagemAntsTest/ManagemAntsTest.csproj
             
 
 workflows:

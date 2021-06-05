@@ -11,7 +11,7 @@ namespace ManagemAntsClient.Utils
 {
     public class Client
     {
-        private static string Url = "https://localhost:44352/api/";
+        private static string Url = "http://managemantsserver:80/api/";
 
 
         public static HttpClient SetUpClient(string endpoint)

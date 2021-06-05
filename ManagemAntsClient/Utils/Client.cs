@@ -6,6 +6,7 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using System.Threading.Tasks;
+using Sentry;
 
 namespace ManagemAntsClient.Utils
 {
@@ -29,6 +30,7 @@ namespace ManagemAntsClient.Utils
                 TextWriter errorWriter = Console.Error;
                 errorWriter.WriteLine("SetUpClient");
                 errorWriter.WriteLine(e.Message);
+                SentrySdk.CaptureException(e);
                 return null;
             }
         }
@@ -44,6 +46,7 @@ namespace ManagemAntsClient.Utils
             catch (Exception e)
             {
                 response = new HttpResponseMessage() { StatusCode = System.Net.HttpStatusCode.BadGateway, Content = JsonContent.Create(e) };
+                SentrySdk.CaptureException(e);
             }
 
             return response;
@@ -61,6 +64,7 @@ namespace ManagemAntsClient.Utils
             catch (Exception e)
             {
                 response = new HttpResponseMessage() { StatusCode = System.Net.HttpStatusCode.BadRequest, Content = JsonContent.Create(e) };
+                SentrySdk.CaptureException(e);
             }
 
             return response;

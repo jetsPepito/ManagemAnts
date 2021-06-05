@@ -13,6 +13,7 @@ using System.Net.Http.Json;
 using System.Text.Json;
 using System.Threading.Tasks;
 using System.Web;
+using Sentry;
 
 namespace ManagemAntsClient.Controllers
 {
@@ -103,6 +104,7 @@ namespace ManagemAntsClient.Controllers
                 TextWriter errorWriter = Console.Error;
                 errorWriter.WriteLine("ProjectController PostTaskAsync");
                 errorWriter.WriteLine(e.Message);
+                SentrySdk.CaptureException(e);
             }
             return RedirectToAction("Index", "Project", new { projectId = projectId });
         }
@@ -128,6 +130,7 @@ namespace ManagemAntsClient.Controllers
                 TextWriter errorWriter = Console.Error;
                 errorWriter.WriteLine("ProjectController PutTaskAsync");
                 errorWriter.WriteLine(e.Message);
+                SentrySdk.CaptureException(e);
             }
 
             return RedirectToAction("Index", "Project", new
@@ -223,6 +226,7 @@ namespace ManagemAntsClient.Controllers
                 TextWriter errorWriter = Console.Error;
                 errorWriter.WriteLine("ProjectController FinishTaskAsync");
                 errorWriter.WriteLine(e.Message);
+                SentrySdk.CaptureException(e);
             }
 
             return RedirectToAction("Index", "Project", new

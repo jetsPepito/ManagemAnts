@@ -10,6 +10,7 @@ using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using System.Text.Json;
 using System.Threading.Tasks;
+using Sentry;
 
 namespace ManagemAntsClient.Controllers
 {
@@ -64,9 +65,11 @@ namespace ManagemAntsClient.Controllers
             }
             catch (Exception e)
             {
+                
                 TextWriter errorWriter = Console.Error;
                 errorWriter.WriteLine("ModifyRole");
                 errorWriter.WriteLine(e.Message);
+                SentrySdk.CaptureException(e);
             }
             
             return RedirectToAction("Index", "AddCollaborator", new
@@ -112,6 +115,7 @@ namespace ManagemAntsClient.Controllers
                 TextWriter errorWriter = Console.Error;
                 errorWriter.WriteLine("AddNewCollaborator");
                 errorWriter.WriteLine(e.Message);
+                SentrySdk.CaptureException(e);
             }
 
             return RedirectToAction("Index", "AddCollaborator", new
@@ -139,6 +143,7 @@ namespace ManagemAntsClient.Controllers
                 TextWriter errorWriter = Console.Error;
                 errorWriter.WriteLine("SetUpClient");
                 errorWriter.WriteLine(e.Message);
+                SentrySdk.CaptureException(e);
             }
 
             return RedirectToAction("Index", "AddCollaborator", new

@@ -64,3 +64,9 @@ Nous avons conteuneriser le back-end et le client du projet. Il est donc importa
 Docker Engine v20.10.6
 Docker compose v3.4
 ```
+
+# Auteurs
+* **Louis Le Gatt** _alias_ [@jetsPepito](https://github.com/jetsPepito)
+* **Corentin Le Guennec** _alias_ [@Guennator](https://github.com/Guennator)
+* **Jérémie Zeitoun** _alias_ [@J3remiez](https://github.com/J3remiez)
+* **Wassim Ajili** _alias_ [@Userleef](https://github.com/Userleef)

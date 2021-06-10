@@ -70,3 +70,7 @@ Docker compose v3.4
 * **Corentin Le Guennec** _alias_ [@Guennator](https://github.com/Guennator)
 * **Jérémie Zeitoun** _alias_ [@J3remiez](https://github.com/J3remiez)
 * **Wassim Ajili** _alias_ [@Userleef](https://github.com/Userleef)
+
+
+# License
+Ceci est un projet réalisé dans le cadre de la majeure MTI à l'EPITA (promo 2022).
